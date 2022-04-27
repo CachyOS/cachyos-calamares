@@ -14,6 +14,7 @@
 #include "DllMacro.h"
 #include "locale/Translation.h"
 
+#include <QList>
 #include <QObject>
 #include <QString>
 
@@ -102,6 +103,64 @@ private:
     explicit Retranslator( QObject* parent );
 };
 
+class Labeler : public QObject
+{
+    Q_OBJECT
+public:
+    Labeler( QObject* parent )
+        : m_parent( parent )
+    {
+        connect( Retranslator::instance(), &Retranslator::languageChanged, this, &Labeler::update );
+    };
+    virtual ~Labeler()
+    {
+        for ( auto* p : m_labels )
+        {
+            delete p;
+        }
+    }
+
+    void update()
+    {
+        std::for_each(
+            m_labels.begin(), m_labels.end(), [ parent = m_parent ]( BaseUpdater* p ) { p->update( parent ); } );
+    }
+
+    template < typename T >
+    void add( T* widget, const char* string )
+    {
+        auto it = std::find_if( m_labels.begin(), m_labels.end(), [ = ]( BaseUpdater* p ) { return p->w == widget; } );
+        if ( it != m_labels.end() )
+        {
+            ( *it )->s = string;
+            ( *it )->update( m_parent );
+        }
+        else
+        {
+            auto p = new Updater< T > { widget, string };
+            m_labels.append( p );
+            p->update( m_parent );
+        }
+    }
+
+private:
+    struct BaseUpdater
+    {
+        QWidget* w;
+        const char* s;
+        virtual ~BaseUpdater();
+        virtual void update( QObject* parent ) = 0;
+    };
+    template < typename T >
+    struct Updater : public BaseUpdater
+    {
+        void update( QObject* parent ) override { ( (T*)w )->setText( parent->tr( s ) ); }
+    };
+
+    QObject* m_parent;
+    QList< BaseUpdater* > m_labels;
+};
+
 
 }  // namespace CalamaresUtils
 
@@ -116,7 +175,7 @@ private:
  *       immediately after setting up the connection. This allows
  *       setup and translation code to be mixed together.
  */
-#define CALAMARES_RETRANSLATE( body ) CalamaresUtils::Retranslator::attach( this, [=] { body } )
+#define CALAMARES_RETRANSLATE( body ) CalamaresUtils::Retranslator::attach( this, [ = ] { body } )
 /** @brief Call code for the given object (widget) when language changes
  *
  * This is identical to CALAMARES_RETRANSLATE, except the @p body is called
@@ -126,7 +185,7 @@ private:
  *       immediately after setting up the connection. This allows
  *       setup and translation code to be mixed together.
  */
-#define CALAMARES_RETRANSLATE_FOR( object, body ) CalamaresUtils::Retranslator::attach( object, [=] { body } )
+#define CALAMARES_RETRANSLATE_FOR( object, body ) CalamaresUtils::Retranslator::attach( object, [ = ] { body } )
 /** @brief Call a slot in this object when language changes
  *
  * Given a slot (in method-function-pointer notation), call that slot when the

@@ -57,6 +57,8 @@ add_library(
     partition/Mount.cpp
     partition/PartitionSize.cpp
     partition/Sync.cpp
+    # Dynamic Translation support
+    translation/Binding.cpp
     # Utility service
     utils/CalamaresUtilsSystem.cpp
     utils/CommandList.cpp

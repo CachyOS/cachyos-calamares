@@ -103,6 +103,13 @@ private:
     explicit Retranslator( QObject* parent );
 };
 
+/** @brief An object that can re-translate a whole collection of widgets.
+ *
+ * A labeler should be attached to a top-level widget. Child widgets
+ * of that top-level can be translated via the Labeler. This removes
+ * the need for CALAMARES_RETRANSLATE macro calls.
+ *
+ */
 class Labeler : public QObject
 {
     Q_OBJECT
@@ -126,6 +133,12 @@ public:
             m_labels.begin(), m_labels.end(), [ parent = m_parent ]( BaseUpdater* p ) { p->update( parent ); } );
     }
 
+    /** @brief Adds (or updates) the string applied to a widget
+     *
+     * Sets the text on @p widget to be the (translated) @p string. If
+     * @p widget already has a translation set via the Labeler, the
+     * translation is updated with the new string.
+     */
     template < typename T >
     void add( T* widget, const char* string )
     {
@@ -137,7 +150,7 @@ public:
         }
         else
         {
-            auto p = new Updater< T > { widget, string };
+            auto* p = new Updater< T > { widget, string };
             m_labels.append( p );
             p->update( m_parent );
         }
@@ -146,8 +159,8 @@ public:
 private:
     struct BaseUpdater
     {
-        QWidget* w;
-        const char* s;
+        QWidget* w = nullptr;
+        const char* s = nullptr;
         virtual ~BaseUpdater();
         virtual void update( QObject* parent ) = 0;
     };
@@ -157,7 +170,7 @@ private:
         void update( QObject* parent ) override { ( (T*)w )->setText( parent->tr( s ) ); }
     };
 
-    QObject* m_parent;
+    QObject* m_parent = nullptr;
     QList< BaseUpdater* > m_labels;
 };
 

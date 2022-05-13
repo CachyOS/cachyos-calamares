@@ -52,7 +52,6 @@ public:
     void init();
 
 public slots:
-    void retranslate();
     void showAboutBox();
 
 protected:

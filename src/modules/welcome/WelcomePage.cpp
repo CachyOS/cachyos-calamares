@@ -22,10 +22,10 @@
 
 #include "modulesystem/ModuleManager.h"
 #include "modulesystem/RequirementsModel.h"
+#include "translation/Binding.h"
 #include "utils/CalamaresUtilsGui.h"
 #include "utils/Logger.h"
 #include "utils/NamedEnum.h"
-#include "utils/Retranslator.h"
 #include "widgets/TranslationFix.h"
 
 #include <QApplication>
@@ -75,7 +75,30 @@ WelcomePage::WelcomePage( Config* config, QWidget* parent )
 
     initLanguages();
 
-    CALAMARES_RETRANSLATE_SLOT( &WelcomePage::retranslate );
+    auto* labeler = new Calamares::Translation::Binding( this );
+    labeler->add(
+        ui->supportButton, QT_TR_NOOP( "%1 support" ), { Calamares::Branding::instance()->shortProductName() } );
+    labeler->add( ui->mainText,
+                  []()
+                  {
+                      if ( Calamares::Settings::instance()->isSetupMode() )
+                      {
+                          return Calamares::Branding::instance()->welcomeStyleCalamares()
+                              ? QT_TR_NOOP( "<h1>Welcome to the Calamares setup program for %1.</h1>" )
+                              : QT_TR_NOOP( "<h1>Welcome to %1 setup.</h1>" );
+                      }
+                      else
+                      {
+                          return Calamares::Branding::instance()->welcomeStyleCalamares()
+                              ? QT_TR_NOOP( "<h1>Welcome to the Calamares installer for %1.</h1>" )
+                              : QT_TR_NOOP( "<h1>Welcome to the %1 installer.</h1>" );
+                      }
+                  }(),
+                  { Calamares::Branding::instance()->versionedName() } );
+
+    connect( CalamaresUtils::Retranslator::instance(),
+             &CalamaresUtils::Retranslator::languageChanged,
+             [ = ]() { ui->retranslateUi( this ); } );
 
     connect( ui->aboutButton, &QPushButton::clicked, this, &WelcomePage::showAboutBox );
     connect( Calamares::ModuleManager::instance(),
@@ -165,7 +188,7 @@ WelcomePage::setupButton( Button role, const QString& url )
     {
         auto size = 2 * QSize( CalamaresUtils::defaultFontHeight(), CalamaresUtils::defaultFontHeight() );
         button->setIcon( CalamaresUtils::defaultPixmap( icon, CalamaresUtils::Original, size ) );
-        connect( button, &QPushButton::clicked, [u]() { QDesktopServices::openUrl( u ); } );
+        connect( button, &QPushButton::clicked, [ u ]() { QDesktopServices::openUrl( u ); } );
     }
     else
     {
@@ -203,29 +226,6 @@ void
 WelcomePage::setLanguageIcon( QPixmap i )
 {
     ui->languageIcon->setPixmap( i );
-}
-
-void
-WelcomePage::retranslate()
-{
-    QString message;
-
-    if ( Calamares::Settings::instance()->isSetupMode() )
-    {
-        message = Calamares::Branding::instance()->welcomeStyleCalamares()
-            ? tr( "<h1>Welcome to the Calamares setup program for %1.</h1>" )
-            : tr( "<h1>Welcome to %1 setup.</h1>" );
-    }
-    else
-    {
-        message = Calamares::Branding::instance()->welcomeStyleCalamares()
-            ? tr( "<h1>Welcome to the Calamares installer for %1.</h1>" )
-            : tr( "<h1>Welcome to the %1 installer.</h1>" );
-    }
-
-    ui->mainText->setText( message.arg( Calamares::Branding::instance()->versionedName() ) );
-    ui->retranslateUi( this );
-    ui->supportButton->setText( tr( "%1 support" ).arg( Calamares::Branding::instance()->shortProductName() ) );
 }
 
 void

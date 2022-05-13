@@ -16,6 +16,8 @@ set(calamaresui_SOURCES
     modulesystem/ModuleManager.cpp
     modulesystem/ProcessJobModule.cpp
     modulesystem/ViewModule.cpp
+    # Dynamic Translation support
+    translation/Binding.cpp
     utils/CalamaresUtilsGui.cpp
     utils/ImageRegistry.cpp
     utils/Paste.cpp

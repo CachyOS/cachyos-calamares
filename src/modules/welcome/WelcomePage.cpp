@@ -95,10 +95,7 @@ WelcomePage::WelcomePage( Config* config, QWidget* parent )
                       }
                   }(),
                   { Calamares::Branding::instance()->versionedName() } );
-
-    connect( CalamaresUtils::Retranslator::instance(),
-             &CalamaresUtils::Retranslator::languageChanged,
-             [ = ]() { ui->retranslateUi( this ); } );
+    labeler->addUi( ui );
 
     connect( ui->aboutButton, &QPushButton::clicked, this, &WelcomePage::showAboutBox );
     connect( Calamares::ModuleManager::instance(),

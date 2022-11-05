@@ -8,7 +8,7 @@
 # Additional styling can be done using the stylesheet.qss
 # file, also in the branding directory.
 ---
-componentName:  default
+componentName:  cachyos
 
 
 ### WELCOME / OVERALL WORDING
@@ -48,7 +48,7 @@ windowExpanding:    normal
 # This setting is ignored if "fullscreen" is selected for
 # *windowExpanding*, above. If not set, use constants defined
 # in CalamaresUtilsGui, 800x520.
-windowSize: 800px,520px
+windowSize: 1100px,520px
 
 # Placement of Calamares window. Either "center" or "free".
 # Whether "center" actually works does depend on the window
@@ -78,7 +78,7 @@ windowPlacement: center
 # to putting the sidebar on the left. Also valid is "qml,top".
 # While "widget,top" is valid, the widgets code is **not** flexible
 # and results will be terrible.
-sidebar: widget
+sidebar: qml,bottom
 
 # Kind of navigation (button panel on the bottom).
 #  - "widget" or unset, use traditional navigation
@@ -109,7 +109,7 @@ navigation: widget
 #
 # These strings support substitution from /etc/os-release
 # if KDE Frameworks 5.58 are available at build-time. When
-# enabled, ${varname} is replaced by the equivalent value
+# enabled, @{var-name} is replaced by the equivalent value
 # from os-release. All the supported var-names are in all-caps,
 # and are listed on the FreeDesktop.org site,
 #       https://www.freedesktop.org/software/systemd/man/os-release.html
@@ -121,18 +121,13 @@ navigation: widget
 # are visible as buttons there if the corresponding *show* keys
 # are set to "true" (they can also be overridden).
 strings:
-    productName:         "${NAME}"
-    shortProductName:    Generic
-    version:             2023.3 LTS
-    shortVersion:        2023.3
-    versionedName:       Fancy GNU/Linux 2023.3 LTS "Venomous Vole"
-    shortVersionedName:  FancyGL 2023.3
-    bootloaderEntryName: FancyGL
-    productUrl:          https://calamares.io/
-    supportUrl:          https://github.com/calamares/calamares/wiki
-    knownIssuesUrl:      https://github.com/calamares/calamares/issues
-    releaseNotesUrl:     https://calamares.io/news/
-    donateUrl:           https://kde.org/community/donations/index.php
+    productName:         CachyOS
+    shortProductName:    CachyOS
+    version:             2024-03-24
+    shortVersion:        2024-03-24
+    versionedName:       CachyOS
+    shortVersionedName:  CachyOS
+    bootloaderEntryName: CachyOS
 
 # These images are loaded from the branding module directory.
 #
@@ -162,19 +157,19 @@ strings:
 #
 # These filenames can also use substitutions from os-release (see above).
 images:
-    # productBanner:       "banner.png"
-    productIcon:         "squid.png"
-    productLogo:         "squid.png"
-    # productWallpaper:    "wallpaper.png"
-    productWelcome:      "languages.png"
+    productLogo:         "logo.png"
+    productIcon:         "icon.png"
+    productWelcome:      "welcome.png"
+    # productBanner:      "banner.png"
+    # productWallpaper:   "wallpaper.png"
 
 # Colors for text and background components.
 #
-#  - SidebarBackground is the background of the sidebar
-#  - SidebarText is the (foreground) text color
-#  - SidebarBackgroundCurrent sets the background of the current step.
+#  - sidebarBackground is the background of the sidebar
+#  - sidebarText is the (foreground) text color
+#  - sidebarTextHighlight sets the background of the selected (current) step.
 #    Optional, and defaults to the application palette.
-#  - SidebarTextCurrent is the text color of the current step.
+#  - sidebarSelect is the text color of the selected step.
 #
 # These colors can **also** be set through the stylesheet, if the
 # branding component also ships a stylesheet.qss. Then they are
@@ -183,8 +178,7 @@ style:
    SidebarBackground:        "#292F34"
    SidebarText:              "#FFFFFF"
    SidebarTextCurrent:       "#292F34"
-   SidebarBackgroundCurrent: "#D35400"
-
+   SidebarBackgroundCurrent: "#00CED1"
 ### SLIDESHOW
 #
 # The slideshow is displayed during execution steps (e.g. when the
@@ -218,21 +212,7 @@ slideshow:               "show.qml"
 # An image slideshow does not need to have the API defined.
 slideshowAPI: 2
 
-
-# These options are to customize online uploading of logs to pastebins:
-#  - type      : Defines the kind of pastebin service to be used. Currently
-#                it accepts two values:
-#                - none    :    disables the pastebin functionality
-#                - fiche   :    use fiche pastebin server
-#  - url       : Defines the address of pastebin service to be used.
-#                Takes string as input. Important bits are the host and port,
-#                the scheme is not used.
-#  - sizeLimit : Defines maximum size limit (in KiB) of log file to be pasted.
-#                The option must be set, to have the log option work.
-#                Takes integer as input. If < 0, no limit will be forced,
-#                else only last (approximately) 'n' KiB of log file will be pasted.
-#                Please note that upload size may be slightly over the limit (due
-#                to last minute logging), so provide a suitable value.
+# log feature
 uploadServer :
     type :    "fiche"
     url :     "http://termbin.com:9999"

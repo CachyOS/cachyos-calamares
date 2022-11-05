@@ -52,6 +52,23 @@ QPushButton { background-color: green; }
 #logoApp { }
 */
 
+QWidget {
+    font: 13px;
+}
+
+QDialogButtonBox {
+    dialogbuttonbox-buttons-have-icons: 0;
+}
+
+#debugButton {
+    background-color: none;
+    font: bold 8px;
+    color: #ffffff;
+    height: 32px;
+    padding: 0px;
+    border: none;
+}
+
 /*** Welcome module.
  *
  * There are plenty of parts, but the buttons are the most interesting
@@ -61,6 +78,12 @@ QPushButton { background-color: green; }
  * or loaded via plugins or within the filesystem. There is no
  * comprehensive list of available icons, though.
  */
+
+#aboutButton {
+    background-color: none;
+    font: 14px;
+    border: none;
+}
 
 /*
 QPushButton#aboutButton { qproperty-icon: url(:/data/images/release.svg); }

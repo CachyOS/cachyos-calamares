@@ -1,0 +1,89 @@
+#!/bin/bash
+
+Debug() {
+    if [ "$dryrun" = "yes" ] ; then
+        echo "$@" >&2
+    fi
+}
+
+logterminal() {
+    local msg="$1"
+    local extra="$2"
+
+    case "$extra" in
+        "") echo "==> $progname: $msg" ;;
+        --nh) echo "$msg" ;;
+    esac
+}
+
+DIE() {
+    logterminal "$FUNCNAME: $1"
+    exit 1
+}
+
+RunCmd() {
+    $cmd > $tf
+    retval=$?
+    [ $retval -eq 0 ] || return
+
+    if [ -x /usr/bin/rate-mirrors ] ; then
+        grep '^Server = ' $tf > $tf.tmp
+        mv $tf.tmp $tf
+    fi
+}
+
+Main() {
+    local VERSION="2.0.9"                   # started from 2.0!
+    local progname="$(basename "$0")"
+    local mf=/etc/pacman.d/mirrorlist
+    local bu=/tmp/mirrorlist.bu             # original mirrorlist, saved by Welcome
+
+    logterminal "version $VERSION"
+
+    if [ -r $mf ] && [ -r $bu ] ; then
+        if (/usr/bin/diff $mf $bu >& /dev/null) ; then
+            # Current and original mirrorlists are the same, so carry on.
+            logterminal "Updating mirrorlist."
+        else
+            # Current and original mirrorlist are different, so stop.
+            logterminal "Mirrorlist already changed, not updating it."
+            logterminal "This is the current mirrorlist:"
+            echo "#===================================#"
+            cat "$mf"
+            echo "#===================================#"
+            return
+        fi
+    fi
+
+    local retval
+    local cmd=""
+    local ranker="reflector"   # rate-mirrors or reflector
+    local dryrun=no
+    local arg
+
+    for arg in "$@" ; do
+        case "$arg" in
+            -n | --dryrun) dryrun=yes ;;    # don't save mirrorlist to /etc/pacman.d
+            *) DIE "parameter '$arg' is not supported" ;;
+        esac
+    done
+
+    # rate-mirrors should create a reasonably good mirrorlist generally
+    ranker="rate-mirrors"
+    cmd="$ranker --allow-root arch"
+
+    local tf=$(mktemp)
+
+    time RunCmd
+
+    if [ $retval -eq 0 ] ; then
+        if [ "$dryrun" = "no" ] ; then
+            sudo bash -c "cp $tf $mf && chmod 0644 $mf"
+        fi
+    fi
+
+    rm -f $tf
+    return 0            # return $retval   # 0=OK, other is FAIL
+}
+
+Main "$@"

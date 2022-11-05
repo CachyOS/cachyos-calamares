@@ -1,0 +1,20 @@
+#!/bin/bash
+pacman_conf="/etc/pacman.conf"
+pacman_conf_cachyos="/etc/pacman-more.conf"
+pacman_conf_path_backup="/etc/pacman.conf.bak"
+check_v3="$(/lib/ld-linux-x86-64.so.2 --help|grep 'x86-64-v3 ('|awk '{print $1}')"
+if [ $check_v3 == "x86-64-v3" ];then
+echo "x86-64-v3 is supported"
+#sed -i 's/Architecture = auto/#Architecture = auto/' $pacman_conf_cachyos
+sed -i 's/#<disabled_v3>//g' $pacman_conf_cachyos
+echo "backup old config"
+mv $pacman_conf $pacman_conf_path_backup
+echo "CachyOS -v3 Repo changed"
+mv $pacman_conf_cachyos $pacman_conf
+else
+echo "x86-64-v3 is not supported"
+echo "backup old config"
+mv $pacman_conf $pacman_conf_path_backup
+echo "CachyOS Repo changed"
+mv $pacman_conf_cachyos $pacman_conf
+fi

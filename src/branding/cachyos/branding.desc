@@ -123,8 +123,8 @@ navigation: widget
 strings:
     productName:         CachyOS
     shortProductName:    CachyOS
-    version:             2022-09-17
-    shortVersion:        2022-09-17
+    version:             2022-11-22
+    shortVersion:        2022-11-22
     versionedName:       CachyOS
     shortVersionedName:  CachyOS
     bootloaderEntryName: CachyOS

@@ -190,8 +190,6 @@
           - python-packaging
           - rsync
           - sed
-          - snapper
-          - timeshift
           - vi
           - wget
           - ripgrep

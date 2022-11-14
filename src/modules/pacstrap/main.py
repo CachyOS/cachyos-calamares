@@ -101,7 +101,7 @@ def run():
         base_packages += ["zfs-utils", "linux-cachyos-zfs"]
     elif is_root_on_btrfs:
         libcalamares.utils.debug("Root on BTRFS")
-        base_packages += ["snapper"]
+        base_packages += ["snapper", "btrfs-assistant-git"]
 
     # run the pacstrap
     pacstrap_command = ["/etc/calamares/scripts/pacstrap_calamares", "-c", root_mount_point] + base_packages

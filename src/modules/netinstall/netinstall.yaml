@@ -6,27 +6,25 @@
   packages:
      - alacritty
      - btop
-     - cachyos
      - cachy-browser
      - cachyos-fish-config
+     - cachyos-ananicy-rules
      - cachyos-hello
      - cachyos-hooks
      - cachyos-kernel-manager
      - cachyos-keyring
      - cachyos-mirrorlist
+     - cachyos-v3-mirrorlist
      - cachyos-rate-mirrors
      - cachyos-packageinstaller
      - cachyos-settings
-     - cachyos-v3-mirrorlist
      - cachyos-zsh-config
+     - cachyos-micro-settings
      - linux-cachyos
      - linux-cachyos-headers
      - mhwd-cachyos
+     - mhwd-db-cachyos
      - mhwd-nvidia-390xx
-     - micro
-     - nano
-     - nerd-fonts-meslo
-     - vim
 - name: "Base-devel + Common packages"
   description: "Recommended. Don't change unless you know what you're doing (generic)."
   hidden: false
@@ -83,20 +81,19 @@
         selected: true
         packages:
           - libpamac-aur
-          - pacman-contrib
           - pamac-aur
+          - pacman-contrib
           - pkgfile
           - rebuild-detector
           - reflector
           - paru
-          - yay
+          - octopi
       - name: "desktop integration"
         description: "Useful helper tools and libs for desktop usage"
         selected: true
         packages:
           - accountsservice
           - bash-completion
-          - bluetooth-support
           - ffmpegthumbnailer
           - gst-libav
           - gst-plugin-pipewire
@@ -105,7 +102,6 @@
           - libdvdcss
           - libgsf
           - libopenraw
-          - mesa-utils
           - mlocate
           - poppler-glib
           - xdg-user-dirs
@@ -139,6 +135,7 @@
           - ttf-dejavu
           - ttf-liberation
           - ttf-opensans
+          - nerd-fonts-meslo
       - name: "audio"
         description: "Audio handling tools apps and libs"
         selected: true
@@ -146,8 +143,6 @@
           - alsa-firmware
           - alsa-plugins
           - alsa-utils
-          - easyeffects
-          - gst-plugin-pipewire
           - pavucontrol
           - pipewire-pulse
           - wireplumber
@@ -158,8 +153,6 @@
         description: "Hardware support libs and firmware"
         selected: true
         packages:
-          - amd-ucode
-          - intel-ucode
           - dmidecode
           - dmraid
           - hdparm
@@ -201,6 +194,9 @@
           - vi
           - wget
           - ripgrep
+          - micro
+          - nano
+          - vim
 - name: "CachyOS - ZFS - Kernels"
   description: "Kernel ZFS built in modules are needed for the zfs filesystem and their kernel"
   hidden: false
@@ -209,7 +205,6 @@
   packages:
     - linux-cachyos-bmq-zfs
     - linux-cachyos-bore-zfs
-    - linux-cachyos-cacule-zfs
     - linux-cachyos-cfs-zfs
     - linux-cachyos-hardened-zfs
     - linux-cachyos-pds-zfs
@@ -224,8 +219,6 @@
     - linux-cachyos-bmq-headers
     - linux-cachyos-bore
     - linux-cachyos-bore-headers
-    - linux-cachyos-cacule
-    - linux-cachyos-cacule-headers
     - linux-cachyos-cfs
     - linux-cachyos-cfs-headers
     - linux-cachyos-hardened
@@ -257,21 +250,6 @@
     - cutefish-qt-plugins
     - libwnck3
     - sddm
-    - xf86-input-libinput
-    - xorg-xdpyinfo
-    - xorg-server
-    - xorg-xinit
-    - xorg-xinput
-    - xorg-xkill
-    - xorg-xrandr
-    - xorg-xbacklight
-    - xorg-xdpyinfo
-    - xf86-video-amdgpu
-    - xf86-video-ati
-    - xf86-video-intel
-    - xf86-input-libinput
-    - xf86-video-fbdev
-    - xf86-video-vesa
 - name: "i3-Window-Manager"
   description: "i3 tiling window manager, primarily targeted at developers and advanced users."
   hidden: false
@@ -289,22 +267,6 @@
     - cachyos-picom-config
     - dunst
     - cachyos-i3wm-settings
-    - libwnck3
-    - xf86-input-libinput
-    - xorg-xdpyinfo
-    - xorg-server
-    - xorg-xinit
-    - xorg-xinput
-    - xorg-xkill
-    - xorg-xrandr
-    - xorg-xbacklight
-    - xorg-xdpyinfo
-    - xf86-video-amdgpu
-    - xf86-video-ati
-    - xf86-video-intel
-    - xf86-input-libinput
-    - xf86-video-fbdev
-    - xf86-video-vesa
 - name: "KDE-Desktop"
   description: "KDE-Plasma Desktop - Simple by default, powerful when needed."
   hidden: false
@@ -315,12 +277,15 @@
     - audiocd-kio
     - bluedevil
     - breeze-gtk
-    - cachyos-nord-kde-theme-git
     - cachyos-lavender-kde-theme-git
+    - cachyos-nord-kde-theme-git
     - cachyos-iridescent-kde
+    - cachyos-emerald-kde-theme-git
     - cachyos-kde-settings
+    - char-white
     - dolphin
     - egl-wayland
+    - gwenview
     - konsole
     - kate
     - kdeconnect
@@ -329,9 +294,8 @@
     - khotkeys
     - kinfocenter
     - kinit
-    - kinfocenter
-    - khotkeys
-    - plasma
+    - kscreen
+    - kwallet-pam
     - plasma-wayland-protocols
     - plasma-wayland-session
     - plasma-desktop
@@ -345,28 +309,9 @@
     - plasma-systemmonitor
     - plasma-thunderbolt
     - ksysguard
-    - pamac-aur
-    - octopi
     - spectacle
     - sddm
     - sddm-kcm
-    - libwnck3
-    - xf86-input-libinput
-    - xorg-xdpyinfo
-    - xorg-server
-    - xorg-xinit
-    - xorg-xinput
-    - xorg-xkill
-    - xorg-xrandr
-    - xorg-xbacklight
-    - xorg-xdpyinfo
-    - xf86-video-amdgpu
-    - xf86-video-ati
-    - xf86-video-intel
-    - xf86-input-libinput
-    - xf86-video-fbdev
-    - xf86-video-vesa
-    - xorg-xwayland
     - xsettingsd
 - name: "GNOME-Desktop"
   description: "GNOME Desktop - designed to put you in control and get things done."
@@ -376,6 +321,7 @@
   packages:
     - adwaita-icon-theme
     - cachyos-gnome-settings
+    - cachyos-nord-gtk-theme-git
     - eog
     - evince
     - file-roller
@@ -404,22 +350,6 @@
     - sushi
     - totem
     - xdg-user-dirs-gtk
-    - libwnck3
-    - xf86-input-libinput
-    - xorg-xdpyinfo
-    - xorg-server
-    - xorg-xinit
-    - xorg-xinput
-    - xorg-xkill
-    - xorg-xrandr
-    - xorg-xbacklight
-    - xorg-xdpyinfo
-    - xf86-video-amdgpu
-    - xf86-video-ati
-    - xf86-video-intel
-    - xf86-input-libinput
-    - xf86-video-fbdev
-    - xf86-video-vesa
 - name: "Openbox"
   description: "Openbox is a highly configurable, floating window manager with extensive standards support."
   hidden: false
@@ -472,22 +402,6 @@
     - xdg-user-dirs-gtk
     - xed
     - xfce4-terminal
-    - libwnck3
-    - xf86-input-libinput
-    - xorg-xdpyinfo
-    - xorg-server
-    - xorg-xinit
-    - xorg-xinput
-    - xorg-xkill
-    - xorg-xrandr
-    - xorg-xbacklight
-    - xorg-xdpyinfo
-    - xf86-video-amdgpu
-    - xf86-video-ati
-    - xf86-video-intel
-    - xf86-input-libinput
-    - xf86-video-fbdev
-    - xf86-video-vesa
 - name: "Wayfire"
   description: "Wayfire is a wayland compositor based on wlroots. It aims to create a customizable, extendable and lightweight environment without sacrificing its appearance."
   hidden: false
@@ -545,22 +459,6 @@
     - alacritty
     - openssh
     - btop
-    - libwnck3
-    - xf86-input-libinput
-    - xorg-xdpyinfo
-    - xorg-server
-    - xorg-xinit
-    - xorg-xinput
-    - xorg-xkill
-    - xorg-xrandr
-    - xorg-xbacklight
-    - xorg-xdpyinfo
-    - xf86-video-amdgpu
-    - xf86-video-ati
-    - xf86-video-intel
-    - xf86-input-libinput
-    - xf86-video-fbdev
-    - xf86-video-vesa
 - name: "Kofuku"
   description: "Kofuku (bliss in Japanese) is a lightweight and minimalist Linux setup. This setup uses BSPWM as the tiling window manager."
   hidden: false
@@ -575,22 +473,6 @@
     - rofi
     - lightdm-webkit2-greeter
     - cachyos-kofuku
-    - libwnck3
-    - xf86-input-libinput
-    - xorg-xdpyinfo
-    - xorg-server
-    - xorg-xinit
-    - xorg-xinput
-    - xorg-xkill
-    - xorg-xrandr
-    - xorg-xbacklight
-    - xorg-xdpyinfo
-    - xf86-video-amdgpu
-    - xf86-video-ati
-    - xf86-video-intel
-    - xf86-input-libinput
-    - xf86-video-fbdev
-    - xf86-video-vesa
 - name: "Sway"
   description: "Sway is a tiling Wayland compositor and a drop-in replacement for the i3 window manager for X11. It works with your existing i3 configuration and supports most of i3's features, plus a few extras."
   hidden: false
@@ -604,7 +486,6 @@
     - wayland-protocols
     - wofi
     - ly
-    - xorg-xhost
     - xorg-xwayland
 - name: "Xfce4"
   description: "Xfce is a lightweight desktop environment for UNIX-like operating systems. It aims to be fast and low on system resources, while still being visually appealing and user friendly."
@@ -612,6 +493,8 @@
   selected: false
   critical: true
   packages:
+    - cachyos-xfce-settings
+    - blueman
     - file-roller
     - galculator
     - gvfs
@@ -644,23 +527,14 @@
     - xfce4-weather-plugin
     - xfce4-whiskermenu-plugin
     - xfce4-xkb-plugin
-    - cachyos-xfce-settings
-    - libwnck3
-    - xf86-input-libinput
-    - xorg-xdpyinfo
-    - xorg-server
-    - xorg-xinit
-    - xorg-xinput
-    - xorg-xkill
-    - xorg-xrandr
-    - xorg-xbacklight
-    - xorg-xdpyinfo
-    - xf86-video-amdgpu
-    - xf86-video-ati
-    - xf86-video-intel
-    - xf86-input-libinput
-    - xf86-video-fbdev
-    - xf86-video-vesa
+- name: "CPU specific Microcode update packages"
+  description: "Microcode update image for AMD and Intel CPU"
+  hidden: false
+  selected: true
+  critical: false
+  packages:
+    - amd-ucode
+    - intel-ucode
 - name: "Firefox and language package"
   description: "Add firefox and language pack if possible"
   hidden: false
@@ -681,6 +555,7 @@
     - nvidia-settings
     - lib32-opencl-nvidia
     - opencl-nvidia
+    - libva-nvidia-driver
 - name: "Printing-Support"
   description: "Support for printing (Cups)"
   hidden: false
@@ -711,6 +586,9 @@
     - python-pyqt5
     - python-reportlab
     - xsane
+    - cups
+    - cups-filters
+    - cups-pdf
 - name: "Accessibility Tools"
   description: "Screen reader and mouse tweaks (impaired vision)"
   hidden: false

@@ -196,18 +196,6 @@
           - micro
           - nano
           - vim
-- name: "CachyOS - ZFS - Kernels"
-  description: "Kernel ZFS built in modules are needed for the zfs filesystem and their kernel"
-  hidden: false
-  selected: false
-  critical: true
-  packages:
-    - linux-cachyos-bmq-zfs
-    - linux-cachyos-bore-zfs
-    - linux-cachyos-cfs-zfs
-    - linux-cachyos-hardened-zfs
-    - linux-cachyos-pds-zfs
-    - linux-cachyos-tt-zfs
 - name: "CachyOS Kernels"
   description: "Selection of different cachyos kernels"
   hidden: false
@@ -588,6 +576,18 @@
     - cups
     - cups-filters
     - cups-pdf
+- name: "Additonal ZFS kernel modules, only needed if multiple kernels are selected"
+  description: "Kernel ZFS built in modules are needed for the zfs filesystem and their kernel"
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - linux-cachyos-bmq-zfs
+    - linux-cachyos-bore-zfs
+    - linux-cachyos-cfs-zfs
+    - linux-cachyos-hardened-zfs
+    - linux-cachyos-pds-zfs
+    - linux-cachyos-tt-zfs
 - name: "Accessibility Tools"
   description: "Screen reader and mouse tweaks (impaired vision)"
   hidden: false

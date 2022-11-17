@@ -542,7 +542,7 @@
   packages:
     - firefox
     - firefox-i18n-$LOCALE
-- name: "NVIDIA Drivers"
+- name: "NVIDIA Drivers (latest Cards 900+)"
   description: "Select them if you want to use the nvidia drivers"
   hidden: false
   selected: false

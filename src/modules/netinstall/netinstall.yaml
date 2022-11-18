@@ -126,7 +126,9 @@
           - adobe-source-han-sans-cn-fonts
           - adobe-source-han-sans-jp-fonts
           - adobe-source-han-sans-kr-fonts
+          - awesome-terminal-fonts
           - noto-fonts-emoji
+          - noto-color-emoji-fontconfig
           - cantarell-fonts
           - freetype2
           - noto-fonts

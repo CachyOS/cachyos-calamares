@@ -297,6 +297,7 @@
     - plasma-browser-integration
     - plasma-systemmonitor
     - plasma-thunderbolt
+    - powerdevil
     - ksysguard
     - spectacle
     - sddm

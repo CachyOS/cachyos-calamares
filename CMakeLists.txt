@@ -689,10 +689,6 @@ install(FILES calamares.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/application
 
 install(FILES man/calamares.8 DESTINATION ${CMAKE_INSTALL_MANDIR}/man8/)
 
-if(INSTALL_CONFIG)
-    install(FILES settings.conf DESTINATION share/calamares)
-endif()
-
 ### Uninstall
 #
 #

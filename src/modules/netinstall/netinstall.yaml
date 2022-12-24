@@ -198,6 +198,7 @@
           - micro
           - nano
           - vim
+          - openssh
 - name: "CachyOS Kernels"
   description: "Selection of different cachyos kernels"
   hidden: false
@@ -304,6 +305,7 @@
     - sddm
     - sddm-kcm
     - xsettingsd
+    - xdg-desktop-portal-kde
 - name: "GNOME-Desktop"
   description: "GNOME Desktop - designed to put you in control and get things done."
   hidden: false

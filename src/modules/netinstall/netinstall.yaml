@@ -81,8 +81,6 @@
         description: "Packages tools"
         selected: true
         packages:
-          - libpamac-aur
-          - pamac-aur
           - pacman-contrib
           - pkgfile
           - rebuild-detector

@@ -136,6 +136,7 @@
           - ttf-liberation
           - ttf-opensans
           - nerd-fonts-meslo
+          - noto-fonts-cjk
       - name: "audio"
         description: "Audio handling tools apps and libs"
         selected: true

@@ -436,6 +436,31 @@
     - xdg-utils
     - xscreensaver
     - xsettingsd
+- name: "Hyprland"
+  description: "Hyprland is a dynamic tiling Wayland compositor that doesn't sacrifice on its looks."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - cava
+    - cachyos-hyprland-settings
+    - dunst
+    - grim
+    - hyprland
+    - jq
+    - kitty
+    - pokemon-colorscripts-git
+    - slurp
+    - starship
+    - swaylockd
+    - swaylock-effects
+    - tty-clock
+    - waybar-hyprland
+    - waybar-mpris-git
+    - wl-clipboard
+    - wofi
+    - xdg-desktop-portal
+    - xdg-desktop-portal-wlr
 - name: "bspwm"
   description: "bspwm is a tiling window manager that represents windows as the leaves of a full binary tree. bspwm supports multiple monitors and is configured and controlled through messages."
   hidden: false

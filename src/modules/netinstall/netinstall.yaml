@@ -455,12 +455,11 @@
     - swaylockd
     - swaylock-effects
     - tty-clock
-    - waybar-hyprland
+    - waybar-hyprland-git
     - waybar-mpris-git
     - wl-clipboard
     - wofi
-    - xdg-desktop-portal
-    - xdg-desktop-portal-wlr
+    - xdg-desktop-portal-hyprland-git
 - name: "bspwm"
   description: "bspwm is a tiling window manager that represents windows as the leaves of a full binary tree. bspwm supports multiple monitors and is configured and controlled through messages."
   hidden: false

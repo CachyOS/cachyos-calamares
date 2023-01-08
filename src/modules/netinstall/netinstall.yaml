@@ -455,7 +455,7 @@
     - swaylockd
     - swaylock-effects
     - tty-clock
-    - waybar-hyprland-git
+    - waybar-hyprland
     - waybar-mpris-git
     - wl-clipboard
     - wofi

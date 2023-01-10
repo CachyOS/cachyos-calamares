@@ -458,6 +458,9 @@
     - waybar-hyprland
     - waybar-mpris-git
     - wl-clipboard
+    - neovim
+    - ranger
+    - polkit-gnome
     - wofi
     - xdg-desktop-portal-hyprland-git
 - name: "bspwm"

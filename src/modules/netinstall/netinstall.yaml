@@ -519,6 +519,27 @@
     - metacity
     - lightdm
     - lightdm-gtk-greeter
+- name: "UKUI"
+  description: "It is a lightweight desktop environment, which consumes few resources and works with older computers. It has been developed with GTK and Qt technologies. Its visual appearance is similar to Windows 7, making it easier for new users of Linux."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - sddm
+    - thunar
+    - thunar-archive-plugin
+    - thunar-volman
+    - peony
+    - xfce4-terminal
+    - ukui
+    - mate-terminal
+    - mate-system-monitor
+    - mate-control-center
+    - redshift
+    - gnome-screenshot
+    - accountsservice
+    - gvfs
+    - qt5-quickcontrols
 - name: "CPU specific Microcode update packages"
   description: "Microcode update image for AMD and Intel CPU"
   hidden: false

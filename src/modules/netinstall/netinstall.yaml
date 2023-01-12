@@ -505,6 +505,20 @@
     - xfce4-weather-plugin
     - xfce4-whiskermenu-plugin
     - xfce4-xkb-plugin
+- name: "Cinnamon"
+  description: "Linux desktop which provides advanced innovative features and a traditional user experience."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - cinnamon
+    - system-config-printer
+    - gnome-keyring
+    - gnome-terminal
+    - blueberry
+    - metacity
+    - lightdm
+    - lightdm-gtk-greeter
 - name: "CPU specific Microcode update packages"
   description: "Microcode update image for AMD and Intel CPU"
   hidden: false

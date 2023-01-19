@@ -239,6 +239,8 @@
     - cutefish-qt-plugins
     - libwnck3
     - sddm
+    - xdg-desktop-portal
+    - xdg-desktop-portal-kde
 - name: "i3-Window-Manager"
   description: "i3 tiling window manager, primarily targeted at developers and advanced users."
   hidden: false
@@ -304,6 +306,7 @@
     - sddm
     - sddm-kcm
     - xsettingsd
+    - xdg-desktop-portal
     - xdg-desktop-portal-kde
 - name: "GNOME-Desktop"
   description: "GNOME Desktop - designed to put you in control and get things done."
@@ -465,6 +468,8 @@
     - wofi
     - ly
     - xorg-xwayland
+    - xdg-desktop-portal
+    - xdg-desktop-portal-wlr
 - name: "Xfce4"
   description: "Xfce is a lightweight desktop environment for UNIX-like operating systems. It aims to be fast and low on system resources, while still being visually appealing and user friendly."
   hidden: false

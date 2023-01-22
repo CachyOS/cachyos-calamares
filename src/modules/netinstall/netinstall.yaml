@@ -135,7 +135,7 @@
           - ttf-dejavu
           - ttf-liberation
           - ttf-opensans
-          - nerd-fonts-meslo
+          - ttf-meslo-nerd
           - noto-fonts-cjk
       - name: "audio"
         description: "Audio handling tools apps and libs"

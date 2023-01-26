@@ -288,6 +288,7 @@
     - kinit
     - kscreen
     - kwallet-pam
+    - kwalletmanager
     - plasma-wayland-protocols
     - plasma-wayland-session
     - plasma-desktop

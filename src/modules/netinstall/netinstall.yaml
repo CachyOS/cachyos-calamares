@@ -553,6 +553,39 @@
     - accountsservice
     - gvfs
     - qt5-quickcontrols
+- name: "Budgie-Desktop"
+  description: "Budgie - an independent, familiar, and modern desktop."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - budgie-control-center
+    - budgie-desktop
+    - budgie-desktop-view
+    - budgie-extras
+    - budgie-screensaver
+    - eog
+    - evince
+    - file-roller
+    - gedit
+    - gnome-keyring
+    - gnome-screenshot
+    - gnome-terminal
+    - gvfs
+    - gvfs-afc
+    - gvfs-gphoto2
+    - gvfs-mtp
+    - gvfs-nfs
+    - gvfs-smb
+    - lightdm
+    - lightdm-slick-greeter
+    - nemo
+    - nemo-fileroller
+    - nemo-preview
+    - network-manager-applet
+    - sushi
+    - totem
+    - xdg-user-dirs-gtk
 - name: "CPU specific Microcode update packages"
   description: "Microcode update image for AMD and Intel CPU"
   hidden: false

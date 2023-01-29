@@ -587,6 +587,25 @@
     - sushi
     - totem
     - xdg-user-dirs-gtk
+- name: "MATE-Desktop"
+  description: "MATE Desktop - the continuation of GNOME 2"
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - celluloid
+    - gvfs
+    - gvfs-afc
+    - gvfs-gphoto2
+    - gvfs-mtp
+    - gvfs-nfs
+    - gvfs-smb
+    - lightdm
+    - lightdm-slick-greeter
+    - mate
+    - mate-extra
+    - network-manager-applet
+    - xdg-user-dirs-gtk
 - name: "CPU specific Microcode update packages"
   description: "Microcode update image for AMD and Intel CPU"
   hidden: false

@@ -84,7 +84,6 @@
           - bluez
           - bluez-hid2hci
           - bluez-libs
-          - bluez-qt
           - bluez-utils
       - name: "packages management"
         description: "Packages tools"

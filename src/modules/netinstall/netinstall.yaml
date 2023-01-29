@@ -455,6 +455,42 @@
     - cachyos-picom-config
     - dunst
     - cachyos-i3wm-settings
+- name: "LXDE-Desktop"
+  description: "The Lightweight Desktop Environment."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - celluloid
+    - file-roller
+    - galculator
+    - gnome-screenshot
+    - gpicview
+    - gvfs
+    - gvfs-afc
+    - gvfs-gphoto2
+    - gvfs-mtp
+    - gvfs-nfs
+    - gvfs-smb
+    - lxappearance-gtk3
+    - obconf
+    - lxde-common
+    - lxde-icon-theme
+    - lxhotkey-gtk3
+    - lxinput-gtk3
+    - lxlauncher-gtk3
+    - lxpanel-gtk3
+    - lxrandr-gtk3
+    - lxsession-gtk3
+    - lxtask-gtk3
+    - lxterminal
+    - notification-daemon
+    - openbox
+    - pcmanfm-gtk3
+    - lxmusic
+    - network-manager-applet
+    - xdg-user-dirs-gtk
+    - xed
 - name: "LXQT-Desktop"
   description: "The Lightweight Qt Desktop Environment."
   hidden: false

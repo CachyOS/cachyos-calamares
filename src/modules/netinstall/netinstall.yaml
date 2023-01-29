@@ -224,48 +224,6 @@
     - linux-cachyos-pds-headers
     - linux-cachyos-tt
     - linux-cachyos-tt-headers
-- name: "CuteFish"
-  description: "CuteFish – An Elegant, Beautiful and Easy-to-Use Linux Desktop."
-  hidden: false
-  selected: false
-  expanded: false
-  critical: true
-  packages:
-    - fishui
-    - cutefish-calculator
-    - cutefish-core
-    - cutefish-dock
-    - cutefish-filemanager
-    - cutefish-kwin-plugins
-    - cutefish-launcher
-    - cutefish-screenlocker
-    - cutefish-settings
-    - cutefish-statusbar
-    - cutefish-terminal
-    - cutefish-wallpapers
-    - cutefish-icons
-    - cutefish-qt-plugins
-    - libwnck3
-    - sddm
-    - xdg-desktop-portal
-    - xdg-desktop-portal-kde
-- name: "i3-Window-Manager"
-  description: "i3 tiling window manager, primarily targeted at developers and advanced users."
-  hidden: false
-  selected: false
-  expanded: false
-  critical: true
-  packages:
-    - i3-wm
-    - i3blocks
-    - i3lock-color
-    - i3status
-    - rofi
-    - polybar
-    - ly
-    - cachyos-picom-config
-    - dunst
-    - cachyos-i3wm-settings
 - name: "KDE-Desktop"
   description: "KDE-Plasma Desktop - Simple by default, powerful when needed."
   hidden: false
@@ -354,6 +312,196 @@
     - sushi
     - totem
     - xdg-user-dirs-gtk
+- name: "Xfce4"
+  description: "Xfce is a lightweight desktop environment for UNIX-like operating systems. It aims to be fast and low on system resources, while still being visually appealing and user friendly."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - cachyos-xfce-settings
+    - blueman
+    - file-roller
+    - galculator
+    - gvfs
+    - gvfs-afc
+    - gvfs-gphoto2
+    - gvfs-mtp
+    - gvfs-nfs
+    - gvfs-smb
+    - lightdm
+    - lightdm-gtk-greeter
+    - lightdm-gtk-greeter-settings
+    - network-manager-applet
+    - parole
+    - ristretto
+    - thunar-archive-plugin
+    - thunar-media-tags-plugin
+    - xdg-user-dirs-gtk
+    - xed
+    - xfce4
+    - xfce4-battery-plugin
+    - xfce4-datetime-plugin
+    - xfce4-mount-plugin
+    - xfce4-netload-plugin
+    - xfce4-notifyd
+    - xfce4-pulseaudio-plugin
+    - xfce4-screensaver
+    - xfce4-screenshooter
+    - xfce4-taskmanager
+    - xfce4-wavelan-plugin
+    - xfce4-weather-plugin
+    - xfce4-whiskermenu-plugin
+    - xfce4-xkb-plugin
+- name: "bspwm"
+  description: "bspwm is a tiling window manager that represents windows as the leaves of a full binary tree. bspwm supports multiple monitors and is configured and controlled through messages."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - bspwm
+    - sxhkd
+    - polybar
+    - lightdm
+    - cachyos-picom-config
+    - alacritty
+    - openssh
+    - btop
+- name: "Budgie-Desktop"
+  description: "Budgie - an independent, familiar, and modern desktop."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - budgie-control-center
+    - budgie-desktop
+    - budgie-desktop-view
+    - budgie-extras
+    - budgie-screensaver
+    - eog
+    - evince
+    - file-roller
+    - gedit
+    - gnome-keyring
+    - gnome-screenshot
+    - gnome-terminal
+    - gvfs
+    - gvfs-afc
+    - gvfs-gphoto2
+    - gvfs-mtp
+    - gvfs-nfs
+    - gvfs-smb
+    - lightdm
+    - lightdm-slick-greeter
+    - nemo
+    - nemo-fileroller
+    - nemo-preview
+    - network-manager-applet
+    - sushi
+    - totem
+    - xdg-user-dirs-gtk
+- name: "Cinnamon"
+  description: "Linux desktop which provides advanced innovative features and a traditional user experience."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - cinnamon
+    - system-config-printer
+    - gnome-keyring
+    - gnome-terminal
+    - blueberry
+    - metacity
+    - lightdm
+    - lightdm-gtk-greeter
+- name: "CuteFish"
+  description: "CuteFish – An Elegant, Beautiful and Easy-to-Use Linux Desktop."
+  hidden: false
+  selected: false
+  expanded: false
+  critical: true
+  packages:
+    - fishui
+    - cutefish-calculator
+    - cutefish-core
+    - cutefish-dock
+    - cutefish-filemanager
+    - cutefish-kwin-plugins
+    - cutefish-launcher
+    - cutefish-screenlocker
+    - cutefish-settings
+    - cutefish-statusbar
+    - cutefish-terminal
+    - cutefish-wallpapers
+    - cutefish-icons
+    - cutefish-qt-plugins
+    - libwnck3
+    - sddm
+    - xdg-desktop-portal
+    - xdg-desktop-portal-kde
+- name: "i3-Window-Manager"
+  description: "i3 tiling window manager, primarily targeted at developers and advanced users."
+  hidden: false
+  selected: false
+  expanded: false
+  critical: true
+  packages:
+    - i3-wm
+    - i3blocks
+    - i3lock-color
+    - i3status
+    - rofi
+    - polybar
+    - ly
+    - cachyos-picom-config
+    - dunst
+    - cachyos-i3wm-settings
+- name: "LXQT-Desktop"
+  description: "The Lightweight Qt Desktop Environment."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - audiocd-kio
+    - baka-mplayer
+    - breeze
+    - breeze-gtk
+    - featherpad
+    - gvfs
+    - gvfs-mtp
+    - kio-fuse
+    - libstatgrab
+    - libsysstat
+    - lm_sensors
+    - lxqt
+    - lxqt-archiver
+    - network-manager-applet
+    - oxygen-icons
+    - pavucontrol-qt
+    - print-manager
+    - qt5-translations
+    - sddm
+    - xdg-utils
+    - xscreensaver
+    - xsettingsd
+- name: "MATE-Desktop"
+  description: "MATE Desktop - the continuation of GNOME 2"
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - celluloid
+    - gvfs
+    - gvfs-afc
+    - gvfs-gphoto2
+    - gvfs-mtp
+    - gvfs-nfs
+    - gvfs-smb
+    - lightdm
+    - lightdm-slick-greeter
+    - mate
+    - mate-extra
+    - network-manager-applet
+    - xdg-user-dirs-gtk
 - name: "Openbox"
   description: "Openbox is a highly configurable, floating window manager with extensive standards support."
   hidden: false
@@ -406,63 +554,6 @@
     - xdg-user-dirs-gtk
     - xed
     - xfce4-terminal
-- name: "Wayfire"
-  description: "Wayfire is a wayland compositor based on wlroots. It aims to create a customizable, extendable and lightweight environment without sacrificing its appearance."
-  hidden: false
-  selected: false
-  expanded: false
-  critical: true
-  packages:
-    - cachyos-wayfire-settings
-    - wayfire-desktop-git
-    - egl-wayland
-    - wayland-protocols
-    - wofi
-    - ly
-    - xorg-xhost
-    - xorg-xwayland
-- name: "LXQT-Desktop"
-  description: "The Lightweight Qt Desktop Environment."
-  hidden: false
-  selected: false
-  critical: true
-  packages:
-    - audiocd-kio
-    - baka-mplayer
-    - breeze
-    - breeze-gtk
-    - featherpad
-    - gvfs
-    - gvfs-mtp
-    - kio-fuse
-    - libstatgrab
-    - libsysstat
-    - lm_sensors
-    - lxqt
-    - lxqt-archiver
-    - network-manager-applet
-    - oxygen-icons
-    - pavucontrol-qt
-    - print-manager
-    - qt5-translations
-    - sddm
-    - xdg-utils
-    - xscreensaver
-    - xsettingsd
-- name: "bspwm"
-  description: "bspwm is a tiling window manager that represents windows as the leaves of a full binary tree. bspwm supports multiple monitors and is configured and controlled through messages."
-  hidden: false
-  selected: false
-  critical: true
-  packages:
-    - bspwm
-    - sxhkd
-    - polybar
-    - lightdm
-    - cachyos-picom-config
-    - alacritty
-    - openssh
-    - btop
 - name: "Sway"
   description: "Sway is a tiling Wayland compositor and a drop-in replacement for the i3 window manager for X11. It works with your existing i3 configuration and supports most of i3's features, plus a few extras."
   hidden: false
@@ -479,60 +570,6 @@
     - xorg-xwayland
     - xdg-desktop-portal
     - xdg-desktop-portal-wlr
-- name: "Xfce4"
-  description: "Xfce is a lightweight desktop environment for UNIX-like operating systems. It aims to be fast and low on system resources, while still being visually appealing and user friendly."
-  hidden: false
-  selected: false
-  critical: true
-  packages:
-    - cachyos-xfce-settings
-    - blueman
-    - file-roller
-    - galculator
-    - gvfs
-    - gvfs-afc
-    - gvfs-gphoto2
-    - gvfs-mtp
-    - gvfs-nfs
-    - gvfs-smb
-    - lightdm
-    - lightdm-gtk-greeter
-    - lightdm-gtk-greeter-settings
-    - network-manager-applet
-    - parole
-    - ristretto
-    - thunar-archive-plugin
-    - thunar-media-tags-plugin
-    - xdg-user-dirs-gtk
-    - xed
-    - xfce4
-    - xfce4-battery-plugin
-    - xfce4-datetime-plugin
-    - xfce4-mount-plugin
-    - xfce4-netload-plugin
-    - xfce4-notifyd
-    - xfce4-pulseaudio-plugin
-    - xfce4-screensaver
-    - xfce4-screenshooter
-    - xfce4-taskmanager
-    - xfce4-wavelan-plugin
-    - xfce4-weather-plugin
-    - xfce4-whiskermenu-plugin
-    - xfce4-xkb-plugin
-- name: "Cinnamon"
-  description: "Linux desktop which provides advanced innovative features and a traditional user experience."
-  hidden: false
-  selected: false
-  critical: true
-  packages:
-    - cinnamon
-    - system-config-printer
-    - gnome-keyring
-    - gnome-terminal
-    - blueberry
-    - metacity
-    - lightdm
-    - lightdm-gtk-greeter
 - name: "UKUI"
   description: "It is a lightweight desktop environment, which consumes few resources and works with older computers. It has been developed with GTK and Qt technologies. Its visual appearance is similar to Windows 7, making it easier for new users of Linux."
   hidden: false
@@ -554,58 +591,21 @@
     - accountsservice
     - gvfs
     - qt5-quickcontrols
-- name: "Budgie-Desktop"
-  description: "Budgie - an independent, familiar, and modern desktop."
+- name: "Wayfire"
+  description: "Wayfire is a wayland compositor based on wlroots. It aims to create a customizable, extendable and lightweight environment without sacrificing its appearance."
   hidden: false
   selected: false
+  expanded: false
   critical: true
   packages:
-    - budgie-control-center
-    - budgie-desktop
-    - budgie-desktop-view
-    - budgie-extras
-    - budgie-screensaver
-    - eog
-    - evince
-    - file-roller
-    - gedit
-    - gnome-keyring
-    - gnome-screenshot
-    - gnome-terminal
-    - gvfs
-    - gvfs-afc
-    - gvfs-gphoto2
-    - gvfs-mtp
-    - gvfs-nfs
-    - gvfs-smb
-    - lightdm
-    - lightdm-slick-greeter
-    - nemo
-    - nemo-fileroller
-    - nemo-preview
-    - network-manager-applet
-    - sushi
-    - totem
-    - xdg-user-dirs-gtk
-- name: "MATE-Desktop"
-  description: "MATE Desktop - the continuation of GNOME 2"
-  hidden: false
-  selected: false
-  critical: true
-  packages:
-    - celluloid
-    - gvfs
-    - gvfs-afc
-    - gvfs-gphoto2
-    - gvfs-mtp
-    - gvfs-nfs
-    - gvfs-smb
-    - lightdm
-    - lightdm-slick-greeter
-    - mate
-    - mate-extra
-    - network-manager-applet
-    - xdg-user-dirs-gtk
+    - cachyos-wayfire-settings
+    - wayfire-desktop-git
+    - egl-wayland
+    - wayland-protocols
+    - wofi
+    - ly
+    - xorg-xhost
+    - xorg-xwayland
 - name: "CPU specific Microcode update packages"
   description: "Microcode update image for AMD and Intel CPU"
   hidden: false

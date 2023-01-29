@@ -76,6 +76,15 @@
           - firewalld
           - python-pyqt5
           - python-capng
+      - name: "bluetooth"
+        description: "Bluetooth support"
+        selected: true
+        packages:
+          - bluez
+          - bluez-hid2hci
+          - bluez-libs
+          - bluez-qt
+          - bluez-utils
       - name: "packages management"
         description: "Packages tools"
         selected: true

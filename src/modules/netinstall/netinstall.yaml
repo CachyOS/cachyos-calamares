@@ -483,6 +483,8 @@
     - lxsession-gtk3
     - lxtask-gtk3
     - lxterminal
+    - lightdm
+    - lightdm-slick-greeter
     - notification-daemon
     - openbox
     - pcmanfm-gtk3

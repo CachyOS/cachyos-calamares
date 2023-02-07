@@ -1,0 +1,12 @@
+#!/bin/bash
+
+_check_nvidia_card="$(mhwd --is_nvidia_card | grep -q 'NVIDIA card found!'; echo $?)"
+
+if [[ "${_check_nvidia_card}" -eq 0 ]]; then
+  echo "NVIDIA CARD FOUND!"
+  mhwd -a pci nonfree 0300
+else
+  mhwd -a pci free 0300
+fi
+
+# vim:set ft=bash sw=2 sts=2 et:

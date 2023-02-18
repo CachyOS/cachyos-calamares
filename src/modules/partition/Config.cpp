@@ -25,23 +25,36 @@ Config::Config( QObject* parent )
 const NamedEnumTable< Config::InstallChoice >&
 Config::installChoiceNames()
 {
-    static const NamedEnumTable< InstallChoice > names { { QStringLiteral( "none" ), InstallChoice::NoChoice },
-                                                         { QStringLiteral( "nochoice" ), InstallChoice::NoChoice },
-                                                         { QStringLiteral( "alongside" ), InstallChoice::Alongside },
-                                                         { QStringLiteral( "erase" ), InstallChoice::Erase },
-                                                         { QStringLiteral( "replace" ), InstallChoice::Replace },
-                                                         { QStringLiteral( "manual" ), InstallChoice::Manual } };
+    // *INDENT-OFF*
+    // clang-format off
+    static const NamedEnumTable< InstallChoice > names {
+        { QStringLiteral( "none" ), InstallChoice::NoChoice },
+        { QStringLiteral( "nochoice" ), InstallChoice::NoChoice },
+        { QStringLiteral( "alongside" ), InstallChoice::Alongside },
+        { QStringLiteral( "erase" ), InstallChoice::Erase },
+        { QStringLiteral( "replace" ), InstallChoice::Replace },
+        { QStringLiteral( "manual" ), InstallChoice::Manual },
+    };
+    // clang-format on
+    // *INDENT-ON*
+
     return names;
 }
 
 const NamedEnumTable< Config::SwapChoice >&
 Config::swapChoiceNames()
 {
-    static const NamedEnumTable< SwapChoice > names { { QStringLiteral( "none" ), SwapChoice::NoSwap },
-                                                      { QStringLiteral( "small" ), SwapChoice::SmallSwap },
-                                                      { QStringLiteral( "suspend" ), SwapChoice::FullSwap },
-                                                      { QStringLiteral( "reuse" ), SwapChoice::ReuseSwap },
-                                                      { QStringLiteral( "file" ), SwapChoice::SwapFile } };
+    // *INDENT-OFF*
+    // clang-format off
+    static const NamedEnumTable< SwapChoice > names {
+        { QStringLiteral( "none" ), SwapChoice::NoSwap },
+        { QStringLiteral( "small" ), SwapChoice::SmallSwap },
+        { QStringLiteral( "suspend" ), SwapChoice::FullSwap },
+        { QStringLiteral( "reuse" ), SwapChoice::ReuseSwap },
+        { QStringLiteral( "file" ), SwapChoice::SwapFile },
+    };
+    // clang-format on
+    // *INDENT-ON*
 
     return names;
 }
@@ -49,27 +62,17 @@ Config::swapChoiceNames()
 const NamedEnumTable< Config::LuksGeneration >&
 Config::luksGenerationNames()
 {
-    static const NamedEnumTable< LuksGeneration > names { { QStringLiteral( "luks1" ), LuksGeneration::Luks1 },
-                                                          { QStringLiteral( "luks2" ), LuksGeneration::Luks2 } };
+    // *INDENT-OFF*
+    // clang-format off
+    static const NamedEnumTable< LuksGeneration > names {
+        { QStringLiteral( "luks1" ), LuksGeneration::Luks1 },
+        { QStringLiteral( "luks" ), LuksGeneration::Luks1 },
+        { QStringLiteral( "luks2" ), LuksGeneration::Luks2 },
+    };
+    // clang-format on
+    // *INDENT-ON*
 
     return names;
-}
-
-const QString
-Config::luksGenerationToFSName( Config::LuksGeneration luksGeneration )
-{
-    // Convert luksGenerationChoice from partition.conf into its
-    // corresponding file system type from KPMCore.
-    switch ( luksGeneration )
-    {
-    case Config::LuksGeneration::Luks2:
-        return QStringLiteral( "luks2" );
-    case Config::LuksGeneration::Luks1:
-        return QStringLiteral( "luks" );
-    default:
-        cWarning() << "luksGeneration not supported, defaulting to \"luks\"";
-        return QStringLiteral( "luks" );
-    }
 }
 
 Config::SwapChoice
@@ -239,11 +242,22 @@ Config::setSwapChoice( Config::SwapChoice c )
 void
 Config::setEraseFsTypeChoice( const QString& choice )
 {
-    QString canonicalChoice = PartUtils::canonicalFilesystemName( choice, nullptr );
+    const QString canonicalChoice = PartUtils::canonicalFilesystemName( choice, nullptr );
     if ( canonicalChoice != m_eraseFsTypeChoice )
     {
         m_eraseFsTypeChoice = canonicalChoice;
         Q_EMIT eraseModeFilesystemChanged( canonicalChoice );
+    }
+}
+
+void
+Config::setReplaceFilesystemChoice( const QString& filesystemName )
+{
+    const QString canonicalChoice = PartUtils::canonicalFilesystemName( filesystemName, nullptr );
+    if ( canonicalChoice != m_replaceFileSystemChoice )
+    {
+        m_replaceFileSystemChoice = canonicalChoice;
+        Q_EMIT replaceModeFilesystemChanged( canonicalChoice );
     }
 }
 
@@ -278,8 +292,8 @@ fillGSConfigurationEFI( Calamares::GlobalStorage* gs, const QVariantMap& configu
             gs->insert( "efiSystemPartitionSize_i", part_size.toBytes() );
 
             // Assign long long int to long unsigned int to prevent compilation warning
-            size_t unsigned_part_size = part_size.toBytes();
-            if ( unsigned_part_size != PartUtils::efiFilesystemMinimumSize() )
+            auto byte_part_size = part_size.toBytes();
+            if ( byte_part_size != PartUtils::efiFilesystemMinimumSize() )
             {
                 cWarning() << "EFI partition size" << sizeString << "has been adjusted to"
                            << PartUtils::efiFilesystemMinimumSize() << "bytes";
@@ -358,13 +372,15 @@ Config::fillConfigurationFSTypes( const QVariantMap& configurationMap )
         cWarning() << "Partition-module setting *luksGeneration* not found or invalid. Defaulting to luks1.";
         luksGeneration = Config::LuksGeneration::Luks1;
     }
-    m_luksFileSystemType = Config::luksGenerationToFSName( luksGeneration );
-    gs->insert( "luksFileSystemType", m_luksFileSystemType );
+    m_luksFileSystemType = luksGeneration;
+    gs->insert( "luksFileSystemType", luksGenerationNames().find(luksGeneration) );
 
     Q_ASSERT( !m_eraseFsTypes.isEmpty() );
     Q_ASSERT( m_eraseFsTypes.contains( fsRealName ) );
     m_eraseFsTypeChoice = fsRealName;
+    m_replaceFileSystemChoice = fsRealName;
     Q_EMIT eraseModeFilesystemChanged( m_eraseFsTypeChoice );
+    Q_EMIT replaceModeFilesystemChanged( m_replaceFileSystemChoice );
 }
 
 void

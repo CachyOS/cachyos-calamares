@@ -463,6 +463,35 @@
     - cachyos-picom-config
     - dunst
     - cachyos-i3wm-settings
+- name: "Hyprland"
+  description: "Hyprland is a highly customizable dynamic tiling Wayland compositor that doesn't sacrifice on its looks."
+  hidden: false
+  selected: false
+  expanded: false
+  critical: true
+  packages:
+    - cachyos-hyprland-settings
+    - hyprland-git
+    - kvantum-qt5
+    - qt5ct
+    - swaybg
+    - swaylock-effects-git
+    - swaylock-fancy-git
+    - waybar-hyprland-git
+    - xdg-desktop-portal-hyprland-git
+    - grimblast
+    - slurp
+    - mako
+    - wob
+    - wl-clipboard
+    - polkit-kde-agent
+    - bemenu
+    - bemenu-wayland
+    - xorg-xwayland
+    - capitaine-cursors
+    - cachyos-wallpapers
+    - kvantum-theme-nordic-git
+    - cachyos-nord-gtk-theme-git
 - name: "LXDE-Desktop"
   description: "The Lightweight Desktop Environment."
   hidden: false

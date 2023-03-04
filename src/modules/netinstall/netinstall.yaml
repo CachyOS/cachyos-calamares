@@ -252,6 +252,7 @@
     - cachyos-emerald-kde-theme-git
     - cachyos-kde-settings
     - cachyos-themes-sddm
+    - cachyos-wallpapers
     - char-white
     - dolphin
     - egl-wayland

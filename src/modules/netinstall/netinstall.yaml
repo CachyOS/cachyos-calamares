@@ -44,13 +44,6 @@
            - xorg-xinput
            - xorg-xkill
            - xorg-xrandr
-      - name: "GPU drivers"
-        description: "Graphics hardware drivers"
-        selected: true
-        packages:
-          - xf86-video-amdgpu
-          - xf86-video-ati
-          - xf86-video-intel
       - name: "Network"
         description: "Network apps drivers and tools"
         selected: true

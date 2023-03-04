@@ -220,6 +220,8 @@
     - linux-cachyos-cfs-headers
     - linux-cachyos-hardened
     - linux-cachyos-hardened-headers
+    - linux-cachyos-lts
+    - linux-cachyos-lts-headers
     - linux-cachyos-pds
     - linux-cachyos-pds-headers
     - linux-cachyos-tt

@@ -218,19 +218,6 @@
     - linux-cachyos-pds-headers
     - linux-cachyos-tt
     - linux-cachyos-tt-headers
-- name: "NVIDIA Drivers (latest Cards 900+)"
-  description: "Select them if you want to use the nvidia drivers"
-  hidden: false
-  selected: false
-  critical: true
-  packages:
-    - nvidia-utils
-    - lib32-nvidia-utils
-    - nvidia-dkms
-    - nvidia-settings
-    - lib32-opencl-nvidia
-    - opencl-nvidia
-    - libva-nvidia-driver
 - name: "KDE-Desktop"
   description: "KDE-Plasma Desktop - Simple by default, powerful when needed."
   hidden: false

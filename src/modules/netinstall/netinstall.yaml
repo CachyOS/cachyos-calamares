@@ -461,8 +461,7 @@
     - hyprland-git
     - kvantum-qt5
     - qt5ct
-    - lightdm
-    - lightdm-slick-greeter    
+    - sddm  
     - swaybg
     - swaylock-effects-git
     - swaylock-fancy-git

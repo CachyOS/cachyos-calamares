@@ -322,9 +322,7 @@
     - gvfs-mtp
     - gvfs-nfs
     - gvfs-smb
-    - lightdm
-    - lightdm-gtk-greeter
-    - lightdm-gtk-greeter-settings
+    - ly
     - network-manager-applet
     - parole
     - ristretto
@@ -355,7 +353,7 @@
     - bspwm
     - sxhkd
     - polybar
-    - lightdm
+    - ly
     - cachyos-picom-config
     - alacritty
     - openssh
@@ -384,8 +382,7 @@
     - gvfs-mtp
     - gvfs-nfs
     - gvfs-smb
-    - lightdm
-    - lightdm-slick-greeter
+    - ly
     - nemo
     - nemo-fileroller
     - nemo-preview
@@ -405,8 +402,7 @@
     - gnome-terminal
     - blueberry
     - metacity
-    - lightdm
-    - lightdm-gtk-greeter
+    - ly
 - name: "CuteFish"
   description: "CuteFish – An Elegant, Beautiful and Easy-to-Use Linux Desktop."
   hidden: false
@@ -508,8 +504,7 @@
     - lxsession-gtk3
     - lxtask-gtk3
     - lxterminal
-    - lightdm
-    - lightdm-slick-greeter
+    - ly
     - notification-daemon
     - openbox
     - pcmanfm-gtk3
@@ -558,8 +553,7 @@
     - gvfs-mtp
     - gvfs-nfs
     - gvfs-smb
-    - lightdm
-    - lightdm-slick-greeter
+    - ly
     - mate
     - mate-extra
     - network-manager-applet
@@ -589,8 +583,7 @@
     - gvfs-smb
     - jgmenu
     - jq
-    - lightdm
-    - lightdm-slick-greeter
+    - ly
     - lxappearance-gtk3
     - mpv
     - network-manager-applet

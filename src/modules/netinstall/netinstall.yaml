@@ -22,6 +22,8 @@
      - cachyos-micro-settings
      - linux-cachyos
      - linux-cachyos-headers
+     - linux-cachyos-lts
+     - linux-cachyos-lts-headers
      - mhwd-cachyos
      - mhwd-db-cachyos
      - mhwd-nvidia-390xx

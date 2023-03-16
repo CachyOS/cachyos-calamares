@@ -639,7 +639,24 @@
     - thunar-volman
     - peony
     - xfce4-terminal
-    - ukui
+    - qt5-ukui-platformtheme
+    - ukui-biometric-auth
+    - ukui-control-center
+    - ukui-interface
+    - ukui-media
+    - ukui-menu
+    - ukui-menus
+    - ukui-notebook
+    - ukui-panel
+    - ukui-power-manager
+    - ukui-screensaver
+    - ukui-session-manager
+    - ukui-settings-daemon
+    - ukui-sidebar
+    - ukui-system-monitor
+    - ukui-themes
+    - ukui-wallpapers
+    - ukui-window-switch
     - mate-terminal
     - mate-system-monitor
     - mate-control-center

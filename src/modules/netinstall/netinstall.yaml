@@ -628,6 +628,8 @@
     - noto-fonts
     - flameshot
     - gnome-themes-extra
+    - ttf-jetbrains-mono
+    - ttf-font-awesome
     - picom
     - ly
 - name: "Sway"

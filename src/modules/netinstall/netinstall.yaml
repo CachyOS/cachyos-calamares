@@ -621,8 +621,8 @@
 - name: "Qtile"
   description: "Qtile is a X11 window manager that is configured with the Python programming language."
   hidden: false
-  selected: true
-  critical: false
+  selected: false
+  critical: true
   packages:
     - ttf-nerd-fonts-symbols
     - qtile

@@ -611,7 +611,7 @@
     - thunar-media-tags-plugin
     - thunar-volman
     - tint2
-    - ttf-nerd-fonts-symbols-1000-em
+    - ttf-nerd-fonts-symbols
     - tumbler
     - xbindkeys
     - xcursor-neutral
@@ -624,7 +624,7 @@
   selected: false
   critical: true
   packages:
-    - ttf-nerd-fonts-symbols-1000-em
+    - ttf-nerd-fonts-symbols
     - qtile
     - ttf-cascadia-code
     - cachyos-qtile-settings

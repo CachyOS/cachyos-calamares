@@ -2,23 +2,23 @@
 #   SPDX-License-Identifier: CC0-1.0
 
 [main]
-host = https://app.transifex.com
+host = https://www.transifex.com
 
-[o:calamares:p:calamares:r:calamares]
+[calamares.calamares]
 file_filter = lang/calamares_<lang>.ts
 source_file = lang/calamares_en.ts
 source_lang = en
-type        = QT
+type = QT
 
-[o:calamares:p:calamares:r:fdo]
+[calamares.fdo]
 file_filter = lang/desktop_<lang>.desktop
 source_file = calamares.desktop
 source_lang = en
-type        = DESKTOP
+type = DESKTOP
 
-[o:calamares:p:calamares:r:python]
+[calamares.python]
 file_filter = lang/python/<lang>/LC_MESSAGES/python.po
 source_file = lang/python.pot
 source_lang = en
-type        = PO
+type = PO
 

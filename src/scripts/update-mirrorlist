@@ -1,1 +1,9 @@
+#!/bin/bash
+
+rate_mirrors_version="$(pacman -Qi rate-mirrors | grep Version | awk '{print $3}')"
+check_rate_mirrors="$(vercmp $rate_mirrors_version 0.15.2-1)"
+if [ $check_rate_mirrors -eq -1 ];then
+   echo "Updating rate-mirrors"
+   sudo pacman -Sy --noconfirm rate-mirrors
+fi
 sudo cachyos-rate-mirrors

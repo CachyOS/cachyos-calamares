@@ -24,9 +24,8 @@
      - linux-cachyos-headers
      - linux-cachyos-lts
      - linux-cachyos-lts-headers
-     - mhwd-cachyos
-     - mhwd-db-cachyos
-     - mhwd-nvidia-390xx
+     - chwd
+     - chwd-db
 - name: "Base-devel + Common packages"
   description: "Recommended. Don't change unless you know what you're doing (generic)."
   hidden: false
@@ -461,7 +460,7 @@
     - hyprland-git
     - kvantum-qt5
     - qt5ct
-    - sddm  
+    - sddm
     - swaybg
     - swaylock-effects-git
     - swaylock-fancy-git

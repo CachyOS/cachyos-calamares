@@ -23,9 +23,8 @@
      - grub-hook
      - linux-cachyos
      - linux-cachyos-headers
-     - mhwd-cachyos
-     - mhwd-db-cachyos
-     - mhwd-nvidia-390xx
+     - chwd
+     - chwd-db
 - name: "Base-devel + Common packages"
   description: "Recommended. Don't change unless you know what you're doing (generic)."
   hidden: false

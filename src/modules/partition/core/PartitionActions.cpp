@@ -89,13 +89,14 @@ doAutopartition( PartitionCoreModule* core, Device* dev, Choices::AutoPartitionO
 {
     Calamares::GlobalStorage* gs = Calamares::JobQueue::instance()->globalStorage();
 
-    bool isEfi = PartUtils::isEfiSystem();
+    const bool isEfi = PartUtils::isEfiSystem();
 
     // Partition sizes are expressed in MiB, should be multiples of
     // the logical sector size (usually 512B). EFI starts with 2MiB
     // empty and a EFI boot partition, while BIOS starts at
     // the 1MiB boundary (usually sector 2048).
-    int empty_space_sizeB = isEfi ? 2_MiB : 1_MiB;
+    // ARM empty sectors are 16 MiB in size.
+    const int empty_space_sizeB = PartUtils::isArmSystem() ? 16_MiB : ( isEfi ? 2_MiB : 1_MiB );
 
     // Since sectors count from 0, if the space is 2048 sectors in size,
     // the first free sector has number 2048 (and there are 2048 sectors

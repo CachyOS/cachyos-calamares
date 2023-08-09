@@ -4,6 +4,7 @@
  *   SPDX-FileCopyrightText: 2016 Lisa Vitolo <shainer@chakraos.org>
  *   SPDX-FileCopyrightText: 2017 Kyle Robbertze  <krobbertze@gmail.com>
  *   SPDX-FileCopyrightText: 2017-2018 2020, Adriaan de Groot <groot@kde.org>
+ *   SPDX-FileCopyrightText: 2023 Vladislav Nepogodin <nepogodin.vlad@gmail.com>
  *   SPDX-License-Identifier: GPL-3.0-or-later
  *
  *   Calamares is Free Software: see the License-Identifier above.
@@ -22,6 +23,10 @@ NetInstallViewStep::NetInstallViewStep( QObject* parent )
     , m_nextEnabled( false )
 {
     connect( &m_config, &Config::statusReady, this, &NetInstallViewStep::nextIsReady );
+
+    m_config.model()->setUpdateNextCall( [this]( bool enabled ) {
+        this->updateNextEnabled( enabled );
+    });
 }
 
 
@@ -135,4 +140,11 @@ void
 NetInstallViewStep::setConfigurationMap( const QVariantMap& configurationMap )
 {
     m_config.setConfigurationMap( configurationMap );
+}
+
+void
+NetInstallViewStep::updateNextEnabled( bool enabled )
+{
+    m_nextEnabled = enabled;
+    emit nextStatusChanged( enabled );
 }

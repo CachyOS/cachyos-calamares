@@ -2,6 +2,7 @@
  *
  *   SPDX-FileCopyrightText: 2017 Kyle Robbertze <kyle@aims.ac.za>
  *   SPDX-FileCopyrightText: 2017-2018 2020, Adriaan de Groot <groot@kde.org>
+ *   SPDX-FileCopyrightText: 2023 Vladislav Nepogodin <nepogodin.vlad@gmail.com>
  *   SPDX-License-Identifier: GPL-3.0-or-later
  *
  *   Calamares is Free Software: see the License-Identifier above.
@@ -13,6 +14,13 @@
 #include "utils/Logger.h"
 #include "utils/Variant.h"
 #include "utils/Yaml.h"
+
+#include <algorithm>
+#include <string_view>
+
+#include <QMessageBox>
+
+static bool gShowConfError{};
 
 /// Recursive helper for setSelections()
 static void
@@ -49,6 +57,42 @@ collectSources( const QVariantList& groupList )
     }
 
     return sources;
+}
+
+QStringList
+PackageModel::getPackageNames( PackageTreeItem* item ) const
+{
+    QStringList packageNames;
+    if ( item->isPackage() )  // package
+    {
+        packageNames << item->packageName();
+    }
+    else
+    {
+        const auto itemPackages = getItemPackages( item );
+        for ( const auto& itemPackage : itemPackages ) {
+            packageNames << getPackageNames( itemPackage );
+        }
+    }
+
+    return packageNames;
+}
+
+QStringList
+PackageModel::getPackageNames( const PackageTreeItem::List& itemList ) const
+{
+    QStringList packageNames;
+    for ( const auto& itemPackage : itemList ) {
+        packageNames << getPackageNames( itemPackage );
+    }
+
+    return packageNames;
+}
+
+void
+PackageModel::setUpdateNextCall( std::function<void(bool)> fn )
+{
+    m_nextUpdateCall = std::move( fn );
 }
 
 PackageModel::PackageModel( QObject* parent )
@@ -169,7 +213,39 @@ PackageModel::setData( const QModelIndex& index, const QVariant& value, int role
     if ( role == Qt::CheckStateRole && index.isValid() )
     {
         PackageTreeItem* item = static_cast< PackageTreeItem* >( index.internalPointer() );
-        item->setSelected( static_cast< Qt::CheckState >( value.toInt() ) );
+        const auto checkedStateInfo = static_cast< Qt::CheckState >( value.toInt() );
+        item->setSelected( checkedStateInfo );
+
+        static constexpr std::array<std::string_view, 8> kDotfilePackages{"cachyos-gnome-settings", "cachyos-hyprland-settings", "cachyos-i3wm-settings", "cachyos-kde-settings", "cachyos-openbox-settings", "cachyos-qtile-settings", "cachyos-wayfire-settings", "cachyos-xfce-settings"};
+
+        auto filteredPkgNames = getPackageNames( getPackages() )
+            .filter( "cachyos-" )
+            .filter( "-settings" );
+        const auto dotfilesCount = [](auto&& packageNames, auto&& needles) {
+            size_t dotfilesCount{};
+            for ( auto&& packageName : packageNames ) {
+                const auto pkgnameBytes = packageName.toUtf8();
+                if ( std::find(needles.begin(), needles.end(), std::string_view{ pkgnameBytes } ) != needles.end() ) {
+                    ++dotfilesCount;
+                }
+            }
+            return dotfilesCount;
+        }( filteredPkgNames, kDotfilePackages );
+
+        if ( dotfilesCount > 1 && checkedStateInfo == Qt::CheckState::Checked ) {
+            m_nextUpdateCall( false );
+
+            if ( !gShowConfError ) {
+                QMessageBox mb( QMessageBox::Critical,
+                                tr( "Multiple Environments selected" ),
+                                tr( "Oops! Can't Move Forward 🚫\nIt seems you've selected multiple Desktop Environments/Window Managers. To continue, kindly uncheck the DE/WM settings package or the entire group. Thank you!" ),
+                                QMessageBox::Ok );
+                mb.exec();
+                gShowConfError = true;
+            }
+        } else if ( dotfilesCount <= 1 ) {
+            m_nextUpdateCall( true );
+        }
 
         emit dataChanged( this->index( 0, 0 ),
                           index.sibling( index.column(), index.row() + 1 ),

@@ -2,6 +2,7 @@
  *
  *   SPDX-FileCopyrightText: 2017 Kyle Robbertze <kyle@aims.ac.za>
  *   SPDX-FileCopyrightText: 2017 Adriaan de Groot <groot@kde.org>
+ *   SPDX-FileCopyrightText: 2023 Vladislav Nepogodin <nepogodin.vlad@gmail.com>
  *   SPDX-License-Identifier: GPL-3.0-or-later
  *
  *   Calamares is Free Software: see the License-Identifier above.
@@ -12,6 +13,8 @@
 #define PACKAGEMODEL_H
 
 #include "PackageTreeItem.h"
+
+#include <functional>
 
 #include <QAbstractItemModel>
 #include <QObject>
@@ -67,6 +70,9 @@ public:
     PackageTreeItem::List getPackages() const;
     PackageTreeItem::List getItemPackages( PackageTreeItem* item ) const;
 
+    QStringList getPackageNames( PackageTreeItem* item ) const;
+    QStringList getPackageNames( const PackageTreeItem::List& itemList ) const;
+
     /** @brief Appends groups to the tree
      *
      * Uses the data from @p groupList to add elements to the
@@ -80,10 +86,14 @@ public:
      */
     void appendModelData( const QVariantList& groupList );
 
+    void setUpdateNextCall( std::function<void(bool)> fn );
+
 private:
     friend class ItemTests;
 
     void setupModelData( const QVariantList& l, PackageTreeItem* parent );
+
+    std::function<void(bool)> m_nextUpdateCall{};
 
     PackageTreeItem* m_rootItem = nullptr;
     PackageTreeItem::List m_hiddenItems;

@@ -2,6 +2,7 @@
  *   SPDX-FileCopyrightText: 2016 Luca Giambonini <almack@chakraos.org>
  *   SPDX-FileCopyrightText: 2016 Lisa Vitolo     <shainer@chakraos.org>
  *   SPDX-FileCopyrightText: 2017 Adriaan de Groot <groot@kde.org>
+ *   SPDX-FileCopyrightText: 2023 Vladislav Nepogodin <nepogodin.vlad@gmail.com>
  *   SPDX-License-Identifier: GPL-3.0-or-later
  *
  *   Calamares is Free Software: see the License-Identifier above.
@@ -47,6 +48,8 @@ public:
     void onLeave() override;
 
     void setConfigurationMap( const QVariantMap& configurationMap ) override;
+
+    void updateNextEnabled( bool enabled );
 
 public slots:
     void nextIsReady();

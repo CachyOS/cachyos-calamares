@@ -2589,7 +2589,7 @@ The installer will quit and all changes will be lost.</translation>
     </message>
     <message>
       <location filename="../src/modules/netinstall/PackageModel.cpp" line="241"/>
-      <source>Oops! Can't Move Forward\nIt seems you've selected multiple Desktop Environments/Window Managers. To continue, kindly uncheck the DE/WM settings package or the entire group. Thank you!</source>
+      <source>Oops! Can&apos;t Move Forward\nIt seems you&apos;ve selected multiple Desktop Environments/Window Managers. To continue, kindly uncheck the DE/WM settings package or the entire group. Thank you!</source>
       <translation type="unfinished"/>
     </message>
   </context>

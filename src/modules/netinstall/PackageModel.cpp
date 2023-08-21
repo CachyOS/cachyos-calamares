@@ -239,7 +239,7 @@ PackageModel::setData( const QModelIndex& index, const QVariant& value, int role
             if ( !gShowConfError ) {
                 QMessageBox mb( QMessageBox::Critical,
                                 tr( "Multiple Environments selected" ),
-                                tr( "Oops! Can't Move Forward 🚫\nIt seems you've selected multiple Desktop Environments/Window Managers. To continue, kindly uncheck the DE/WM settings package or the entire group. Thank you!" ),
+                                tr( "Oops! Can't Move Forward\nIt seems you've selected multiple Desktop Environments/Window Managers. To continue, kindly uncheck the DE/WM settings package or the entire group. Thank you!" ),
                                 QMessageBox::Ok );
                 mb.exec();
                 gShowConfError = true;

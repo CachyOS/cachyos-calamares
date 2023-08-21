@@ -2611,8 +2611,8 @@ Instalator zostanie zamknięty i wszystkie zmiany zostaną utracone.</translatio
     </message>
     <message>
         <location filename="../src/modules/netinstall/PackageModel.cpp" line="241"/>
-        <source>Oops! Can't Move Forward\nIt seems you've selected multiple Desktop Environments/Window Managers. To continue, kindly uncheck the DE/WM settings package or the entire group. Thank you!</source>
-        <translation>Ups! Nie można kontynuować\nWygląda na to, że wybrałeś wiele środowisk graficznych/menedżerów okien. Żeby kontynuować, proszę odznaczyć dodatkowe środowiska graficzne/menedżery okien lub całe grupy. Dziękujemy! </translation>
+        <source>Oops! Can&apos;t Move Forward\nIt seems you&apos;ve selected multiple Desktop Environments/Window Managers. To continue, kindly uncheck the DE/WM settings package or the entire group. Thank you!</source>
+        <translation>Ups! Nie można kontynuować\nWygląda na to, że wybrałeś wiele środowisk graficznych/menedżerów okien. Żeby kontynuować, proszę odznaczyć dodatkowe środowiska graficzne/menedżery okien lub całe grupy. Dziękujemy!</translation>
     </message>
   </context>
   <context>

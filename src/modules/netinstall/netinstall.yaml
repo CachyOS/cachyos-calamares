@@ -458,12 +458,18 @@
     - swaybg
     - swaylock-effects-git
     - swaylock-fancy-git
-    - waybar-hyprland-git
+    - waybar-hyprland
     - xdg-desktop-portal-hyprland-git
-    - grimblast
+    - grimblast-git
     - slurp
     - mako
     - wob
+    - pamixer
+    - rofi
+    - rofi-emoji
+    - wofi
+    - wlogout
+    - swappy
     - wl-clipboard
     - polkit-kde-agent
     - bemenu

@@ -1,30 +1,35 @@
-- name: "CachyOS"
+- name: "CachyOS required (hidden)"
   description: "needed CachyOS packages"
   hidden: true
   selected: true
   critical: true
   packages:
-     - alacritty
-     - btop
+     - cachyos-hooks
+     - cachyos-keyring
+     - cachyos-mirrorlist
+     - cachyos-v3-mirrorlist
+     - cachyos-v4-mirrorlist
+     - cachyos-rate-mirrors
+     - linux-cachyos
+     - linux-cachyos-headers
+     - grub-hook
+     - chwd
+     - chwd-db
+- name: "CachyOS Packages"
+  description: "needed CachyOS packages"
+  hidden: false
+  selected: true
+  critical: true
+  packages:
      - cachy-browser
      - cachyos-fish-config
      - cachyos-ananicy-rules
      - cachyos-hello
-     - cachyos-hooks
      - cachyos-kernel-manager
-     - cachyos-keyring
-     - cachyos-mirrorlist
-     - cachyos-v3-mirrorlist
-     - cachyos-rate-mirrors
      - cachyos-packageinstaller
      - cachyos-settings
      - cachyos-zsh-config
      - cachyos-micro-settings
-     - grub-hook
-     - linux-cachyos
-     - linux-cachyos-headers
-     - chwd
-     - chwd-db
 - name: "Base-devel + Common packages"
   description: "Recommended. Don't change unless you know what you're doing (generic)."
   hidden: false
@@ -174,6 +179,8 @@
         description: "General tools and applications"
         selected: true
         packages:
+          - alacritty
+          - btop
           - duf
           - findutils
           - fsarchiver
@@ -199,7 +206,7 @@
           - vim
           - openssh
 - name: "CachyOS Kernels"
-  description: "Selection of different cachyos kernels"
+  description: "Selection of additonal cachyos kernels"
   hidden: false
   selected: false
   critical: true
@@ -210,6 +217,8 @@
     - linux-cachyos-bore-headers
     - linux-cachyos-cfs
     - linux-cachyos-cfs-headers
+    - linux-cachyos-eevdf
+    - linux-cachyos-eevdf-headers
     - linux-cachyos-hardened
     - linux-cachyos-hardened-headers
     - linux-cachyos-lts
@@ -224,16 +233,15 @@
   selected: false
   critical: true
   packages:
-    - ark
-    - audiocd-kio
-    - bluedevil
-    - breeze-gtk
     - cachyos-nord-kde-theme-git
     - cachyos-iridescent-kde
     - cachyos-emerald-kde-theme-git
     - cachyos-kde-settings
     - cachyos-themes-sddm
     - cachyos-wallpapers
+    - ark
+    - bluedevil
+    - breeze-gtk
     - char-white
     - dolphin
     - egl-wayland
@@ -274,9 +282,9 @@
   selected: false
   critical: true
   packages:
-    - adwaita-icon-theme
     - cachyos-gnome-settings
     - cachyos-nord-gtk-theme-git
+    - adwaita-icon-theme
     - eog
     - evince
     - file-roller
@@ -349,14 +357,13 @@
   selected: false
   critical: true
   packages:
+    - cachyos-picom-config
     - bspwm
     - sxhkd
     - polybar
     - ly
-    - cachyos-picom-config
     - alacritty
     - openssh
-    - btop
 - name: "Budgie-Desktop"
   description: "Budgie - an independent, familiar, and modern desktop."
   hidden: false
@@ -434,6 +441,8 @@
   expanded: false
   critical: true
   packages:
+    - cachyos-i3wm-settings
+    - cachyos-picom-config
     - i3-wm
     - i3blocks
     - i3lock-color
@@ -441,9 +450,7 @@
     - rofi
     - polybar
     - ly
-    - cachyos-picom-config
     - dunst
-    - cachyos-i3wm-settings
 - name: "Hyprland"
   description: "Hyprland is a highly customizable dynamic tiling Wayland compositor that doesn't sacrifice on its looks."
   hidden: false
@@ -620,10 +627,10 @@
   selected: false
   critical: true
   packages:
+    - cachyos-qtile-settings
     - ttf-nerd-fonts-symbols
     - qtile
     - ttf-cascadia-code
-    - cachyos-qtile-settings
     - wired
     - rofi
     - thunar
@@ -762,6 +769,7 @@
   packages:
     - linux-cachyos-bmq-zfs
     - linux-cachyos-bore-zfs
+    - linux-cachyos-eevdf-zfs
     - linux-cachyos-cfs-zfs
     - linux-cachyos-hardened-zfs
     - linux-cachyos-pds-zfs

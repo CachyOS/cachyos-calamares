@@ -155,14 +155,14 @@ setupLuks( const LuksDevice& d, const QString& luks2Hash )
     QRegularExpression version_re( QStringLiteral( R"(version:\s*([0-9]))" ),
                                    QRegularExpression::CaseInsensitiveOption );
     QRegularExpressionMatch match = version_re.match( luks_dump.getOutput() );
-    if ( ! match.hasMatch() )
+    if ( !match.hasMatch() )
     {
         cWarning() << "Could not get LUKS version on device: " << d.device;
         return false;
     }
     bool ok;
-    luks_version = match.captured(1).toInt(&ok);
-    if( ! ok )
+    luks_version = match.captured( 1 ).toInt( &ok );
+    if ( !ok )
     {
         cWarning() << "Could not get LUKS version on device: " << d.device;
         return false;
@@ -172,8 +172,7 @@ setupLuks( const LuksDevice& d, const QString& luks2Hash )
     // Check the number of slots used for LUKS1 devices
     if ( luks_version == 1 )
     {
-        QRegularExpression slots_re( QStringLiteral( R"(\d+:\s*enabled)" ),
-                                     QRegularExpression::CaseInsensitiveOption );
+        QRegularExpression slots_re( QStringLiteral( R"(\d+:\s*enabled)" ), QRegularExpression::CaseInsensitiveOption );
         if ( luks_dump.getOutput().count( slots_re ) == 8 )
         {
             cWarning() << "No key slots left on LUKS1 device: " << d.device;
@@ -185,14 +184,11 @@ setupLuks( const LuksDevice& d, const QString& luks2Hash )
     QStringList args = { QStringLiteral( "cryptsetup" ), QStringLiteral( "luksAddKey" ), d.device, keyfile };
     if ( luks_version == 2 && luks2Hash != QString() )
     {
-        args.insert(2, "--pbkdf");
-        args.insert(3, luks2Hash);
+        args.insert( 2, "--pbkdf" );
+        args.insert( 3, luks2Hash );
     }
     auto r = CalamaresUtils::System::instance()->targetEnvCommand(
-        args,
-        QString(),
-        d.passphrase,
-        std::chrono::seconds( 60 ) );
+        args, QString(), d.passphrase, std::chrono::seconds( 60 ) );
     if ( r.getExitCode() != 0 )
     {
         cWarning() << "Could not configure LUKS keyfile on" << d.device << ':' << r.getOutput() << "(exit code"
@@ -242,13 +238,6 @@ hasUnencryptedSeparateBoot()
         { return hasMountPoint( partition, QStringLiteral( "/boot" ) ) && !isEncrypted( partition ); } );
 }
 
-STATICTEST bool
-hasEncryptedRoot()
-{
-    return anyPartition( []( const QVariantMap& partition )
-                         { return hasMountPoint( partition, QStringLiteral( "/" ) ) && isEncrypted( partition ); } );
-}
-
 Calamares::JobResult
 LuksBootKeyFileJob::exec()
 {
@@ -294,10 +283,9 @@ LuksBootKeyFileJob::exec()
         return Calamares::JobResult::ok();
     }
 
-    if ( hasUnencryptedSeparateBoot() && !hasEncryptedRoot() )
+    if ( hasUnencryptedSeparateBoot() )
     {
-        // /boot partition is not encrypted, keyfile must not be used
-        // But only if root partition is not encrypted
+        // /boot partition is not encrypted, keyfile must not be used.
         cDebug() << Logger::SubEntry << "/boot partition is not encrypted, skipping keyfile creation.";
         return Calamares::JobResult::ok();
     }
@@ -339,8 +327,17 @@ LuksBootKeyFileJob::exec()
 void
 LuksBootKeyFileJob::setConfigurationMap( const QVariantMap& configurationMap )
 {
-    m_luks2Hash = CalamaresUtils::getString(
-        configurationMap, QStringLiteral( "luks2Hash" ), QString() );
+    // Map the value from the config file to accepted values;
+    // this is an immediately-invoked lambda which is passed the
+    // return value of getString().
+    m_luks2Hash = []( const QString& value )
+    {
+        if ( value == QStringLiteral( "default" ) )
+        {
+            return QString();  // Empty is used internally for "default from cryptsetup"
+        }
+        return value.toLower();
+    }( CalamaresUtils::getString( configurationMap, QStringLiteral( "luks2Hash" ), QString() ) );
 }
 
 CALAMARES_PLUGIN_FACTORY_DEFINITION( LuksBootKeyFileJobFactory, registerPlugin< LuksBootKeyFileJob >(); )

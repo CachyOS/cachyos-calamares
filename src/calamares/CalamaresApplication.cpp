@@ -193,7 +193,7 @@ CalamaresApplication::initBranding()
         ::exit( EXIT_FAILURE );
     }
 
-    new Calamares::Branding( brandingFile.absoluteFilePath(), this );
+    new Calamares::Branding( brandingFile.absoluteFilePath(), this, devicePixelRatio() );
 }
 
 

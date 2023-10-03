@@ -465,7 +465,7 @@
   packages:
     - cachyos-hyprland-settings
     - hyprland-git
-    - kvantum-qt5
+    - kvantum
     - qt5ct
     - sddm
     - swaybg

@@ -259,7 +259,7 @@
     - plasma-wayland-protocols
     - plasma-wayland-session
     - plasma-desktop
-    - plasma-framework
+    - plasma-framework5
     - plasma-nm
     - plasma-pa
     - plasma-workspace

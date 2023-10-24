@@ -258,7 +258,7 @@
     - plasma-wayland-protocols
     - plasma-wayland-session
     - plasma-desktop
-    - plasma-framework
+    - plasma-framework5
     - plasma-nm
     - plasma-pa
     - plasma-workspace
@@ -461,7 +461,7 @@
     - hyprland-git
     - kvantum
     - qt5ct
-    - sddm    
+    - sddm
     - swaybg
     - swaylock-effects-git
     - swaylock-fancy-git

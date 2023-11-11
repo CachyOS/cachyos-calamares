@@ -427,7 +427,6 @@
     - cutefish-core
     - cutefish-dock
     - cutefish-filemanager
-    - cutefish-kwin-plugins
     - cutefish-launcher
     - cutefish-screenlocker
     - cutefish-settings

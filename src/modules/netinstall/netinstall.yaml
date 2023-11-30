@@ -274,6 +274,7 @@
     - spectacle
     - sddm
     - sddm-kcm
+    - qt6-wayland
     - xsettingsd
     - xdg-desktop-portal
     - xdg-desktop-portal-kde
@@ -313,6 +314,7 @@
     - nautilus-sendto
     - sushi
     - totem
+    - qt6-wayland
     - xdg-user-dirs-gtk
     - xdg-desktop-portal-gnome
 - name: "Xfce4"

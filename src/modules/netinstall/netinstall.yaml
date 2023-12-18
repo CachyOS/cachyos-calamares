@@ -212,22 +212,14 @@
   selected: false
   critical: true
   packages:
-    - linux-cachyos-bmq
-    - linux-cachyos-bmq-headers
     - linux-cachyos-bore
     - linux-cachyos-bore-headers
-    - linux-cachyos-cfs
-    - linux-cachyos-cfs-headers
-    - linux-cachyos-eevdf
-    - linux-cachyos-eevdf-headers
     - linux-cachyos-hardened
     - linux-cachyos-hardened-headers
     - linux-cachyos-lts
     - linux-cachyos-lts-headers
-    - linux-cachyos-pds
-    - linux-cachyos-pds-headers
-    - linux-cachyos-tt
-    - linux-cachyos-tt-headers
+    - linux-cachyos-sched-ext
+    - linux-cachyos-sched-ext-headers
 - name: "KDE-Desktop"
   description: "KDE-Plasma Desktop - Simple by default, powerful when needed."
   hidden: false
@@ -777,13 +769,10 @@
   selected: false
   critical: true
   packages:
-    - linux-cachyos-bmq-zfs
     - linux-cachyos-bore-zfs
-    - linux-cachyos-eevdf-zfs
-    - linux-cachyos-cfs-zfs
     - linux-cachyos-hardened-zfs
-    - linux-cachyos-pds-zfs
-    - linux-cachyos-tt-zfs
+    - linux-cachyos-lts-zfs
+    - linux-cachyos-sched-ext-zfs
 - name: "Accessibility Tools"
   description: "Screen reader and mouse tweaks (impaired vision)"
   hidden: false

@@ -762,6 +762,7 @@
   packages:
     - linux-cachyos-bore-zfs
     - linux-cachyos-hardened-zfs
+    - linux-cachyos-lts-zfs
     - linux-cachyos-sched-ext-zfs
 - name: "Accessibility Tools"
   description: "Screen reader and mouse tweaks (impaired vision)"

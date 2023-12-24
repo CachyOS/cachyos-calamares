@@ -18,7 +18,7 @@ calamares_add_plugin(netinstall
         page_netinst.ui
     LINK_PRIVATE_LIBRARIES
         ${qtname}::Network
-        ${qtname}::Widget
+        ${qtname}::Widgets
     SHARED_LIB
 )
 
@@ -26,6 +26,6 @@ if(TARGET ${kfname}::CoreAddons)
     calamares_add_test(
         netinstalltest
         SOURCES Tests.cpp Config.cpp LoaderQueue.cpp PackageTreeItem.cpp PackageModel.cpp
-        LIBRARIES ${qtname}::Widget ${qtname}::Gui ${qtname}::Network ${kfname}::CoreAddons
+        LIBRARIES ${qtname}::Widgets ${qtname}::Gui ${qtname}::Network ${kfname}::CoreAddons
     )
 endif()

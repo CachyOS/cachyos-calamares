@@ -26,6 +26,6 @@ if(TARGET ${kfname}::CoreAddons)
     calamares_add_test(
         netinstalltest
         SOURCES Tests.cpp Config.cpp LoaderQueue.cpp PackageTreeItem.cpp PackageModel.cpp
-        LIBRARIES ${qtname}::Gui ${qtname}::Network ${kfname}::CoreAddons ${qtname}::Widget
+        LIBRARIES ${qtname}::Widget ${qtname}::Gui ${qtname}::Network ${kfname}::CoreAddons
     )
 endif()

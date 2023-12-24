@@ -38,11 +38,12 @@ calamares_autorcc( calamares_bin )
 
 target_link_libraries(
     calamares_bin
-    PRIVATE calamares calamaresui calamares-i18n kdsingleapplication Qt5::Core Qt5::Widgets KF5::CoreAddons
+    PRIVATE calamares calamaresui calamares-i18n kdsingleapplication ${qtname}::Core ${qtname}::Widgets
 )
-if(BUILD_KF5Crash)
-    target_link_libraries(calamares_bin PRIVATE KF5::Crash)
-    target_compile_definitions(calamares_bin PRIVATE BUILD_KF5Crash)
+target_link_libraries(calamares_bin PRIVATE ${kfname}::CoreAddons)
+if(BUILD_CRASH_REPORTING)
+    target_link_libraries(calamares_bin PRIVATE ${kfname}::Crash)
+    target_compile_definitions(calamares_bin PRIVATE BUILD_CRASH_REPORTING)
 endif()
 
 install(TARGETS calamares_bin BUNDLE DESTINATION . RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
@@ -59,8 +60,13 @@ install(
 if(BUILD_TESTING)
     # Don't install, these are just for enable_testing
     add_executable(loadmodule testmain.cpp)
-    target_link_libraries(loadmodule PRIVATE Qt5::Core Qt5::Widgets calamares calamaresui)
+    target_link_libraries(loadmodule PRIVATE ${qtname}::Core ${qtname}::Widgets calamares calamaresui)
 
     add_executable(test_conf test_conf.cpp)
-    target_link_libraries(test_conf PUBLIC yamlcpp::yamlcpp Qt5::Core)
+    target_link_libraries(test_conf PUBLIC yamlcpp::yamlcpp ${qtname}::Core)
+
+    if(WITH_PYBIND11)
+        target_compile_definitions(loadmodule PRIVATE WITH_PYBIND11=1)
+    endif()
+
 endif()

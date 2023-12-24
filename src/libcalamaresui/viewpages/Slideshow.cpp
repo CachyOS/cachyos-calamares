@@ -12,6 +12,8 @@
 #include "Slideshow.h"
 
 #include "Branding.h"
+#include "compat/Mutex.h"
+#include "compat/Variant.h"
 #include "utils/Dirs.h"
 #include "utils/Logger.h"
 #ifdef WITH_QML
@@ -45,11 +47,11 @@ SlideshowQML::SlideshowQML( QWidget* parent )
 {
     m_qmlShow->setObjectName( "qml" );
 
-    CalamaresUtils::registerQmlModels();
+    Calamares::registerQmlModels();
 
     m_qmlShow->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_qmlShow->setResizeMode( QQuickWidget::SizeRootObjectToView );
-    m_qmlShow->engine()->addImportPath( CalamaresUtils::qmlModulesDir().absolutePath() );
+    m_qmlShow->engine()->addImportPath( Calamares::qmlModulesDir().absolutePath() );
 
     cDebug() << "QML import paths:" << Logger::DebugList( m_qmlShow->engine()->importPathList() );
 #if QT_VERSION >= QT_VERSION_CHECK( 5, 10, 0 )
@@ -79,7 +81,7 @@ SlideshowQML::widget()
 void
 SlideshowQML::loadQmlV2()
 {
-    QMutexLocker l( &m_mutex );
+    Calamares::MutexLocker l( &m_mutex );
     if ( !m_qmlComponent && !Calamares::Branding::instance()->slideshowPath().isEmpty() )
     {
         m_qmlComponent = new QQmlComponent( m_qmlShow->engine(),
@@ -92,7 +94,7 @@ SlideshowQML::loadQmlV2()
 void
 SlideshowQML::loadQmlV2Complete()
 {
-    QMutexLocker l( &m_mutex );
+    Calamares::MutexLocker l( &m_mutex );
     if ( m_qmlComponent && m_qmlComponent->isReady() && !m_qmlObject )
     {
         cDebug() << "QML component complete, API 2";
@@ -147,7 +149,6 @@ SlideshowQML::startSlideShow()
     changeSlideShowState( Slideshow::Start );
 }
 
-
 /*
  * Applies V1 and V2 QML activation / deactivation:
  *  - V1 loads the QML in @p widget on activation. Sets root object property
@@ -158,13 +159,13 @@ SlideshowQML::startSlideShow()
 void
 SlideshowQML::changeSlideShowState( Action state )
 {
-    QMutexLocker l( &m_mutex );
+    Calamares::MutexLocker l( &m_mutex );
     bool activate = state == Slideshow::Start;
 
     if ( Branding::instance()->slideshowAPI() == 2 )
     {
         // The QML was already loaded in the constructor, need to start it
-        CalamaresUtils::callQmlFunction( m_qmlObject, activate ? "onActivate" : "onLeave" );
+        Calamares::callQmlFunction( m_qmlObject, activate ? "onActivate" : "onLeave" );
     }
     else if ( !Calamares::Branding::instance()->slideshowPath().isEmpty() )
     {
@@ -182,7 +183,8 @@ SlideshowQML::changeSlideShowState( Action state )
     {
         static const char propertyName[] = "activatedInCalamares";
         auto property = m_qmlObject->property( propertyName );
-        if ( property.isValid() && ( property.type() == QVariant::Bool ) && ( property.toBool() != activate ) )
+        if ( property.isValid() && ( Calamares::typeOf( property ) == Calamares::BoolVariantType )
+             && ( property.toBool() != activate ) )
         {
             m_qmlObject->setProperty( propertyName, activate );
         }
@@ -228,7 +230,7 @@ SlideshowPictures::widget()
 void
 SlideshowPictures::changeSlideShowState( Calamares::Slideshow::Action a )
 {
-    QMutexLocker l( &m_mutex );
+    Calamares::MutexLocker l( &m_mutex );
     m_state = a;
     if ( a == Slideshow::Start )
     {
@@ -253,7 +255,7 @@ SlideshowPictures::changeSlideShowState( Calamares::Slideshow::Action a )
 void
 SlideshowPictures::next()
 {
-    QMutexLocker l( &m_mutex );
+    Calamares::MutexLocker l( &m_mutex );
 
     if ( m_imageIndex < 0 )
     {
@@ -279,6 +281,5 @@ SlideshowPictures::next()
 
     m_label->setPixmap( QPixmap( m_images.at( m_imageIndex ) ) );
 }
-
 
 }  // namespace Calamares

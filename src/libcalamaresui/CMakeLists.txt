@@ -16,7 +16,7 @@ set(calamaresui_SOURCES
     modulesystem/ModuleManager.cpp
     modulesystem/ProcessJobModule.cpp
     modulesystem/ViewModule.cpp
-    utils/CalamaresUtilsGui.cpp
+    utils/Gui.cpp
     utils/ImageRegistry.cpp
     utils/Paste.cpp
     viewpages/BlankViewStep.cpp
@@ -45,9 +45,10 @@ endif()
 
 calamares_add_library(calamaresui
     SOURCES ${calamaresui_SOURCES}
+    TARGET_TYPE SHARED
     EXPORT_MACRO UIDLLEXPORT_PRO
     LINK_LIBRARIES
-        Qt5::Svg
+        ${qtname}::Svg
     RESOURCES libcalamaresui.qrc
     EXPORT Calamares
     UI
@@ -56,12 +57,14 @@ calamares_add_library(calamaresui
     SOVERSION ${CALAMARES_SOVERSION}
 )
 target_link_libraries(calamaresui PRIVATE yamlcpp::yamlcpp)
-if(KF5CoreAddons_FOUND AND KF5CoreAddons_VERSION VERSION_GREATER_EQUAL 5.58)
-    target_compile_definitions(calamaresui PRIVATE WITH_KOSRelease)
-    target_link_libraries(calamaresui PRIVATE KF5::CoreAddons)
-endif()
+target_link_libraries(calamaresui PRIVATE ${kfname}::CoreAddons)
+
 if(WITH_QML)
-    target_link_libraries(calamaresui PUBLIC Qt5::QuickWidgets)
+    target_link_libraries(calamaresui PUBLIC ${qtname}::QuickWidgets)
+endif()
+
+if(WITH_PYBIND11)
+    target_compile_definitions(calamaresui PRIVATE WITH_PYBIND11=1)
 endif()
 
 add_library(Calamares::calamaresui ALIAS calamaresui)

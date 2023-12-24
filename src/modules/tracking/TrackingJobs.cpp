@@ -14,15 +14,14 @@
 #include "GlobalStorage.h"
 #include "JobQueue.h"
 #include "network/Manager.h"
-#include "utils/CalamaresUtilsSystem.h"
 #include "utils/Logger.h"
+#include "utils/System.h"
 
 #include <KMacroExpander>
 
 #include <QCoreApplication>
 
 #include <chrono>
-
 
 // Namespace keeps all the actual jobs anonymous, the
 // public API is the addJob() functions below the namespace.
@@ -110,14 +109,14 @@ TrackingInstallJob::prettyStatusMessage() const
 Calamares::JobResult
 TrackingInstallJob::exec()
 {
-    using CalamaresUtils::Network::Manager;
-    using CalamaresUtils::Network::RequestOptions;
-    using CalamaresUtils::Network::RequestStatus;
+    using Calamares::Network::Manager;
+    using Calamares::Network::RequestOptions;
+    using Calamares::Network::RequestStatus;
 
-    auto result = Manager::instance().synchronousPing(
-        QUrl( m_url ),
-        RequestOptions( RequestOptions::FollowRedirect | RequestOptions::FakeUserAgent,
-                        RequestOptions::milliseconds( 5000 ) ) );
+    auto result
+        = Manager().synchronousPing( QUrl( m_url ),
+                                     RequestOptions( RequestOptions::FollowRedirect | RequestOptions::FakeUserAgent,
+                                                     RequestOptions::milliseconds( 5000 ) ) );
     if ( result.status == RequestStatus::Timeout )
     {
         cWarning() << "install-tracking request timed out.";
@@ -148,11 +147,11 @@ TrackingMachineUpdateManagerJob::exec()
     static const auto script = QStringLiteral(
         "sed -i '/^URI/s,${MACHINE_ID},'`cat /etc/machine-id`',' /etc/update-manager/meta-release || true" );
 
-    auto res = CalamaresUtils::System::instance()->runCommand( CalamaresUtils::System::RunLocation::RunInTarget,
-                                                               QStringList { QStringLiteral( "/bin/sh" ) },
-                                                               QString(),  // Working dir
-                                                               script,  // standard input
-                                                               std::chrono::seconds( 1 ) );
+    auto res = Calamares::System::instance()->runCommand( Calamares::System::RunLocation::RunInTarget,
+                                                          QStringList { QStringLiteral( "/bin/sh" ) },
+                                                          QString(),  // Working dir
+                                                          script,  // standard input
+                                                          std::chrono::seconds( 1 ) );
     int r = res.first;
 
     if ( r == 0 )
@@ -214,7 +213,7 @@ FeedbackLevel=16
         QString path = QStringLiteral( "/home/%1/.config/%2" ).arg( m_username, area );
         cDebug() << "Configuring KUserFeedback" << path;
 
-        int r = CalamaresUtils::System::instance()->createTargetFile( path, config );
+        int r = Calamares::System::instance()->createTargetFile( path, config );
         if ( r > 0 )
         {
             return Calamares::JobResult::error(
@@ -243,7 +242,7 @@ addJob( Calamares::JobList& list, InstallTrackingConfig* config )
 {
     if ( config->isEnabled() )
     {
-        const auto* s = CalamaresUtils::System::instance();
+        const auto* s = Calamares::System::instance();
         QHash< QString, QString > map { std::initializer_list< std::pair< QString, QString > > {
             { QStringLiteral( "CPU" ), s->getCpuDescription() },
             { QStringLiteral( "MEMORY" ), QString::number( s->getTotalMemoryB().first ) },

@@ -8,7 +8,7 @@ if(NOT WITH_QML)
     return()
 endif()
 
-find_package(Qt5 ${QT_VERSION} CONFIG REQUIRED Core DBus Network)
+find_package(${qtname} ${QT_VERSION} CONFIG REQUIRED Core DBus Network)
 find_package(Crypt REQUIRED)
 
 # Add optional libraries here
@@ -41,11 +41,11 @@ calamares_add_plugin(usersq
     SOURCES
         UsersQmlViewStep.cpp
     RESOURCES
-        usersq.qrc
+        usersq${QT_VERSION_SUFFIX}.qrc
     LINK_PRIVATE_LIBRARIES
         users_internal
         ${CRYPT_LIBRARIES}
         ${USER_EXTRA_LIB}
-        Qt5::DBus
+        ${qtname}::DBus
     SHARED_LIB
 )

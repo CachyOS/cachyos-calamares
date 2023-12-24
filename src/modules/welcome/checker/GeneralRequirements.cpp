@@ -19,12 +19,13 @@
 #include "GlobalStorage.h"
 #include "JobQueue.h"
 #include "Settings.h"
+#include "compat/Variant.h"
 #include "modulesystem/Requirement.h"
 #include "network/Manager.h"
-#include "utils/CalamaresUtilsGui.h"
-#include "utils/CalamaresUtilsSystem.h"
+#include "utils/Gui.h"
 #include "utils/Logger.h"
 #include "utils/Retranslator.h"
+#include "utils/System.h"
 #include "utils/Units.h"
 #include "utils/Variant.h"
 #include "widgets/WaitingWidget.h"
@@ -103,16 +104,16 @@ GeneralRequirements::checkRequirements()
     MaybeChecked hasPower;
     MaybeChecked hasInternet;
     MaybeChecked isRoot;
-    bool enoughScreen = availableSize.isValid() && ( availableSize.width() >= CalamaresUtils::windowMinimumWidth )
-        && ( availableSize.height() >= CalamaresUtils::windowMinimumHeight );
+    bool enoughScreen = availableSize.isValid() && ( availableSize.width() >= Calamares::windowMinimumWidth )
+        && ( availableSize.height() >= Calamares::windowMinimumHeight );
 
-    qint64 requiredStorageB = CalamaresUtils::GiBtoBytes( m_requiredStorageGiB );
+    qint64 requiredStorageB = Calamares::GiBtoBytes( m_requiredStorageGiB );
     if ( m_entriesToCheck.contains( "storage" ) )
     {
         enoughStorage = checkEnoughStorage( requiredStorageB );
     }
 
-    qint64 requiredRamB = CalamaresUtils::GiBtoBytes( m_requiredRamGiB );
+    qint64 requiredRamB = Calamares::GiBtoBytes( m_requiredRamGiB );
     if ( m_entriesToCheck.contains( "ram" ) )
     {
         enoughRam = checkEnoughRam( requiredRamB );
@@ -283,7 +284,7 @@ getCheckInternetUrls( const QVariantMap& configurationMap )
     const QString exampleUrl = QStringLiteral( "http://example.com" );
 
     bool incomplete = false;
-    QStringList checkInternetSetting = CalamaresUtils::getStringList( configurationMap, "internetCheckUrl" );
+    QStringList checkInternetSetting = Calamares::getStringList( configurationMap, "internetCheckUrl" );
     if ( !checkInternetSetting.isEmpty() )
     {
         QVector< QUrl > urls;
@@ -305,12 +306,12 @@ getCheckInternetUrls( const QVariantMap& configurationMap )
         {
             cWarning() << "GeneralRequirements entry 'internetCheckUrl' contains no valid URLs, "
                        << "reverting to default (" << exampleUrl << ").";
-            CalamaresUtils::Network::Manager::instance().setCheckHasInternetUrl( QUrl( exampleUrl ) );
+            Calamares::Network::Manager::setCheckHasInternetUrl( QUrl( exampleUrl ) );
             incomplete = true;
         }
         else
         {
-            CalamaresUtils::Network::Manager::instance().setCheckHasInternetUrl( urls );
+            Calamares::Network::Manager::setCheckHasInternetUrl( urls );
         }
     }
     else
@@ -318,19 +319,19 @@ getCheckInternetUrls( const QVariantMap& configurationMap )
         cWarning() << "GeneralRequirements entry 'internetCheckUrl' is undefined in welcome.conf, "
                       "reverting to default ("
                    << exampleUrl << ").";
-        CalamaresUtils::Network::Manager::instance().setCheckHasInternetUrl( QUrl( exampleUrl ) );
+        Calamares::Network::Manager::setCheckHasInternetUrl( QUrl( exampleUrl ) );
         incomplete = true;
     }
     return incomplete;
 }
-
 
 void
 GeneralRequirements::setConfigurationMap( const QVariantMap& configurationMap )
 {
     bool incompleteConfiguration = false;
 
-    if ( configurationMap.contains( "check" ) && configurationMap.value( "check" ).type() == QVariant::List )
+    if ( configurationMap.contains( "check" )
+         && Calamares::typeOf( configurationMap.value( "check" ) ) == Calamares::ListVariantType )
     {
         m_entriesToCheck.clear();
         m_entriesToCheck.append( configurationMap.value( "check" ).toStringList() );
@@ -341,7 +342,8 @@ GeneralRequirements::setConfigurationMap( const QVariantMap& configurationMap )
         incompleteConfiguration = true;
     }
 
-    if ( configurationMap.contains( "required" ) && configurationMap.value( "required" ).type() == QVariant::List )
+    if ( configurationMap.contains( "required" )
+         && Calamares::typeOf( configurationMap.value( "required" ) ) == Calamares::ListVariantType )
     {
         m_entriesToRequire.clear();
         m_entriesToRequire.append( configurationMap.value( "required" ).toStringList() );
@@ -365,14 +367,16 @@ GeneralRequirements::setConfigurationMap( const QVariantMap& configurationMap )
 
     // Help out with consistency, but don't fix
     for ( const auto& r : m_entriesToRequire )
+    {
         if ( !m_entriesToCheck.contains( r ) )
         {
             cWarning() << "GeneralRequirements requires" << r << "but does not check it.";
         }
+    }
 
     if ( configurationMap.contains( "requiredStorage" )
-         && ( configurationMap.value( "requiredStorage" ).type() == QVariant::Double
-              || configurationMap.value( "requiredStorage" ).type() == QVariant::LongLong ) )
+         && ( Calamares::typeOf( configurationMap.value( "requiredStorage" ) ) == Calamares::DoubleVariantType
+              || Calamares::typeOf( configurationMap.value( "requiredStorage" ) ) == Calamares::LongLongVariantType ) )
     {
         bool ok = false;
         m_requiredStorageGiB = configurationMap.value( "requiredStorage" ).toDouble( &ok );
@@ -392,8 +396,8 @@ GeneralRequirements::setConfigurationMap( const QVariantMap& configurationMap )
     }
 
     if ( configurationMap.contains( "requiredRam" )
-         && ( configurationMap.value( "requiredRam" ).type() == QVariant::Double
-              || configurationMap.value( "requiredRam" ).type() == QVariant::LongLong ) )
+         && ( Calamares::typeOf( configurationMap.value( "requiredRam" ) ) == Calamares::DoubleVariantType
+              || Calamares::typeOf( configurationMap.value( "requiredRam" ) ) == Calamares::LongLongVariantType ) )
     {
         bool ok = false;
         m_requiredRamGiB = configurationMap.value( "requiredRam" ).toDouble( &ok );
@@ -419,7 +423,6 @@ GeneralRequirements::setConfigurationMap( const QVariantMap& configurationMap )
     }
 }
 
-
 bool
 GeneralRequirements::checkEnoughStorage( qint64 requiredSpace )
 {
@@ -432,16 +435,14 @@ GeneralRequirements::checkEnoughStorage( qint64 requiredSpace )
 #endif
 }
 
-
 bool
 GeneralRequirements::checkEnoughRam( qint64 requiredRam )
 {
     // Ignore the guesstimate-factor; we get an under-estimate
     // which is probably the usable RAM for programs.
-    quint64 availableRam = CalamaresUtils::System::instance()->getTotalMemoryB().first;
+    quint64 availableRam = Calamares::System::instance()->getTotalMemoryB().first;
     return double( availableRam ) >= double( requiredRam ) * 0.95;  // cast to silence 64-bit-int conversion to double
 }
-
 
 bool
 GeneralRequirements::checkBatteryExists()
@@ -470,7 +471,6 @@ GeneralRequirements::checkBatteryExists()
 
     return false;
 }
-
 
 bool
 GeneralRequirements::checkHasPower()
@@ -501,16 +501,14 @@ GeneralRequirements::checkHasPower()
     return !onBattery;
 }
 
-
 bool
 GeneralRequirements::checkHasInternet()
 {
-    auto& nam = CalamaresUtils::Network::Manager::instance();
+    Calamares::Network::Manager nam;
     bool hasInternet = nam.checkHasInternet();
     Calamares::JobQueue::instance()->globalStorage()->insert( "hasInternet", hasInternet );
     return hasInternet;
 }
-
 
 bool
 GeneralRequirements::checkIsRoot()

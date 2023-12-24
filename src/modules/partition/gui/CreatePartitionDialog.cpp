@@ -43,8 +43,8 @@
 #include <QRegularExpressionValidator>
 #include <QSet>
 
-using CalamaresUtils::Partition::untranslatedFS;
-using CalamaresUtils::Partition::userVisibleFS;
+using Calamares::Partition::untranslatedFS;
+using Calamares::Partition::userVisibleFS;
 
 static QSet< FileSystem::Type > s_unmountableFS( { FileSystem::Unformatted,
                                                    FileSystem::LinuxSwap,
@@ -250,16 +250,17 @@ CreatePartitionDialog::getNewlyCreatedPartition()
     if ( m_ui->encryptWidget->state() == EncryptWidget::Encryption::Confirmed && !luksPassphrase.isEmpty()
          && fsType != FileSystem::Zfs )
     {
-        partition = KPMHelpers::createNewEncryptedPartition( m_parent,
-                                                             *m_device,
-                                                             m_role,
-                                                             fsType,
-                                                             fsLabel,
-                                                             first,
-                                                             last,
-                                                             Config::luksGenerationNames().find(luksFsType, Config::LuksGeneration::Luks1),
-                                                             luksPassphrase,
-                                                             PartitionTable::Flags() );
+        partition = KPMHelpers::createNewEncryptedPartition(
+            m_parent,
+            *m_device,
+            m_role,
+            fsType,
+            fsLabel,
+            first,
+            last,
+            Config::luksGenerationNames().find( luksFsType, Config::LuksGeneration::Luks1 ),
+            luksPassphrase,
+            PartitionTable::Flags() );
     }
     else
     {
@@ -352,7 +353,7 @@ CreatePartitionDialog::checkMountPointSelection()
 void
 CreatePartitionDialog::initPartResizerWidget( Partition* partition )
 {
-    QColor color = CalamaresUtils::Partition::isPartitionFreeSpace( partition )
+    QColor color = Calamares::Partition::isPartitionFreeSpace( partition )
         ? ColorUtils::colorForPartitionInFreeSpace( partition )
         : ColorUtils::colorForPartition( partition );
     m_partitionSizeController->init( m_device, partition, color );

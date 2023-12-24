@@ -37,16 +37,6 @@ def detect_plymouth():
     return target_env_call(["sh", "-c", "which plymouth"]) == 0
 
 
-def detect_setfont():
-    """
-    Checks existence (runnability) of setfont in the target system.
-
-    @return True if setfont exists in the target, False otherwise
-    """
-    # Used to only check existence of path /usr/bin/setfont in target
-    return target_env_call(["sh", "-c", "which setfont"]) == 0
-
-
 class cpuinfo(object):
     """
     Object describing the current CPU's characteristics. It may be
@@ -135,13 +125,13 @@ def write_mkinitcpio_lines(hooks, modules, files, binaries, root_mount_point):
             # Replace HOOKS, MODULES, BINARIES and FILES lines with what we
             # have found via find_initcpio_features()
             if line.startswith("HOOKS"):
-                line = 'HOOKS="{!s}"'.format(' '.join(hooks))
+                line = f"HOOKS=({str.join(' ', hooks)})"
             elif line.startswith("BINARIES"):
-                line = 'BINARIES="{!s}"'.format(' '.join(binaries))
+                line = f"BINARIES=({str.join(' ', binaries)})"
             elif line.startswith("MODULES"):
-                line = 'MODULES="{!s}"'.format(' '.join(modules))
+                line = f"MODULES=({str.join(' ', modules)})"
             elif line.startswith("FILES"):
-                line = 'FILES="{!s}"'.format(' '.join(files))
+                line = f"FILES=({str.join(' ', files)})"
             mkinitcpio_file.write(line + "\n")
 
 
@@ -180,10 +170,6 @@ def find_initcpio_features(partitions, root_mount_point):
     modules = []
     files = []
     binaries = []
-
-    if detect_setfont():
-        # Fixes "setfont: KDFONTOP: Function not implemented" error
-        binaries.append("setfont")
 
     swap_uuid = ""
     uses_btrfs = False
@@ -253,7 +239,7 @@ def find_initcpio_features(partitions, root_mount_point):
     else:
         hooks.append("fsck")
 
-    return (hooks, modules, files, binaries)
+    return hooks, modules, files, binaries
 
 
 def run():

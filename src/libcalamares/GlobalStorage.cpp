@@ -11,33 +11,34 @@
 
 #include "GlobalStorage.h"
 
+#include "compat/Mutex.h"
+
 #include "utils/Logger.h"
 #include "utils/Units.h"
 #include "utils/Yaml.h"
 
 #include <QFile>
 #include <QJsonDocument>
-#include <QMutexLocker>
 
-using namespace CalamaresUtils::Units;
+using namespace Calamares::Units;
 
 namespace Calamares
 {
 
-class GlobalStorage::ReadLock : public QMutexLocker
+class GlobalStorage::ReadLock : public MutexLocker
 {
 public:
     ReadLock( const GlobalStorage* gs )
-        : QMutexLocker( &gs->m_mutex )
+        : MutexLocker( &gs->m_mutex )
     {
     }
 };
 
-class GlobalStorage::WriteLock : public QMutexLocker
+class GlobalStorage::WriteLock : public MutexLocker
 {
 public:
     WriteLock( GlobalStorage* gs )
-        : QMutexLocker( &gs->m_mutex )
+        : MutexLocker( &gs->m_mutex )
         , m_gs( gs )
     {
     }
@@ -51,14 +52,12 @@ GlobalStorage::GlobalStorage( QObject* parent )
 {
 }
 
-
 bool
 GlobalStorage::contains( const QString& key ) const
 {
     ReadLock l( this );
     return m.contains( key );
 }
-
 
 int
 GlobalStorage::count() const
@@ -67,7 +66,6 @@ GlobalStorage::count() const
     return m.count();
 }
 
-
 void
 GlobalStorage::insert( const QString& key, const QVariant& value )
 {
@@ -75,14 +73,12 @@ GlobalStorage::insert( const QString& key, const QVariant& value )
     m.insert( key, value );
 }
 
-
 QStringList
 GlobalStorage::keys() const
 {
     ReadLock l( this );
     return m.keys();
 }
-
 
 int
 GlobalStorage::remove( const QString& key )
@@ -92,6 +88,12 @@ GlobalStorage::remove( const QString& key )
     return nItems;
 }
 
+void
+GlobalStorage::clear()
+{
+    WriteLock l( this );
+    m.clear();
+}
 
 QVariant
 GlobalStorage::value( const QString& key ) const
@@ -165,14 +167,14 @@ bool
 GlobalStorage::saveYaml( const QString& filename ) const
 {
     ReadLock l( this );
-    return CalamaresUtils::saveYaml( filename, m );
+    return Calamares::YAML::save( filename, m );
 }
 
 bool
 GlobalStorage::loadYaml( const QString& filename )
 {
     bool ok = false;
-    auto map = CalamaresUtils::loadYaml( filename, &ok );
+    auto map = Calamares::YAML::load( filename, &ok );
     if ( ok )
     {
         WriteLock l( this );
@@ -187,6 +189,5 @@ GlobalStorage::loadYaml( const QString& filename )
     }
     return false;
 }
-
 
 }  // namespace Calamares

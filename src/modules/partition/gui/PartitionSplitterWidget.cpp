@@ -16,7 +16,7 @@
 #include "partition/PartitionQuery.h"
 #include "utils/Logger.h"
 
-#include "utils/CalamaresUtilsGui.h"
+#include "utils/Gui.h"
 
 #include <kpmcore/core/device.h>
 #include <kpmcore/core/partition.h>
@@ -27,11 +27,10 @@
 #include <QPainterPath>
 #include <QStyleOption>
 
-using CalamaresUtils::Partition::PartitionIterator;
+using Calamares::Partition::PartitionIterator;
 
-static const int VIEW_HEIGHT
-    = qMax( CalamaresUtils::defaultFontHeight() + 8,  // wins out with big fonts
-            int( CalamaresUtils::defaultFontHeight() * 0.6 ) + 22 );  // wins out with small fonts
+static const int VIEW_HEIGHT = qMax( Calamares::defaultFontHeight() + 8,  // wins out with big fonts
+                                     int( Calamares::defaultFontHeight() * 0.6 ) + 22 );  // wins out with small fonts
 static const int CORNER_RADIUS = 3;
 static const int EXTENDED_PARTITION_MARGIN = qMax( 4, VIEW_HEIGHT / 6 );
 
@@ -92,7 +91,6 @@ PartitionSplitterWidget::PartitionSplitterWidget( QWidget* parent )
     setMouseTracking( true );
 }
 
-
 void
 PartitionSplitterWidget::init( Device* dev, bool drawNestedPartitions )
 {
@@ -103,7 +101,7 @@ PartitionSplitterWidget::init( Device* dev, bool drawNestedPartitions )
     {
         PartitionSplitterItem newItem = { ( *it )->partitionPath(),
                                           ColorUtils::colorForPartition( *it ),
-                                          CalamaresUtils::Partition::isPartitionFreeSpace( *it ),
+                                          Calamares::Partition::isPartitionFreeSpace( *it ),
                                           ( *it )->capacity(),
                                           PartitionSplitterItem::Normal,
                                           {} };
@@ -152,7 +150,6 @@ PartitionSplitterWidget::setupItems( const QVector< PartitionSplitterItem >& ite
         cDebug() << "PSI added item" << item.itemPath << "size" << item.size;
     }
 }
-
 
 void
 PartitionSplitterWidget::setSplitPartition( const QString& path, qint64 minSize, qint64 maxSize, qint64 preferredSize )
@@ -285,7 +282,6 @@ PartitionSplitterWidget::setSplitPartition( const QString& path, qint64 minSize,
     repaint();
 }
 
-
 qint64
 PartitionSplitterWidget::splitPartitionSize() const
 {
@@ -295,7 +291,6 @@ PartitionSplitterWidget::splitPartitionSize() const
     }
     return m_itemToResize.size;
 }
-
 
 qint64
 PartitionSplitterWidget::newPartitionSize() const
@@ -307,20 +302,17 @@ PartitionSplitterWidget::newPartitionSize() const
     return m_itemToResizeNext.size;
 }
 
-
 QSize
 PartitionSplitterWidget::sizeHint() const
 {
     return QSize( -1, VIEW_HEIGHT );
 }
 
-
 QSize
 PartitionSplitterWidget::minimumSizeHint() const
 {
     return sizeHint();
 }
-
 
 void
 PartitionSplitterWidget::paintEvent( QPaintEvent* event )
@@ -334,19 +326,21 @@ PartitionSplitterWidget::paintEvent( QPaintEvent* event )
     drawPartitions( &painter, rect(), m_items );
 }
 
-
 void
 PartitionSplitterWidget::mousePressEvent( QMouseEvent* event )
 {
     if ( m_itemToResize && m_itemToResizeNext && event->button() == Qt::LeftButton )
     {
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
         if ( qAbs( event->x() - m_resizeHandleX ) < HANDLE_SNAP )
+#else
+        if ( qAbs( event->position().x() - m_resizeHandleX ) < HANDLE_SNAP )
+#endif
         {
             m_resizing = true;
         }
     }
 }
-
 
 void
 PartitionSplitterWidget::mouseMoveEvent( QMouseEvent* event )
@@ -393,7 +387,11 @@ PartitionSplitterWidget::mouseMoveEvent( QMouseEvent* event )
         int ew = rect().width();  //effective width
         qreal bpp = total / static_cast< qreal >( ew );  //bytes per pixel
 
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
         qreal mx = event->x() * bpp - start;
+#else
+        qreal mx = event->position().x() * bpp - start;
+#endif
 
         // make sure we are within resize range
         mx = qBound( static_cast< qreal >( m_itemMinSize ), mx, static_cast< qreal >( m_itemMaxSize ) );
@@ -428,7 +426,11 @@ PartitionSplitterWidget::mouseMoveEvent( QMouseEvent* event )
     {
         if ( m_itemToResize && m_itemToResizeNext )
         {
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
             if ( qAbs( event->x() - m_resizeHandleX ) < HANDLE_SNAP )
+#else
+            if ( qAbs( event->position().x() - m_resizeHandleX ) < HANDLE_SNAP )
+#endif
             {
                 setCursor( Qt::SplitHCursor );
             }
@@ -440,7 +442,6 @@ PartitionSplitterWidget::mouseMoveEvent( QMouseEvent* event )
     }
 }
 
-
 void
 PartitionSplitterWidget::mouseReleaseEvent( QMouseEvent* event )
 {
@@ -448,7 +449,6 @@ PartitionSplitterWidget::mouseReleaseEvent( QMouseEvent* event )
 
     m_resizing = false;
 }
-
 
 void
 PartitionSplitterWidget::drawSection( QPainter* painter,
@@ -542,7 +542,6 @@ PartitionSplitterWidget::drawResizeHandle( QPainter* painter, const QRect& rect_
     painter->setPen( Qt::black );
     painter->drawLine( x, 0, x, int( h ) - 1 );
 }
-
 
 void
 PartitionSplitterWidget::drawPartitions( QPainter* painter,

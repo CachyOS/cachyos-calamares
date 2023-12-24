@@ -23,8 +23,10 @@
 #include "utils/Variant.h"
 
 #include <QApplication>
+#include <QFile>
 #include <QGuiApplication>
 #include <QProcess>
+#include <QRegularExpression>
 #include <QTimer>
 
 #include <QDBusConnection>
@@ -40,7 +42,6 @@ xkbmap_model_args( const QString& model )
     QStringList r { "-model", model };
     return r;
 }
-
 
 /* Returns stringlist with suitable setxkbmap command-line arguments
  * to set the given @p layout and @p variant.
@@ -113,7 +114,7 @@ xkbmap_query_grp_option()
     }
 
     //it's either in the end of line or before the other option so \s or ,
-    int lastIndex = outputLine.indexOf( QRegExp( "[\\s,]" ), index );
+    int lastIndex = outputLine.indexOf( QRegularExpression( "[\\s,]" ), index );
 
     return outputLine.mid( index, lastIndex - index );
 }
@@ -158,6 +159,7 @@ Config::Config( QObject* parent )
     , m_keyboardModelsModel( new KeyboardModelsModel( this ) )
     , m_keyboardLayoutsModel( new KeyboardLayoutModel( this ) )
     , m_keyboardVariantsModel( new KeyboardVariantsModel( this ) )
+    , m_KeyboardGroupSwitcherModel( new KeyboardGroupsSwitchersModel( this ) )
 {
     m_setxkbmapTimer.setSingleShot( true );
 
@@ -188,25 +190,43 @@ Config::Config( QObject* parent )
                  emit prettyStatusChanged();
              } );
 
-    connect( m_keyboardVariantsModel, &KeyboardVariantsModel::currentIndexChanged, this, &Config::xkbChanged );
+    connect( m_keyboardVariantsModel,
+             &KeyboardVariantsModel::currentIndexChanged,
+             [ & ]( int index )
+             {
+                 m_selectedVariant = m_keyboardVariantsModel->key( index );
+                 xkbChanged();
+                 emit prettyStatusChanged();
+             } );
+    connect( m_KeyboardGroupSwitcherModel,
+             &KeyboardGroupsSwitchersModel::currentIndexChanged,
+             [ & ]( int index )
+             {
+                 m_selectedGroup = m_KeyboardGroupSwitcherModel->key( index );
+                 xkbChanged();
+                 emit prettyStatusChanged();
+             } );
 
     // If the user picks something explicitly -- not a consequence of
     // a guess -- then move to UserSelected state and stay there.
     connect( m_keyboardModelsModel, &KeyboardModelsModel::currentIndexChanged, this, &Config::selectionChange );
     connect( m_keyboardLayoutsModel, &KeyboardLayoutModel::currentIndexChanged, this, &Config::selectionChange );
     connect( m_keyboardVariantsModel, &KeyboardVariantsModel::currentIndexChanged, this, &Config::selectionChange );
+    connect( m_KeyboardGroupSwitcherModel,
+             &KeyboardGroupsSwitchersModel::currentIndexChanged,
+             this,
+             &Config::selectionChange );
 
     m_selectedModel = m_keyboardModelsModel->key( m_keyboardModelsModel->currentIndex() );
     m_selectedLayout = m_keyboardLayoutsModel->item( m_keyboardLayoutsModel->currentIndex() ).first;
     m_selectedVariant = m_keyboardVariantsModel->key( m_keyboardVariantsModel->currentIndex() );
+    m_selectedGroup = m_KeyboardGroupSwitcherModel->key( m_KeyboardGroupSwitcherModel->currentIndex() );
 }
 
 void
-Config::xkbChanged( int index )
+Config::xkbChanged()
 {
     // Set Xorg keyboard layout + variant
-    m_selectedVariant = m_keyboardVariantsModel->key( index );
-
     if ( m_setxkbmapTimer.isActive() )
     {
         m_setxkbmapTimer.stop();
@@ -269,8 +289,15 @@ Config::xkbApply()
 
     if ( !m_additionalLayoutInfo.additionalLayout.isEmpty() )
     {
-        m_additionalLayoutInfo.groupSwitcher = xkbmap_query_grp_option();
+        if ( !m_selectedGroup.isEmpty() )
+        {
+            m_additionalLayoutInfo.groupSwitcher = "grp:" + m_selectedGroup;
+        }
 
+        if ( m_additionalLayoutInfo.groupSwitcher.isEmpty() )
+        {
+            m_additionalLayoutInfo.groupSwitcher = xkbmap_query_grp_option();
+        }
         if ( m_additionalLayoutInfo.groupSwitcher.isEmpty() )
         {
             m_additionalLayoutInfo.groupSwitcher = "grp:alt_shift_toggle";
@@ -280,7 +307,6 @@ Config::xkbApply()
                            xkbmap_layout_args( { m_additionalLayoutInfo.additionalLayout, m_selectedLayout },
                                                { m_additionalLayoutInfo.additionalVariant, m_selectedVariant },
                                                m_additionalLayoutInfo.groupSwitcher ) );
-
 
         cDebug() << "xkbmap selection changed to: " << m_selectedLayout << '-' << m_selectedVariant << "(added "
                  << m_additionalLayoutInfo.additionalLayout << "-" << m_additionalLayoutInfo.additionalVariant
@@ -293,7 +319,6 @@ Config::xkbApply()
     }
     m_setxkbmapTimer.disconnect( this );
 }
-
 
 KeyboardModelsModel*
 Config::keyboardModels() const
@@ -311,6 +336,12 @@ KeyboardVariantsModel*
 Config::keyboardVariants() const
 {
     return m_keyboardVariantsModel;
+}
+
+KeyboardGroupsSwitchersModel*
+Config::keyboardGroupsSwitchers() const
+{
+    return m_KeyboardGroupSwitcherModel;
 }
 
 static QPersistentModelIndex
@@ -349,7 +380,9 @@ Config::getCurrentKeyboardLayoutXkb( QString& currentLayout, QString& currentVar
                 symbols = true;
             }
             else if ( !line.trimmed().startsWith( "xkb_geometry" ) )
+            {
                 continue;
+            }
 
             int firstQuote = line.indexOf( '"' );
             int lastQuote = line.lastIndexOf( '"' );
@@ -469,14 +502,14 @@ QString
 Config::prettyStatus() const
 {
     QString status;
-    status += tr( "Set keyboard model to %1.<br/>" )
+    status += tr( "Keyboard model has been set to %1<br/>.", "@label, %1 is keyboard model, as in Apple Magic Keyboard" )
                   .arg( m_keyboardModelsModel->label( m_keyboardModelsModel->currentIndex() ) );
 
     QString layout = m_keyboardLayoutsModel->item( m_keyboardLayoutsModel->currentIndex() ).second.description;
     QString variant = m_keyboardVariantsModel->currentIndex() >= 0
         ? m_keyboardVariantsModel->label( m_keyboardVariantsModel->currentIndex() )
         : QString( "<default>" );
-    status += tr( "Set keyboard layout to %1/%2." ).arg( layout, variant );
+    status += tr( "Keyboard layout has been set to %1/%2.", "@label, %1 is layout, %2 is layout variant" ).arg( layout, variant );
 
     return status;
 }
@@ -596,7 +629,7 @@ Config::guessLocaleKeyboardLayout()
 
     // Try to preselect a layout, depending on language and locale
     Calamares::GlobalStorage* gs = Calamares::JobQueue::instance()->globalStorage();
-    QString lang = CalamaresUtils::Locale::readGS( *gs, QStringLiteral( "LANG" ) );
+    QString lang = Calamares::Locale::readGS( *gs, QStringLiteral( "LANG" ) );
 
     cDebug() << "Got locale language" << lang;
     if ( !lang.isEmpty() )
@@ -643,7 +676,8 @@ Config::finalize()
         if ( !m_additionalLayoutInfo.additionalLayout.isEmpty() )
         {
             gs->insert( "keyboardAdditionalLayout", m_additionalLayoutInfo.additionalLayout );
-            gs->insert( "keyboardAdditionalLayout", m_additionalLayoutInfo.additionalVariant );
+            gs->insert( "keyboardAdditionalVariant", m_additionalLayoutInfo.additionalVariant );
+            gs->insert( "keyboardGroupSwitcher", m_additionalLayoutInfo.groupSwitcher );
             gs->insert( "keyboardVConsoleKeymap", m_additionalLayoutInfo.vconsoleKeymap );
         }
     }
@@ -672,7 +706,7 @@ Config::updateVariants( const QPersistentModelIndex& currentItem, QString curren
 void
 Config::setConfigurationMap( const QVariantMap& configurationMap )
 {
-    using namespace CalamaresUtils;
+    using namespace Calamares;
     bool isX11 = QGuiApplication::platformName() == "xcb";
 
     const auto xorgConfDefault = QStringLiteral( "00-keyboard.conf" );

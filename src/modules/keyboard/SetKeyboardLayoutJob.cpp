@@ -19,9 +19,9 @@
 
 #include "GlobalStorage.h"
 #include "JobQueue.h"
-#include "utils/CalamaresUtilsSystem.h"
 #include "utils/Logger.h"
 #include "utils/String.h"
+#include "utils/System.h"
 
 #include <QDir>
 #include <QFile>
@@ -32,12 +32,12 @@
 namespace
 {
 QStringList
-removeEmpty(QStringList&& list)
+removeEmpty( QStringList&& list )
 {
-    list.removeAll(QString());
+    list.removeAll( QString() );
     return list;
 }
-}
+}  // namespace
 
 SetKeyboardLayoutJob::SetKeyboardLayoutJob( const QString& model,
                                             const QString& layout,
@@ -63,7 +63,8 @@ SetKeyboardLayoutJob::SetKeyboardLayoutJob( const QString& model,
 QString
 SetKeyboardLayoutJob::prettyName() const
 {
-    return tr( "Set keyboard model to %1, layout to %2-%3" ).arg( m_model ).arg( m_layout ).arg( m_variant );
+    return tr( "Setting keyboard model to %1, layout as %2-%3…", "@status, %1 model, %2 layout, %3 variant" )
+        .arg( m_model ).arg( m_layout ).arg( m_variant );
 }
 
 
@@ -276,10 +277,10 @@ SetKeyboardLayoutJob::writeX11Data( const QString& keyboardConfPath ) const
               "        MatchIsKeyboard \"on\"\n";
 
 
-    const QStringList layouts = removeEmpty({m_additionalLayoutInfo.additionalLayout, m_layout});
-    const QStringList variants = removeEmpty({m_additionalLayoutInfo.additionalVariant, m_variant});
-    stream << "        Option \"XkbLayout\" \"" << layouts.join(",") << "\"\n";
-    stream << "        Option \"XkbVariant\" \"" << variants.join(",") << "\"\n";
+    const QStringList layouts = removeEmpty( { m_additionalLayoutInfo.additionalLayout, m_layout } );
+    const QStringList variants = removeEmpty( { m_additionalLayoutInfo.additionalVariant, m_variant } );
+    stream << "        Option \"XkbLayout\" \"" << layouts.join( "," ) << "\"\n";
+    stream << "        Option \"XkbVariant\" \"" << variants.join( "," ) << "\"\n";
     if ( !m_additionalLayoutInfo.additionalLayout.isEmpty() )
     {
         stream << "        Option \"XkbOptions\" \"" << m_additionalLayoutInfo.groupSwitcher << "\"\n";
@@ -290,8 +291,8 @@ SetKeyboardLayoutJob::writeX11Data( const QString& keyboardConfPath ) const
 
     file.close();
 
-    cDebug() << Logger::SubEntry << "Written XkbLayout" << layouts.join(",") << "; XkbModel" << m_model << "; XkbVariant"
-             << variants.join(",") << "to X.org file" << keyboardConfPath << stream.status();
+    cDebug() << Logger::SubEntry << "Written XkbLayout" << layouts.join( "," ) << "; XkbModel" << m_model
+             << "; XkbVariant" << variants.join( "," ) << "to X.org file" << keyboardConfPath << stream.status();
 
     return ( stream.status() == QTextStream::Ok );
 }
@@ -310,14 +311,14 @@ SetKeyboardLayoutJob::writeDefaultKeyboardData( const QString& defaultKeyboardPa
     }
     QTextStream stream( &file );
 
-    const QStringList layouts = removeEmpty({m_additionalLayoutInfo.additionalLayout, m_layout});
-    const QStringList variants = removeEmpty({m_additionalLayoutInfo.additionalVariant, m_variant});
+    const QStringList layouts = removeEmpty( { m_additionalLayoutInfo.additionalLayout, m_layout } );
+    const QStringList variants = removeEmpty( { m_additionalLayoutInfo.additionalVariant, m_variant } );
     stream << "# KEYBOARD CONFIGURATION FILE\n\n"
               "# Consult the keyboard(5) manual page.\n\n";
 
     stream << "XKBMODEL=\"" << m_model << "\"\n";
-    stream << "XKBLAYOUT=\"" << layouts.join(",") << "\"\n";
-    stream << "XKBVARIANT=\"" << variants.join(",") << "\"\n";
+    stream << "XKBLAYOUT=\"" << layouts.join( "," ) << "\"\n";
+    stream << "XKBVARIANT=\"" << variants.join( "," ) << "\"\n";
     if ( !m_additionalLayoutInfo.additionalLayout.isEmpty() )
     {
         stream << "XKBOPTIONS=\"" << m_additionalLayoutInfo.groupSwitcher << "\"\n";
@@ -327,8 +328,9 @@ SetKeyboardLayoutJob::writeDefaultKeyboardData( const QString& defaultKeyboardPa
 
     file.close();
 
-    cDebug() << Logger::SubEntry << "Written XKBMODEL" << m_model << "; XKBLAYOUT" << layouts.join(",") << "; XKBVARIANT"
-             << variants.join(",") << "to /etc/default/keyboard file" << defaultKeyboardPath << stream.status();
+    cDebug() << Logger::SubEntry << "Written XKBMODEL" << m_model << "; XKBLAYOUT" << layouts.join( "," )
+             << "; XKBVARIANT" << variants.join( "," ) << "to /etc/default/keyboard file" << defaultKeyboardPath
+             << stream.status();
 
     return ( stream.status() == QTextStream::Ok );
 }
@@ -363,8 +365,8 @@ SetKeyboardLayoutJob::exec()
 
         if ( !writeVConsoleData( vconsoleConfPath, convertedKeymapPath ) )
         {
-            return Calamares::JobResult::error( tr( "Failed to write keyboard configuration for the virtual console." ),
-                                                tr( "Failed to write to %1" ).arg( vconsoleConfPath ) );
+            return Calamares::JobResult::error( tr( "Failed to write keyboard configuration for the virtual console.", "@error" ),
+                                                tr( "Failed to write to %1", "@error, %1 is virtual console configuration path" ).arg( vconsoleConfPath ) );
         }
 
         // Get the path to the destination's /etc/X11/xorg.conf.d/00-keyboard.conf
@@ -389,8 +391,8 @@ SetKeyboardLayoutJob::exec()
 
         if ( !writeX11Data( keyboardConfPath ) )
         {
-            return Calamares::JobResult::error( tr( "Failed to write keyboard configuration for X11." ),
-                                                tr( "Failed to write to %1" ).arg( keyboardConfPath ) );
+            return Calamares::JobResult::error( tr( "Failed to write keyboard configuration for X11.", "@error" ),
+                                                tr( "Failed to write to %1", "@error, %1 is keyboard configuration path" ).arg( keyboardConfPath ) );
         }
     }
 
@@ -406,8 +408,8 @@ SetKeyboardLayoutJob::exec()
             if ( !writeDefaultKeyboardData( defaultKeyboardPath ) )
             {
                 return Calamares::JobResult::error(
-                    tr( "Failed to write keyboard configuration to existing /etc/default directory." ),
-                    tr( "Failed to write to %1" ).arg( defaultKeyboardPath ) );
+                    tr( "Failed to write keyboard configuration to existing /etc/default directory.", "@error" ),
+                    tr( "Failed to write to %1", "@error, %1 is default keyboard path" ).arg( defaultKeyboardPath ) );
             }
         }
     }

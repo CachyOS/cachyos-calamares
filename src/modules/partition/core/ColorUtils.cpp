@@ -24,9 +24,9 @@
 #include <QColor>
 #include <QMap>
 
-using CalamaresUtils::Partition::isPartitionFreeSpace;
-using CalamaresUtils::Partition::isPartitionNew;
-using CalamaresUtils::Partition::PartitionIterator;
+using Calamares::Partition::isPartitionFreeSpace;
+using Calamares::Partition::isPartitionNew;
+using Calamares::Partition::PartitionIterator;
 
 static const int NUM_PARTITION_COLORS = 5;
 static const int NUM_NEW_PARTITION_COLORS = 4;
@@ -156,8 +156,10 @@ colorForPartition( Partition* partition )
             }
         }
         else
+        {
             s_partitionColorsCache.insert( partition->fileSystem().uuid(),
                                            PARTITION_COLORS[ colorIdx % NUM_PARTITION_COLORS ] );
+        }
     }
     return PARTITION_COLORS[ colorIdx % NUM_PARTITION_COLORS ];
 }

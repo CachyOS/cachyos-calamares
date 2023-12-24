@@ -13,8 +13,8 @@
 
 #include "GlobalStorage.h"
 #include "JobQueue.h"
-#include "utils/CalamaresUtilsSystem.h"
 #include "utils/Logger.h"
+#include "utils/System.h"
 #include "utils/Variant.h"
 
 #include <QFile>
@@ -24,9 +24,7 @@ RemoveUserJob::RemoveUserJob( QObject* parent )
 {
 }
 
-
 RemoveUserJob::~RemoveUserJob() {}
-
 
 QString
 RemoveUserJob::prettyName() const
@@ -43,7 +41,7 @@ RemoveUserJob::exec()
         return Calamares::JobResult::ok();
     }
 
-    auto* s = CalamaresUtils::System::instance();
+    auto* s = Calamares::System::instance();
     auto r = s->targetEnvCommand( { QStringLiteral( "userdel" ),
                                     QStringLiteral( "-f" ),  // force
                                     QStringLiteral( "-r" ),  // remove home-dir and mail
@@ -55,11 +53,10 @@ RemoveUserJob::exec()
     return Calamares::JobResult::ok();
 }
 
-
 void
 RemoveUserJob::setConfigurationMap( const QVariantMap& map )
 {
-    m_username = CalamaresUtils::getString( map, "username" );
+    m_username = Calamares::getString( map, "username" );
 }
 
 CALAMARES_PLUGIN_FACTORY_DEFINITION( RemoveUserJobFactory, registerPlugin< RemoveUserJob >(); )

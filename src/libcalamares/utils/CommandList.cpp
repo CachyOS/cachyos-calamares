@@ -13,23 +13,23 @@
 #include "GlobalStorage.h"
 #include "JobQueue.h"
 
-// #include "utils/CalamaresUtils.h"
-#include "utils/CalamaresUtilsSystem.h"
+#include "compat/Variant.h"
 #include "utils/Logger.h"
 #include "utils/StringExpander.h"
+#include "utils/System.h"
 #include "utils/Variant.h"
 
 #include <QCoreApplication>
 #include <QVariantList>
 
-namespace CalamaresUtils
+namespace Calamares
 {
 
 static CommandLine
 get_variant_object( const QVariantMap& m )
 {
-    QString command = CalamaresUtils::getString( m, "command" );
-    qint64 timeout = CalamaresUtils::getInteger( m, "timeout", -1 );
+    QString command = Calamares::getString( m, "command" );
+    qint64 timeout = Calamares::getInteger( m, "timeout", -1 );
 
     if ( !command.isEmpty() )
     {
@@ -46,11 +46,11 @@ get_variant_stringlist( const QVariantList& l )
     unsigned int count = 0;
     for ( const auto& v : l )
     {
-        if ( v.type() == QVariant::String )
+        if ( Calamares::typeOf( v ) == Calamares::StringVariantType )
         {
             retl.append( CommandLine( v.toString(), CommandLine::TimeoutNotSet() ) );
         }
-        else if ( v.type() == QVariant::Map )
+        else if ( Calamares::typeOf( v ) == Calamares::MapVariantType )
         {
             auto command( get_variant_object( v.toMap() ) );
             if ( command.isValid() )
@@ -61,7 +61,7 @@ get_variant_stringlist( const QVariantList& l )
         }
         else
         {
-            cWarning() << "Bad CommandList element" << count << v.type() << v;
+            cWarning() << "Bad CommandList element" << count << v;
         }
         ++count;
     }
@@ -102,13 +102,12 @@ CommandLine::expand( KMacroExpanderBase& expander ) const
     return { c, second };
 }
 
-CalamaresUtils::CommandLine
+Calamares::CommandLine
 CommandLine::expand() const
 {
     auto expander = get_gs_expander( System::RunLocation::RunInHost );
     return expand( expander );
 }
-
 
 CommandList::CommandList( bool doChroot, std::chrono::seconds timeout )
     : m_doChroot( doChroot )
@@ -119,7 +118,7 @@ CommandList::CommandList( bool doChroot, std::chrono::seconds timeout )
 CommandList::CommandList::CommandList( const QVariant& v, bool doChroot, std::chrono::seconds timeout )
     : CommandList( doChroot, timeout )
 {
-    if ( v.type() == QVariant::List )
+    if ( Calamares::typeOf( v ) == Calamares::ListVariantType )
     {
         const auto v_list = v.toList();
         if ( v_list.count() )
@@ -131,11 +130,11 @@ CommandList::CommandList::CommandList( const QVariant& v, bool doChroot, std::ch
             cWarning() << "Empty CommandList";
         }
     }
-    else if ( v.type() == QVariant::String )
+    else if ( Calamares::typeOf( v ) == Calamares::StringVariantType )
     {
         append( { v.toString(), m_timeout } );
     }
-    else if ( v.type() == QVariant::Map )
+    else if ( Calamares::typeOf( v ) == Calamares::MapVariantType )
     {
         auto c( get_variant_object( v.toMap() ) );
         if ( c.isValid() )
@@ -146,7 +145,7 @@ CommandList::CommandList::CommandList( const QVariant& v, bool doChroot, std::ch
     }
     else
     {
-        cWarning() << "CommandList does not understand variant" << v.type();
+        cWarning() << "CommandList does not understand variant" << Calamares::typeOf( v );
     }
 }
 
@@ -220,5 +219,4 @@ CommandList::expand() const
     return expand( expander );
 }
 
-
-}  // namespace CalamaresUtils
+}  // namespace Calamares

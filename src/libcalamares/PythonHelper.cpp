@@ -11,6 +11,7 @@
 #include "PythonHelper.h"
 
 #include "GlobalStorage.h"
+#include "compat/Variant.h"
 #include "utils/Dirs.h"
 #include "utils/Logger.h"
 
@@ -22,7 +23,6 @@ namespace bp = boost::python;
 namespace CalamaresPython
 {
 
-
 boost::python::object
 variantToPyObject( const QVariant& variant )
 {
@@ -30,40 +30,53 @@ variantToPyObject( const QVariant& variant )
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wswitch-enum"
 #endif
+
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+    const auto IntVariantType = QVariant::Int;
+    const auto UIntVariantType = QVariant::UInt;
+#else
+    const auto IntVariantType = QMetaType::Type::Int;
+    const auto UIntVariantType = QMetaType::Type::UInt;
+#endif
     // 49 enumeration values not handled
-    switch ( variant.type() )
+    switch ( Calamares::typeOf( variant ) )
     {
-    case QVariant::Map:
+    case Calamares::MapVariantType:
         return variantMapToPyDict( variant.toMap() );
 
-    case QVariant::Hash:
+    case Calamares::HashVariantType:
         return variantHashToPyDict( variant.toHash() );
 
-    case QVariant::List:
-    case QVariant::StringList:
+    case Calamares::ListVariantType:
+    case Calamares::StringListVariantType:
         return variantListToPyList( variant.toList() );
 
-    case QVariant::Int:
+    case IntVariantType:
         return bp::object( variant.toInt() );
-    case QVariant::UInt:
+    case UIntVariantType:
         return bp::object( variant.toUInt() );
 
-    case QVariant::LongLong:
+    case Calamares::LongLongVariantType:
         return bp::object( variant.toLongLong() );
-    case QVariant::ULongLong:
+    case Calamares::ULongLongVariantType:
         return bp::object( variant.toULongLong() );
 
-    case QVariant::Double:
+    case Calamares::DoubleVariantType:
         return bp::object( variant.toDouble() );
 
-    case QVariant::Char:
-    case QVariant::String:
+    case Calamares::CharVariantType:
+#if QT_VERSION > QT_VERSION_CHECK( 6, 0, 0 )
+    case QMetaType::Type::QChar:
+#endif
+    case Calamares::StringVariantType:
         return bp::object( variant.toString().toStdString() );
 
-    case QVariant::Bool:
+    case Calamares::BoolVariantType:
         return bp::object( variant.toBool() );
 
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     case QVariant::Invalid:
+#endif
     default:
         return bp::object();
     }
@@ -71,7 +84,6 @@ variantToPyObject( const QVariant& variant )
 #pragma clang diagnostic pop
 #endif
 }
-
 
 QVariant
 variantFromPyObject( const boost::python::object& pyObject )
@@ -113,7 +125,6 @@ variantFromPyObject( const boost::python::object& pyObject )
     }
 }
 
-
 boost::python::list
 variantListToPyList( const QVariantList& variantList )
 {
@@ -124,7 +135,6 @@ variantListToPyList( const QVariantList& variantList )
     }
     return pyList;
 }
-
 
 QVariantList
 variantListFromPyList( const boost::python::list& pyList )
@@ -137,7 +147,6 @@ variantListFromPyList( const boost::python::list& pyList )
     return list;
 }
 
-
 boost::python::dict
 variantMapToPyDict( const QVariantMap& variantMap )
 {
@@ -148,7 +157,6 @@ variantMapToPyDict( const QVariantMap& variantMap )
     }
     return pyDict;
 }
-
 
 QVariantMap
 variantMapFromPyDict( const boost::python::dict& pyDict )
@@ -184,7 +192,6 @@ variantHashToPyDict( const QVariantHash& variantHash )
     return pyDict;
 }
 
-
 QVariantHash
 variantHashFromPyDict( const boost::python::dict& pyDict )
 {
@@ -207,7 +214,6 @@ variantHashFromPyDict( const boost::python::dict& pyDict )
     }
     return hash;
 }
-
 
 static inline void
 add_if_lib_exists( const QDir& dir, const char* name, QStringList& list )
@@ -239,7 +245,7 @@ Helper::Helper()
     // If we're running from the build dir
     add_if_lib_exists( QDir::current(), "libcalamares.so", m_pythonPaths );
 
-    QDir calaPythonPath( CalamaresUtils::systemLibDir().absolutePath() + QDir::separator() + "calamares" );
+    QDir calaPythonPath( Calamares::systemLibDir().absolutePath() + QDir::separator() + "calamares" );
     add_if_lib_exists( calaPythonPath, "libcalamares.so", m_pythonPaths );
 
     bp::object sys = bp::import( "sys" );
@@ -276,7 +282,6 @@ Helper::createCleanNamespace()
     return scriptNamespace;
 }
 
-
 QString
 Helper::handleLastError()
 {
@@ -299,7 +304,7 @@ Helper::handleLastError()
 
         if ( typeMsg.isEmpty() )
         {
-            typeMsg = tr( "Unknown exception type" );
+            typeMsg = tr( "Unknown exception type", "@error" );
         }
         debug << typeMsg << '\n';
     }
@@ -317,7 +322,7 @@ Helper::handleLastError()
 
         if ( valMsg.isEmpty() )
         {
-            valMsg = tr( "unparseable Python error" );
+            valMsg = tr( "Unparseable Python error", "@error" );
         }
 
         // Special-case: CalledProcessError has an attribute "output" with the command output,
@@ -361,16 +366,15 @@ Helper::handleLastError()
 
         if ( tbMsg.isEmpty() )
         {
-            tbMsg = tr( "unparseable Python traceback" );
+            tbMsg = tr( "Unparseable Python traceback", "@error" );
         }
         debug << tbMsg << '\n';
     }
 
     if ( typeMsg.isEmpty() && valMsg.isEmpty() && tbMsg.isEmpty() )
     {
-        return tr( "Unfetchable Python error." );
+        return tr( "Unfetchable Python error", "@error" );
     }
-
 
     QStringList msgList;
     if ( !typeMsg.isEmpty() )
@@ -415,13 +419,11 @@ GlobalStoragePythonWrapper::contains( const std::string& key ) const
     return m_gs->contains( QString::fromStdString( key ) );
 }
 
-
 int
 GlobalStoragePythonWrapper::count() const
 {
     return m_gs->count();
 }
-
 
 void
 GlobalStoragePythonWrapper::insert( const std::string& key, const bp::object& value )
@@ -441,7 +443,6 @@ GlobalStoragePythonWrapper::keys() const
     return pyList;
 }
 
-
 int
 GlobalStoragePythonWrapper::remove( const std::string& key )
 {
@@ -452,7 +453,6 @@ GlobalStoragePythonWrapper::remove( const std::string& key )
     }
     return m_gs->remove( gsKey );
 }
-
 
 bp::object
 GlobalStoragePythonWrapper::value( const std::string& key ) const

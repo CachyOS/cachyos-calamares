@@ -19,7 +19,7 @@
 #include "JobQueue.h"
 #include "ViewManager.h"
 
-#include "utils/CalamaresUtilsGui.h"
+#include "utils/Gui.h"
 #include "utils/Logger.h"
 #include "utils/NamedEnum.h"
 #include "utils/Retranslator.h"
@@ -67,8 +67,8 @@ LicenseEntry::LicenseEntry( const QVariantMap& conf )
     m_prettyVendor = conf.value( "vendor" ).toString();
     m_url = QUrl( conf[ "url" ].toString() );
 
-    m_required = CalamaresUtils::getBool( conf, "required", false );
-    m_expand = CalamaresUtils::getBool( conf, "expand", false );
+    m_required = Calamares::getBool( conf, "required", false );
+    m_expand = Calamares::getBool( conf, "expand", false );
 
     bool ok = false;
     QString typeString = conf.value( "type", "software" ).toString();
@@ -85,7 +85,6 @@ LicenseEntry::isLocal() const
     return m_url.isLocalFile();
 }
 
-
 LicensePage::LicensePage( QWidget* parent )
     : QWidget( parent )
     , m_isNextEnabled( false )
@@ -94,14 +93,14 @@ LicensePage::LicensePage( QWidget* parent )
 {
     ui->setupUi( this );
 
-    // ui->verticalLayout->insertSpacing( 1, CalamaresUtils::defaultFontHeight() );
-    CalamaresUtils::unmarginLayout( ui->verticalLayout );
+    // ui->verticalLayout->insertSpacing( 1, Calamares::defaultFontHeight() );
+    Calamares::unmarginLayout( ui->verticalLayout );
 
     ui->acceptFrame->setStyleSheet( mustAccept );
     {
         // The inner frame was unmargined (above), reinstate margins so all are
         // the same *x* (an x-height, approximately).
-        const auto x = CalamaresUtils::defaultFontHeight() / 2;
+        const auto x = Calamares::defaultFontHeight() / 2;
         ui->acceptFrame->layout()->setContentsMargins( x, x, x, x );
     }
 
@@ -140,17 +139,17 @@ LicensePage::setEntries( const QList< LicenseEntry >& entriesList )
 void
 LicensePage::retranslate()
 {
-    ui->acceptCheckBox->setText( tr( "I accept the terms and conditions above." ) );
+    ui->acceptCheckBox->setText( tr( "I accept the terms and conditions above.", "@info" ) );
 
-    QString review = tr( "Please review the End User License Agreements (EULAs)." );
+    QString review = tr( "Please review the End User License Agreements (EULAs).", "@info" );
     const auto br = QStringLiteral( "<br/>" );
 
     if ( !m_allLicensesOptional )
     {
         ui->mainText->setText( tr( "This setup procedure will install proprietary "
-                                   "software that is subject to licensing terms." )
+                                   "software that is subject to licensing terms.", "@info" )
                                + br + review );
-        QString mustAcceptText( tr( "If you do not agree with the terms, the setup procedure cannot continue." ) );
+        QString mustAcceptText( tr( "If you do not agree with the terms, the setup procedure cannot continue.", "@info" ) );
         ui->acceptCheckBox->setToolTip( mustAcceptText );
     }
     else
@@ -158,10 +157,10 @@ LicensePage::retranslate()
         ui->mainText->setText( tr( "This setup procedure can install proprietary "
                                    "software that is subject to licensing terms "
                                    "in order to provide additional features and enhance the user "
-                                   "experience." )
+                                   "experience.", "@info" )
                                + br + review );
         QString okAcceptText( tr( "If you do not agree with the terms, proprietary software will not "
-                                  "be installed, and open source alternatives will be used instead." ) );
+                                  "be installed, and open source alternatives will be used instead.", "@info" ) );
         ui->acceptCheckBox->setToolTip( okAcceptText );
     }
     ui->retranslateUi( this );
@@ -171,7 +170,6 @@ LicensePage::retranslate()
         w->retranslateUi();
     }
 }
-
 
 bool
 LicensePage::isNextEnabled() const

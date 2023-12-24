@@ -12,9 +12,9 @@
 
 #include "Workers.h"
 
-#include "utils/CalamaresUtilsSystem.h"
 #include "utils/Entropy.h"
 #include "utils/Logger.h"
+#include "utils/System.h"
 
 #include <QFile>
 
@@ -95,7 +95,7 @@ createNewEntropy( int poolSize, const QString& rootMountPoint, const QString& fi
     }
 
     QByteArray data;
-    CalamaresUtils::EntropySource source = CalamaresUtils::getEntropy( poolSize, data );
+    Calamares::EntropySource source = Calamares::getEntropy( poolSize, data );
     entropyFile.write( data );
     entropyFile.close();
     if ( entropyFile.size() < data.length() )
@@ -106,13 +106,12 @@ createNewEntropy( int poolSize, const QString& rootMountPoint, const QString& fi
     {
         cWarning() << "Entropy data is" << data.length() << "bytes, rather than poolSize" << poolSize;
     }
-    if ( source != CalamaresUtils::EntropySource::URandom )
+    if ( source != Calamares::EntropySource::URandom )
     {
         cWarning() << "Entropy data for pool is low-quality.";
     }
     return Calamares::JobResult::ok();
 }
-
 
 Calamares::JobResult
 createEntropy( const EntropyGeneration kind, const QString& rootMountPoint, const QString& fileName )
@@ -142,9 +141,10 @@ createEntropy( const EntropyGeneration kind, const QString& rootMountPoint, cons
 }
 
 static Calamares::JobResult
-runCmd( const QStringList& cmd )
+runCmd( const QStringList& cmd, bool inTarget )
 {
-    auto r = CalamaresUtils::System::instance()->targetEnvCommand( cmd );
+    auto r = inTarget ? Calamares::System::instance()->targetEnvCommand( cmd )
+                      : Calamares::System::instance()->runCommand( cmd, std::chrono::seconds( 0 ) );
     if ( r.getExitCode() )
     {
         return r.explainProcess( cmd, std::chrono::seconds( 0 ) );
@@ -154,11 +154,26 @@ runCmd( const QStringList& cmd )
 }
 
 Calamares::JobResult
-createSystemdMachineId( const QString& rootMountPoint, const QString& fileName )
+createSystemdMachineId( SystemdMachineIdStyle style, const QString& rootMountPoint, const QString& machineIdFile )
 {
-    Q_UNUSED( rootMountPoint )
-    Q_UNUSED( fileName )
-    return runCmd( QStringList { QStringLiteral( "systemd-machine-id-setup" ) } );
+    switch ( style )
+    {
+    case SystemdMachineIdStyle::Uuid:
+        return runCmd(
+            QStringList { QStringLiteral( "systemd-machine-id-setup" ), QStringLiteral( "--root=" ) + rootMountPoint },
+            false );
+    case SystemdMachineIdStyle::Blank:
+        Calamares::System::instance()->createTargetFile(
+            machineIdFile, QByteArray(), Calamares::System::WriteMode::Overwrite );
+        return Calamares::JobResult::ok();
+    case SystemdMachineIdStyle::Uninitialized:
+        Calamares::System::instance()->createTargetFile(
+            machineIdFile, "uninitialized\n", Calamares::System::WriteMode::Overwrite );
+        return Calamares::JobResult::ok();
+    }
+    return Calamares::JobResult::internalError( QStringLiteral( "Invalid systemd-style" ),
+                                                QStringLiteral( "Invalid value %1" ).arg( int( style ) ),
+                                                Calamares::JobResult::InvalidConfiguration );
 }
 
 Calamares::JobResult
@@ -166,14 +181,14 @@ createDBusMachineId( const QString& rootMountPoint, const QString& fileName )
 {
     Q_UNUSED( rootMountPoint )
     Q_UNUSED( fileName )
-    return runCmd( QStringList { QStringLiteral( "dbus-uuidgen" ), QStringLiteral( "--ensure" ) } );
+    return runCmd( QStringList { QStringLiteral( "dbus-uuidgen" ), QStringLiteral( "--ensure" ) }, true );
 }
 
 Calamares::JobResult
 createDBusLink( const QString& rootMountPoint, const QString& fileName, const QString& systemdFileName )
 {
     Q_UNUSED( rootMountPoint )
-    return runCmd( QStringList { QStringLiteral( "ln" ), QStringLiteral( "-sf" ), systemdFileName, fileName } );
+    return runCmd( QStringList { QStringLiteral( "ln" ), QStringLiteral( "-sf" ), systemdFileName, fileName }, true );
 }
 
 }  // namespace MachineId

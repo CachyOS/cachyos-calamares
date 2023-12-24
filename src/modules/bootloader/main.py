@@ -136,7 +136,11 @@ def get_kernel_params(uuid):
 
     cryptdevice_params = []
 
-    have_dracut = libcalamares.utils.target_env_call(["sh", "-c", "which dracut"]) == 0
+    has_dracut = libcalamares.utils.target_env_call(["sh", "-c", "which dracut"]) == 0
+    uses_systemd_hook = libcalamares.utils.target_env_call(["sh", "-c",
+                                                            "grep -q \"^HOOKS.*systemd\" /etc/mkinitcpio.conf"]) == 0
+    use_systemd_naming = has_dracut or uses_systemd_hook
+
 
     # Take over swap settings:
     #  - unencrypted swap partition sets swap_uuid
@@ -154,7 +158,7 @@ def get_kernel_params(uuid):
             swap_outer_uuid = partition["luksUuid"]
 
         if partition["mountPoint"] == "/" and has_luks:
-            if have_dracut:
+            if use_systemd_naming:
                 cryptdevice_params = [f"rd.luks.uuid={partition['luksUuid']}"]
             else:
                 cryptdevice_params = [f"cryptdevice=UUID={partition['luksUuid']}:{partition['luksMapperName']}"]
@@ -187,7 +191,7 @@ def get_kernel_params(uuid):
     if swap_uuid:
         kernel_params.append("resume=UUID={!s}".format(swap_uuid))
 
-    if have_dracut and swap_outer_uuid:
+    if use_systemd_naming and swap_outer_uuid:
         kernel_params.append(f"rd.luks.uuid={swap_outer_uuid}")
 
     if swap_outer_mappername:
@@ -496,6 +500,28 @@ def get_kernels(installation_root_path):
                 kernel_list.append((os.path.join(rel_root, file), "default", os.path.basename(root)))
 
     return kernel_list
+
+
+def install_clr_boot_manager():
+    """
+    Installs clr-boot-manager as the bootloader for EFI systems
+    """
+    libcalamares.utils.debug("Bootloader: clr-boot-manager")
+
+    installation_root_path = libcalamares.globalstorage.value("rootMountPoint")
+    kernel_config_path = os.path.join(installation_root_path, "etc", "kernel")
+    os.makedirs(kernel_config_path, exist_ok=True)
+    cmdline_path = os.path.join(kernel_config_path, "cmdline")
+
+    # Get the kernel params
+    uuid = get_uuid()
+    kernel_params = " ".join(get_kernel_params(uuid))
+
+    # Write out the cmdline file for clr-boot-manager
+    with open(cmdline_path, "w") as cmdline_file:
+        cmdline_file.write(kernel_params)
+
+    check_target_env_call(["clr-boot-manager", "update"])
 
 
 def install_systemd_boot(efi_directory):
@@ -851,7 +877,12 @@ def prepare_bootloader(fw_type):
 
     efi_directory = libcalamares.globalstorage.value("efiSystemPartition")
 
-    if efi_boot_loader == "systemd-boot" and fw_type == "efi":
+    if efi_boot_loader == "clr-boot-manager":
+        if fw_type != "efi":
+            # Grub has to be installed first on non-EFI systems
+            install_grub(efi_directory, fw_type)
+        install_clr_boot_manager()
+    elif efi_boot_loader == "systemd-boot" and fw_type == "efi":
         install_systemd_boot(efi_directory)
     elif efi_boot_loader == "sb-shim" and fw_type == "efi":
         install_secureboot(efi_directory)

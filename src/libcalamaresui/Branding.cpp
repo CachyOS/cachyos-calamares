@@ -14,7 +14,7 @@
 #include "Branding.h"
 
 #include "GlobalStorage.h"
-#include "utils/CalamaresUtilsGui.h"
+#include "utils/Gui.h"
 #include "utils/ImageRegistry.h"
 #include "utils/Logger.h"
 #include "utils/NamedEnum.h"
@@ -30,10 +30,8 @@
 
 #include <functional>
 
-#ifdef WITH_KOSRelease
 #include <KMacroExpander>
 #include <KOSRelease>
-#endif
 
 [[noreturn]] static void
 bail( const QString& descriptorPath, const QString& message )
@@ -57,7 +55,6 @@ Branding::instance()
     return s_instance;
 }
 
-
 // *INDENT-OFF*
 // clang-format off
 const QStringList Branding::s_stringEntryStrings =
@@ -75,7 +72,6 @@ const QStringList Branding::s_stringEntryStrings =
     "releaseNotesUrl",
     "donateUrl"
 };
-
 
 const QStringList Branding::s_imageEntryStrings =
 {
@@ -150,16 +146,16 @@ Branding::WindowDimension::suffixes()
  */
 static void
 loadStrings( QMap< QString, QString >& map,
-             const YAML::Node& doc,
+             const ::YAML::Node& doc,
              const std::string& key,
              const std::function< QString( const QString& ) >& transform )
 {
     if ( !doc[ key ].IsMap() )
     {
-        throw YAML::Exception( YAML::Mark(), std::string( "Branding configuration is not a map: " ) + key );
+        throw ::YAML::Exception( ::YAML::Mark(), std::string( "Branding configuration is not a map: " ) + key );
     }
 
-    const QVariantMap config = CalamaresUtils::yamlMapToVariant( doc[ key ] );
+    const QVariantMap config = Calamares::YAML::mapToVariant( doc[ key ] );
     for ( auto it = config.constBegin(); it != config.constEnd(); ++it )
     {
         map.insert( it.key(), transform( it.value().toString() ) );
@@ -189,11 +185,11 @@ uploadServerFromMap( const QVariantMap& map )
     }
 
     bool bogus = false;  // we don't care about type-name lookup success here
-    return Branding::UploadServerInfo {
-        names.find( typestring, bogus ),
-        QUrl( urlstring, QUrl::ParsingMode::StrictMode ),
-        sizeLimitKiB >= 0 ? CalamaresUtils::KiBtoBytes( static_cast< unsigned long long >( sizeLimitKiB ) ) : -1
-    };
+    return Branding::UploadServerInfo { names.find( typestring, bogus ),
+                                        QUrl( urlstring, QUrl::ParsingMode::StrictMode ),
+                                        sizeLimitKiB >= 0
+                                            ? Calamares::KiBtoBytes( static_cast< unsigned long long >( sizeLimitKiB ) )
+                                            : -1 };
 }
 
 /** @brief Load the @p map with strings from @p config
@@ -226,19 +222,20 @@ Branding::Branding( const QString& brandingFilePath, QObject* parent, qreal devi
 
         try
         {
-            YAML::Node doc = YAML::Load( ba.constData() );
+            auto doc = ::YAML::Load( ba.constData() );
             Q_ASSERT( doc.IsMap() );
 
             m_componentName = QString::fromStdString( doc[ "componentName" ].as< std::string >() );
             if ( m_componentName != componentDir.dirName() )
+            {
                 bail( m_descriptorPath,
                       "The branding component name should match the name of the "
                       "component directory." );
+            }
 
             initSimpleSettings( doc );
             initSlideshowSettings( doc );
 
-#ifdef WITH_KOSRelease
             // Copy the os-release information into a QHash for use by KMacroExpander.
             KOSRelease relInfo;
 
@@ -261,9 +258,7 @@ Branding::Branding( const QString& brandingFilePath, QObject* parent, qreal devi
                 { QStringLiteral( "LOGO" ), relInfo.logo() } } };
             auto expand = [ & ]( const QString& s ) -> QString
             { return KMacroExpander::expandMacros( s, relMap, QLatin1Char( '$' ) ); };
-#else
-            auto expand = []( const QString& s ) -> QString { return s; };
-#endif
+
             // Massage the strings, images and style sections.
             loadStrings( m_strings, doc, "strings", expand );
             loadStrings( m_images,
@@ -290,11 +285,11 @@ Branding::Branding( const QString& brandingFilePath, QObject* parent, qreal devi
                          } );
             loadStrings( m_style, doc, "style", []( const QString& s ) -> QString { return s; } );
 
-            m_uploadServer = uploadServerFromMap( CalamaresUtils::yamlMapToVariant( doc[ "uploadServer" ] ) );
+            m_uploadServer = uploadServerFromMap( Calamares::YAML::mapToVariant( doc[ "uploadServer" ] ) );
         }
-        catch ( YAML::Exception& e )
+        catch ( ::YAML::Exception& e )
         {
-            CalamaresUtils::explainYamlException( e, ba, file.fileName() );
+            Calamares::YAML::explainException( e, ba, file.fileName() );
             bail( m_descriptorPath, e.what() );
         }
 
@@ -323,7 +318,6 @@ Branding::Branding( const QString& brandingFilePath, QObject* parent, qreal devi
     validateStyleEntries( m_style );
 }
 
-
 QString
 Branding::componentDirectory() const
 {
@@ -331,13 +325,11 @@ Branding::componentDirectory() const
     return fi.absoluteDir().absolutePath();
 }
 
-
 QString
 Branding::string( Branding::StringEntry stringEntry ) const
 {
     return m_strings.value( s_stringEntryStrings.value( stringEntry ) );
 }
-
 
 QString
 Branding::styleString( Branding::StyleEntry styleEntry ) const
@@ -345,7 +337,6 @@ Branding::styleString( Branding::StyleEntry styleEntry ) const
     const auto meta = QMetaEnum::fromType< Branding::StyleEntry >();
     return m_style.value( meta.valueToKey( styleEntry ) );
 }
-
 
 QString
 Branding::imagePath( Branding::ImageEntry imageEntry ) const
@@ -410,7 +401,6 @@ Branding::image( const QStringList& list, const QSize& size ) const
     return QPixmap();
 }
 
-
 static QString
 _stylesheet( const QDir& dir )
 {
@@ -451,10 +441,9 @@ Branding::WindowDimension::isValid() const
     return ( unit() != none ) && ( value() > 0 );
 }
 
-
 /// @brief Get a string (empty is @p key doesn't exist) from @p key in @p doc
 static inline QString
-getString( const YAML::Node& doc, const char* key )
+getString( const ::YAML::Node& doc, const char* key )
 {
     if ( doc[ key ] )
     {
@@ -464,19 +453,19 @@ getString( const YAML::Node& doc, const char* key )
 }
 
 /// @brief Get a node (throws if @p key doesn't exist) from @p key in @p doc
-static inline YAML::Node
-get( const YAML::Node& doc, const char* key )
+static inline ::YAML::Node
+get( const ::YAML::Node& doc, const char* key )
 {
     auto r = doc[ key ];
     if ( !r.IsDefined() )
     {
-        throw YAML::KeyNotFound( YAML::Mark::null_mark(), std::string( key ) );
+        throw ::YAML::KeyNotFound( ::YAML::Mark::null_mark(), std::string( key ) );
     }
     return r;
 }
 
 static inline void
-flavorAndSide( const YAML::Node& doc, const char* key, Branding::PanelFlavor& flavor, Branding::PanelSide& side )
+flavorAndSide( const ::YAML::Node& doc, const char* key, Branding::PanelFlavor& flavor, Branding::PanelSide& side )
 {
     using PanelFlavor = Branding::PanelFlavor;
     using PanelSide = Branding::PanelSide;
@@ -552,7 +541,7 @@ flavorAndSide( const YAML::Node& doc, const char* key, Branding::PanelFlavor& fl
 }
 
 void
-Branding::initSimpleSettings( const YAML::Node& doc )
+Branding::initSimpleSettings( const ::YAML::Node& doc )
 {
     // *INDENT-OFF*
     // clang-format off
@@ -598,16 +587,16 @@ Branding::initSimpleSettings( const YAML::Node& doc )
     }
     if ( !m_windowWidth.isValid() )
     {
-        m_windowWidth = WindowDimension( CalamaresUtils::windowPreferredWidth, WindowDimensionUnit::Pixies );
+        m_windowWidth = WindowDimension( Calamares::windowPreferredWidth, WindowDimensionUnit::Pixies );
     }
     if ( !m_windowHeight.isValid() )
     {
-        m_windowHeight = WindowDimension( CalamaresUtils::windowPreferredHeight, WindowDimensionUnit::Pixies );
+        m_windowHeight = WindowDimension( Calamares::windowPreferredHeight, WindowDimensionUnit::Pixies );
     }
 }
 
 void
-Branding::initSlideshowSettings( const YAML::Node& doc )
+Branding::initSlideshowSettings( const ::YAML::Node& doc )
 {
     QDir componentDir( componentDirectory() );
 
@@ -638,9 +627,11 @@ Branding::initSlideshowSettings( const YAML::Node& doc )
         QString slideshowPath = QString::fromStdString( slideshow.as< std::string >() );
         QFileInfo slideshowFi( componentDir.absoluteFilePath( slideshowPath ) );
         if ( !slideshowFi.exists() || !slideshowFi.fileName().toLower().endsWith( ".qml" ) )
+        {
             bail( m_descriptorPath,
                   QString( "Slideshow file %1 does not exist or is not a valid QML file." )
                       .arg( slideshowFi.absoluteFilePath() ) );
+        }
         m_slideshowPath = slideshowFi.absoluteFilePath();
 
         // API choice is relevant for QML slideshow
@@ -665,6 +656,5 @@ Branding::initSlideshowSettings( const YAML::Node& doc )
         bail( m_descriptorPath, "Syntax error in slideshow sequence." );
     }
 }
-
 
 }  // namespace Calamares

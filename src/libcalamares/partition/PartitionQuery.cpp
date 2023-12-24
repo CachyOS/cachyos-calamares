@@ -18,7 +18,7 @@
 #include <kpmcore/core/partition.h>
 #include <kpmcore/core/partitiontable.h>
 
-namespace CalamaresUtils
+namespace Calamares
 {
 namespace Partition
 {
@@ -58,11 +58,15 @@ Partition*
 findPartitionByCurrentMountPoint( const QList< Device* >& devices, const QString& mountPoint )
 {
     for ( auto device : devices )
+    {
         for ( auto it = PartitionIterator::begin( device ); it != PartitionIterator::end( device ); ++it )
+        {
             if ( ( *it )->mountPoint() == mountPoint )
             {
                 return *it;
             }
+        }
+    }
     return nullptr;
 }
 
@@ -108,4 +112,4 @@ findPartitions( const QList< Device* >& devices, std::function< bool( Partition*
 
 
 }  // namespace Partition
-}  // namespace CalamaresUtils
+}  // namespace Calamares

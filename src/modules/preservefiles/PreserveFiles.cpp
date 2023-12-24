@@ -12,15 +12,16 @@
 #include "CalamaresVersion.h"
 #include "GlobalStorage.h"
 #include "JobQueue.h"
-#include "utils/CalamaresUtilsSystem.h"
+#include "compat/Variant.h"
 #include "utils/CommandList.h"
 #include "utils/Logger.h"
 #include "utils/StringExpander.h"
+#include "utils/System.h"
 #include "utils/Units.h"
 
 #include <QFile>
 
-using namespace CalamaresUtils::Units;
+using namespace Calamares::Units;
 
 QString
 atReplacements( QString s )
@@ -97,7 +98,7 @@ PreserveFiles::setConfigurationMap( const QVariantMap& configurationMap )
         return;
     }
 
-    if ( files.type() != QVariant::List )
+    if ( Calamares::typeOf( files ) != Calamares::ListVariantType )
     {
         cDebug() << "Configuration key 'files' is not a list for preservefiles.";
         return;
@@ -108,7 +109,7 @@ PreserveFiles::setConfigurationMap( const QVariantMap& configurationMap )
     {
         defaultPermissions = QStringLiteral( "root:root:0400" );
     }
-    CalamaresUtils::Permissions perm( defaultPermissions );
+    Calamares::Permissions perm( defaultPermissions );
 
     for ( const auto& li : files.toList() )
     {

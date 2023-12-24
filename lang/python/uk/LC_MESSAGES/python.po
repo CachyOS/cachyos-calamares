@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-24 23:38+0200\n"
+"POT-Creation-Date: 2023-11-13 20:13+0100\n"
 "PO-Revision-Date: 2017-08-09 10:34+0000\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>, 2023\n"
 "Language-Team: Ukrainian (https://app.transifex.com/calamares/teams/20061/uk/)\n"
@@ -27,17 +27,17 @@ msgstr ""
 msgid "Install bootloader."
 msgstr "Встановити завантажувач."
 
-#: src/modules/bootloader/main.py:640
+#: src/modules/bootloader/main.py:644
 msgid "Failed to install grub, no partitions defined in global storage"
 msgstr ""
 "Не вдалося встановити grub — на загальному сховищі даних не визначено "
 "розділів"
 
-#: src/modules/bootloader/main.py:895
+#: src/modules/bootloader/main.py:899
 msgid "Bootloader installation error"
 msgstr "Помилка встановлення завантажувача"
 
-#: src/modules/bootloader/main.py:896
+#: src/modules/bootloader/main.py:900
 msgid ""
 "The bootloader could not be installed. The installation command "
 "<pre>{!s}</pre> returned error code {!s}."
@@ -45,43 +45,43 @@ msgstr ""
 "Не вдалося встановити завантажувач. Програмою для встановлення "
 "<pre>{!s}</pre> повернуто код помилки {!s}."
 
-#: src/modules/displaymanager/main.py:507
+#: src/modules/displaymanager/main.py:509
 msgid "Cannot write LXDM configuration file"
 msgstr "Не вдалося виконати запис до файла налаштувань LXDM"
 
-#: src/modules/displaymanager/main.py:508
+#: src/modules/displaymanager/main.py:510
 msgid "LXDM config file {!s} does not exist"
 msgstr "Файла налаштувань LXDM {!s} не існує"
 
-#: src/modules/displaymanager/main.py:596
+#: src/modules/displaymanager/main.py:598
 msgid "Cannot write LightDM configuration file"
 msgstr "Не вдалося виконати запис до файла налаштувань LightDM"
 
-#: src/modules/displaymanager/main.py:597
+#: src/modules/displaymanager/main.py:599
 msgid "LightDM config file {!s} does not exist"
 msgstr "Файла налаштувань LightDM {!s} не існує"
 
-#: src/modules/displaymanager/main.py:682
+#: src/modules/displaymanager/main.py:684
 msgid "Cannot configure LightDM"
 msgstr "Не вдалося налаштувати LightDM"
 
-#: src/modules/displaymanager/main.py:683
+#: src/modules/displaymanager/main.py:685
 msgid "No LightDM greeter installed."
 msgstr "Засіб входу до системи LightDM не встановлено."
 
-#: src/modules/displaymanager/main.py:714
+#: src/modules/displaymanager/main.py:716
 msgid "Cannot write SLIM configuration file"
 msgstr "Не вдалося виконати запис до файла налаштувань SLIM"
 
-#: src/modules/displaymanager/main.py:715
+#: src/modules/displaymanager/main.py:717
 msgid "SLIM config file {!s} does not exist"
 msgstr "Файла налаштувань SLIM {!s} не існує"
 
-#: src/modules/displaymanager/main.py:933
+#: src/modules/displaymanager/main.py:935
 msgid "No display managers selected for the displaymanager module."
 msgstr "Не вибрано засобу керування дисплеєм для модуля displaymanager."
 
-#: src/modules/displaymanager/main.py:934
+#: src/modules/displaymanager/main.py:936
 msgid ""
 "The displaymanagers list is empty or undefined in both globalstorage and "
 "displaymanager.conf."
@@ -89,7 +89,7 @@ msgstr ""
 "Список засобів керування дисплеєм є порожнім або невизначеним у "
 "bothglobalstorage та displaymanager.conf."
 
-#: src/modules/displaymanager/main.py:1021
+#: src/modules/displaymanager/main.py:1023
 msgid "Display manager configuration was incomplete"
 msgstr "Налаштування засобу керування дисплеєм є неповними"
 
@@ -110,8 +110,8 @@ msgstr "Не вдалося виконати dracut для цілі. Повер�
 msgid "Dummy python job."
 msgstr "Фіктивне завдання python."
 
-#: src/modules/dummypython/main.py:37 src/modules/dummypython/main.py:93
-#: src/modules/dummypython/main.py:94
+#: src/modules/dummypython/main.py:37 src/modules/dummypython/main.py:91
+#: src/modules/dummypython/main.py:92
 msgid "Dummy python step {}"
 msgstr "Фіктивний крок python {}"
 
@@ -120,23 +120,23 @@ msgid "Writing fstab."
 msgstr "Записуємо fstab."
 
 #: src/modules/fstab/main.py:377 src/modules/fstab/main.py:383
-#: src/modules/fstab/main.py:411 src/modules/initcpiocfg/main.py:245
-#: src/modules/initcpiocfg/main.py:249 src/modules/initramfscfg/main.py:85
+#: src/modules/fstab/main.py:411 src/modules/initcpiocfg/main.py:256
+#: src/modules/initcpiocfg/main.py:260 src/modules/initramfscfg/main.py:85
 #: src/modules/initramfscfg/main.py:89 src/modules/localecfg/main.py:140
-#: src/modules/mount/main.py:329 src/modules/networkcfg/main.py:105
+#: src/modules/mount/main.py:334 src/modules/networkcfg/main.py:106
 #: src/modules/openrcdmcryptcfg/main.py:72
 #: src/modules/openrcdmcryptcfg/main.py:76 src/modules/rawfs/main.py:164
 msgid "Configuration Error"
 msgstr "Помилка налаштовування"
 
 #: src/modules/fstab/main.py:378 src/modules/initramfscfg/main.py:86
-#: src/modules/mount/main.py:330 src/modules/openrcdmcryptcfg/main.py:73
+#: src/modules/mount/main.py:335 src/modules/openrcdmcryptcfg/main.py:73
 #: src/modules/rawfs/main.py:165
 msgid "No partitions are defined for <pre>{!s}</pre> to use."
 msgstr "Не визначено розділів для використання <pre>{!s}</pre>."
 
 #: src/modules/fstab/main.py:384 src/modules/initramfscfg/main.py:90
-#: src/modules/localecfg/main.py:141 src/modules/networkcfg/main.py:106
+#: src/modules/localecfg/main.py:141 src/modules/networkcfg/main.py:107
 #: src/modules/openrcdmcryptcfg/main.py:77
 msgid "No root mount point is given for <pre>{!s}</pre> to use."
 msgstr ""
@@ -159,11 +159,11 @@ msgstr "Встановлюємо значення для апаратного г
 msgid "Configuring mkinitcpio."
 msgstr "Налаштовуємо mkinitcpio."
 
-#: src/modules/initcpiocfg/main.py:246
+#: src/modules/initcpiocfg/main.py:257
 msgid "No partitions are defined for <pre>initcpiocfg</pre>."
 msgstr "Не визначено розділів для <pre>initcpiocfg</pre>."
 
-#: src/modules/initcpiocfg/main.py:250
+#: src/modules/initcpiocfg/main.py:261
 msgid "No root mount point for <pre>initcpiocfg</pre>."
 msgstr "Немає кореневої точки монтування для <pre>initcpiocfg</pre>."
 
@@ -207,11 +207,11 @@ msgstr "Не вдалося розблокувати zpool"
 msgid "Failed to set zfs mountpoint"
 msgstr "Не вдалося встановити точку монтування zfs"
 
-#: src/modules/mount/main.py:365
+#: src/modules/mount/main.py:370
 msgid "zfs mounting error"
 msgstr "Помилка монтування zfs"
 
-#: src/modules/networkcfg/main.py:29
+#: src/modules/networkcfg/main.py:30
 msgid "Saving network configuration."
 msgstr "Зберігаємо налаштування мережі."
 
@@ -247,12 +247,12 @@ msgstr[1] "Вилучаємо %(num)d пакунки."
 msgstr[2] "Вилучаємо %(num)d пакунків."
 msgstr[3] "Вилучаємо один пакунок."
 
-#: src/modules/packages/main.py:725 src/modules/packages/main.py:737
-#: src/modules/packages/main.py:765
+#: src/modules/packages/main.py:740 src/modules/packages/main.py:752
+#: src/modules/packages/main.py:780
 msgid "Package Manager error"
 msgstr "Помилка засобу керування пакунками"
 
-#: src/modules/packages/main.py:726
+#: src/modules/packages/main.py:741
 msgid ""
 "The package manager could not prepare updates. The command <pre>{!s}</pre> "
 "returned error code {!s}."
@@ -260,7 +260,7 @@ msgstr ""
 "Засобу керування пакунками не вдалося приготувати оновлення. Програмою "
 "<pre>{!s}</pre> повернуто код помилки {!s}."
 
-#: src/modules/packages/main.py:738
+#: src/modules/packages/main.py:753
 msgid ""
 "The package manager could not update the system. The command <pre>{!s}</pre>"
 " returned error code {!s}."
@@ -268,7 +268,7 @@ msgstr ""
 "Засобу керування пакунками не вдалося оновити систему. Програмою "
 "<pre>{!s}</pre> повернуто код помилки {!s}."
 
-#: src/modules/packages/main.py:766
+#: src/modules/packages/main.py:781
 msgid ""
 "The package manager could not make changes to the installed system. The "
 "command <pre>{!s}</pre> returned error code {!s}."

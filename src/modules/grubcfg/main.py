@@ -17,6 +17,7 @@ import libcalamares
 import fileinput
 import os
 import re
+import shutil
 
 import gettext
 _ = gettext.translation("calamares-python",
@@ -95,19 +96,32 @@ def update_existing_config(default_grub, grub_config_items):
     :param default_grub: The absolute path to the grub config file
     :param grub_config_items: A dict holding the key value pairs representing the items
     """
-    for line in fileinput.input(default_grub, inplace=True):
-        line = line.strip()
-        if "=" in line:
-            # This may be a key, strip the leading comment if it has one
-            key = line.lstrip("#").split("=")[0].strip()
+    
+    default_grub_orig = default_grub + ".calamares"
+    shutil.move(default_grub, default_grub_orig)
 
-            # check if this is one of the keys we care about
-            if key in grub_config_items.keys():
-                print(f"{key}={grub_config_items[key]}")
-            else:
-                print(line)
-        else:
-            print(line)
+    with open(default_grub, "w") as grub_file:
+        with open(default_grub_orig, "r") as grub_orig_file:
+            for line in grub_orig_file.readlines():
+                line = line.strip()
+                if "=" in line:
+                    # This may be a key, strip the leading comment if it has one
+                    key = line.lstrip("#").split("=")[0].strip()
+
+                    # check if this is noe of the keys we care about
+                    if key in grub_config_items.keys():
+                        print(f"{key}={grub_config_items[key]}", file=grub_file)
+                        del grub_config_items[key]
+                    else:
+                        print(line, file=grub_file)
+                else:
+                    print(line, file=grub_file)
+
+            if len(grub_config_items) != 0:
+                for dict_key, dict_val in grub_config_items.items():
+                    print(f"{dict_key}={dict_val}", file=grub_file)
+
+    os.remove(default_grub_orig)
 
 
 def modify_grub_default(partitions, root_mount_point, distributor):
@@ -135,10 +149,12 @@ def modify_grub_default(partitions, root_mount_point, distributor):
     plymouth_bin = libcalamares.utils.target_env_call(
         ["sh", "-c", "which plymouth"]
         )
-
+    uses_systemd_hook = libcalamares.utils.target_env_call(
+        ["sh", "-c", "grep -q \"^HOOKS.*systemd\" /etc/mkinitcpio.conf"]
+        ) == 0
     # Shell exit value 0 means success
     have_plymouth = plymouth_bin == 0
-    have_dracut = dracut_bin == 0
+    use_systemd_naming = dracut_bin == 0 or uses_systemd_hook
 
     use_splash = ""
     swap_uuid = ""
@@ -159,7 +175,7 @@ def modify_grub_default(partitions, root_mount_point, distributor):
 
     cryptdevice_params = []
 
-    if have_dracut:
+    if use_systemd_naming:
         for partition in partitions:
             if partition["fs"] == "linuxswap" and not partition.get("claimed", None):
                 # Skip foreign swap
@@ -174,6 +190,8 @@ def modify_grub_default(partitions, root_mount_point, distributor):
 
             if partition["mountPoint"] == "/" and has_luks:
                 cryptdevice_params = [f"rd.luks.uuid={partition['luksUuid']}"]
+                if not unencrypted_separate_boot and uses_systemd_hook:
+                    cryptdevice_params.append("rd.luks.key=/crypto_keyfile.bin")
     else:
         for partition in partitions:
             if partition["fs"] == "linuxswap" and not partition.get("claimed", None):
@@ -210,7 +228,7 @@ def modify_grub_default(partitions, root_mount_point, distributor):
     if swap_uuid:
         kernel_params.append(f"resume=UUID={swap_uuid}")
 
-    if have_dracut and swap_outer_uuid:
+    if use_systemd_naming and swap_outer_uuid:
         kernel_params.append(f"rd.luks.uuid={swap_outer_uuid}")
     if swap_outer_mappername:
         kernel_params.append(f"resume=/dev/mapper/{swap_outer_mappername}")

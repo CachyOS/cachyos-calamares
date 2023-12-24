@@ -11,8 +11,8 @@
 
 #include "GlobalStorage.h"
 #include "JobQueue.h"
-#include "utils/CalamaresUtilsSystem.h"
 #include "utils/Logger.h"
+#include "utils/System.h"
 
 #ifdef WITH_KCONFIG
 #include <KConfigGroup>
@@ -36,7 +36,7 @@ PlasmaLnfJob::prettyName() const
 Calamares::JobResult
 PlasmaLnfJob::exec()
 {
-    auto* system = CalamaresUtils::System::instance();
+    auto* system = Calamares::System::instance();
     auto* gs = Calamares::JobQueue::instance()->globalStorage();
 
     QStringList command( { "sudo",

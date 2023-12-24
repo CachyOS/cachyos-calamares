@@ -24,9 +24,8 @@
 
 QTEST_GUILESS_MAIN( ShellProcessTests )
 
-using CommandList = CalamaresUtils::CommandList;
+using CommandList = Calamares::CommandList;
 using std::operator""s;
-
 
 ShellProcessTests::ShellProcessTests() {}
 
@@ -40,43 +39,43 @@ ShellProcessTests::initTestCase()
 void
 ShellProcessTests::testProcessListSampleConfig()
 {
-    YAML::Node doc;
+    ::YAML::Node doc;
 
     QString filename = QStringLiteral( "shellprocess.conf" );
     QFile fi( QString( "%1/%2" ).arg( BUILD_AS_TEST, filename ) );
 
     QVERIFY( fi.exists() );
-    doc = YAML::LoadFile( fi.fileName().toStdString() );
+    doc = ::YAML::LoadFile( fi.fileName().toStdString() );
 
-    CommandList cl( CalamaresUtils::yamlMapToVariant( doc ).value( "script" ) );
+    CommandList cl( Calamares::YAML::mapToVariant( doc ).value( "script" ) );
     QVERIFY( !cl.isEmpty() );
     QCOMPARE( cl.count(), 3 );
 
-    QCOMPARE( cl.at( 0 ).timeout(), CalamaresUtils::CommandLine::TimeoutNotSet() );
+    QCOMPARE( cl.at( 0 ).timeout(), Calamares::CommandLine::TimeoutNotSet() );
     QCOMPARE( cl.at( 2 ).timeout(), 3600s );  // slowloris
 }
 
 void
 ShellProcessTests::testProcessListFromList()
 {
-    YAML::Node doc = YAML::Load( R"(---
+    ::YAML::Node doc = ::YAML::Load( R"(---
 script:
     - "ls /tmp"
     - "ls /nonexistent"
     - "/bin/false"
 )" );
-    CommandList cl( CalamaresUtils::yamlMapToVariant( doc ).value( "script" ) );
+    CommandList cl( Calamares::YAML::mapToVariant( doc ).value( "script" ) );
     QVERIFY( !cl.isEmpty() );
     QCOMPARE( cl.count(), 3 );
 
     // Contains 1 bad element
-    doc = YAML::Load( R"(---
+    doc = ::YAML::Load( R"(---
 script:
     - "ls /tmp"
     - false
     - "ls /nonexistent"
 )" );
-    CommandList cl1( CalamaresUtils::yamlMapToVariant( doc ).value( "script" ) );
+    CommandList cl1( Calamares::YAML::mapToVariant( doc ).value( "script" ) );
     QVERIFY( !cl1.isEmpty() );
     QCOMPARE( cl1.count(), 2 );  // One element ignored
 }
@@ -87,7 +86,7 @@ ShellProcessTests::testProcessListFromString()
     YAML::Node doc = YAML::Load( R"(---
 script: "ls /tmp"
 )" );
-    CommandList cl( CalamaresUtils::yamlMapToVariant( doc ).value( "script" ) );
+    CommandList cl( Calamares::YAML::mapToVariant( doc ).value( "script" ) );
 
     QVERIFY( !cl.isEmpty() );
     QCOMPARE( cl.count(), 1 );
@@ -98,7 +97,7 @@ script: "ls /tmp"
     doc = YAML::Load( R"(---
 script: false
 )" );
-    CommandList cl1( CalamaresUtils::yamlMapToVariant( doc ).value( "script" ) );
+    CommandList cl1( Calamares::YAML::mapToVariant( doc ).value( "script" ) );
     QVERIFY( cl1.isEmpty() );
     QCOMPARE( cl1.count(), 0 );
 }
@@ -111,7 +110,7 @@ script:
     command: "ls /tmp"
     timeout: 20
 )" );
-    CommandList cl( CalamaresUtils::yamlMapToVariant( doc ).value( "script" ) );
+    CommandList cl( Calamares::YAML::mapToVariant( doc ).value( "script" ) );
 
     QVERIFY( !cl.isEmpty() );
     QCOMPARE( cl.count(), 1 );
@@ -128,12 +127,12 @@ script:
       timeout: 12
     - "-/bin/false"
 )" );
-    CommandList cl( CalamaresUtils::yamlMapToVariant( doc ).value( "script" ) );
+    CommandList cl( Calamares::YAML::mapToVariant( doc ).value( "script" ) );
     QVERIFY( !cl.isEmpty() );
     QCOMPARE( cl.count(), 2 );
     QCOMPARE( cl.at( 0 ).timeout(), 12s );
     QCOMPARE( cl.at( 0 ).command(), QStringLiteral( "ls /tmp" ) );
-    QCOMPARE( cl.at( 1 ).timeout(), CalamaresUtils::CommandLine::TimeoutNotSet() );  // not set
+    QCOMPARE( cl.at( 1 ).timeout(), Calamares::CommandLine::TimeoutNotSet() );  // not set
 }
 
 void
@@ -143,13 +142,13 @@ ShellProcessTests::testRootSubstitution()
 script:
     - "ls /tmp"
 )" );
-    QVariant plainScript = CalamaresUtils::yamlMapToVariant( doc ).value( "script" );
-    QVariant rootScript = CalamaresUtils::yamlMapToVariant( YAML::Load( R"(---
+    QVariant plainScript = Calamares::YAML::mapToVariant( doc ).value( "script" );
+    QVariant rootScript = Calamares::YAML::mapToVariant( YAML::Load( R"(---
 script:
     - "ls ${ROOT}"
 )" ) )
                               .value( "script" );
-    QVariant userScript = CalamaresUtils::yamlMapToVariant( YAML::Load( R"(---
+    QVariant userScript = Calamares::YAML::mapToVariant( YAML::Load( R"(---
 script:
     - mktemp -d ${ROOT}/calatestXXXXXXXX
     - "chown ${USER} ${ROOT}/calatest*"
@@ -158,9 +157,13 @@ script:
                               .value( "script" );
 
     if ( !Calamares::JobQueue::instance() )
+    {
         (void)new Calamares::JobQueue( nullptr );
+    }
     if ( !Calamares::Settings::instance() )
+    {
         (void)Calamares::Settings::init( QString() );
+    }
 
     Calamares::GlobalStorage* gs = Calamares::JobQueue::instance()->globalStorage();
     QVERIFY( gs != nullptr );
@@ -193,7 +196,7 @@ script:
     // Show that shell expansion is now quoted.
     gs->insert( "username", "`id -u`" );
     {
-        CalamaresUtils::CommandLine c { QStringLiteral( "chown ${USER}" ), std::chrono::seconds( 0 ) };
+        Calamares::CommandLine c { QStringLiteral( "chown ${USER}" ), std::chrono::seconds( 0 ) };
         QCOMPARE( c.expand().command(), QStringLiteral( "chown '`id -u`'" ) );
     }
     // Now play dangerous games with shell expansion -- except the internal command is now

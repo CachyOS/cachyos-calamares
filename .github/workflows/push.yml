@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - calamares
-      - 3.2.x-stable
   pull_request:
     types:
       - opened
@@ -18,8 +17,9 @@ env:
   CMAKE_ARGS: |
     -DWEBVIEW_FORCE_WEBKIT=1
     -DKDE_INSTALL_USE_QT_SYS_PATHS=ON
-    -DWITH_PYTHONQT=OFF"
+    -DWITH_PYTHONQT=OFF
     -DCMAKE_BUILD_TYPE=Debug
+  GIT_HASH: ${{ github.event.head_commit.id }}
 
 jobs:
   build:
@@ -28,29 +28,11 @@ jobs:
       image: docker://kdeneon/plasma:user
       options: --tmpfs /build:rw --user 0:0
     steps:
-      - name: "prepare env"
-        uses: calamares/actions/prepare-neon@v4
       - name: "prepare source"
-        uses: calamares/actions/generic-checkout@330c45ae1eb6efad4ad75a6dd887c3c5d5fe1590
+        uses: calamares/actions/generic-checkout@v5
+      - name: "install dependencies"
+        shell: bash
+        run: ./ci/deps-neon.sh
       - name: "build"
-        id: build
-        uses: calamares/actions/generic-build@v4
-      - name: "notify: ok"
-        if: ${{ success() && github.repository == 'calamares/calamares' }}
-        uses: calamares/actions/matrix-notify@v4
-        with:
-          token: ${{ secrets.MATRIX_TOKEN }}
-          room: ${{ secrets.MATRIX_ROOM }}
-          message: |
-            OK ${{ github.workflow }} in ${{ github.repository }} by ${{ github.actor }} on ${{ github.event.ref }}
-            .. ${{ steps.build.outputs.git-summary }}
-      - name: "notify: fail"
-        if: ${{ failure() && github.repository == 'calamares/calamares' }}
-        uses: calamares/actions/matrix-notify@v4
-        with:
-          token: ${{ secrets.MATRIX_TOKEN }}
-          room: ${{ secrets.MATRIX_ROOM }}
-          message: |
-            FAIL ${{ github.workflow }} in ${{ github.repository }} by ${{ github.actor }} on ${{ github.event.ref }}
-              .. ${{ steps.build.outputs.git-summary }}
-              .. ${{ github.event.compare }}
+        shell: bash
+        run: ./ci/build.sh

@@ -130,7 +130,6 @@ UserTests::testGetSet()
     }
 }
 
-
 void
 UserTests::testDefaultGroups()
 {
@@ -214,11 +213,11 @@ UserTests::testDefaultGroupsYAML()
     QFETCH( QString, group );
 
     // BUILD_AS_TEST is the source-directory path
-    QFile fi( QString( "%1/%2" ).arg( BUILD_AS_TEST, filename ) );
+    QFileInfo fi( QString( "%1/%2" ).arg( BUILD_AS_TEST, filename ) );
     QVERIFY( fi.exists() );
 
     bool ok = false;
-    const auto map = CalamaresUtils::loadYaml( fi, &ok );
+    const auto map = Calamares::YAML::load( fi, &ok );
     QVERIFY( ok );
     QVERIFY( map.count() > 0 );
 
@@ -228,7 +227,6 @@ UserTests::testDefaultGroupsYAML()
     QCOMPARE( c.defaultGroups().count(), count );
     QVERIFY( c.defaultGroups().contains( group ) );
 }
-
 
 void
 UserTests::testHostActions_data()
@@ -293,7 +291,6 @@ UserTests::testHostActions2()
     QCOMPARE( c.writeEtcHosts(), false );
 }
 
-
 void
 UserTests::testHostSuggestions_data()
 {
@@ -335,17 +332,16 @@ UserTests::testHostSuggestions()
     QCOMPARE( makeHostnameSuggestion( templateString, fullName, login ), result );
 }
 
-
 void
 UserTests::testPasswordChecks()
 {
     {
         PasswordCheckList l;
         QCOMPARE( l.length(), 0 );
-        QVERIFY( !addPasswordCheck( "nonempty", QVariant( false ), l ) );  // a silly setting
+        QVERIFY( !addPasswordCheck( "nonempty", QVariant( false ), l ) );  // legacy option, now ignored
         QCOMPARE( l.length(), 0 );
-        QVERIFY( addPasswordCheck( "nonempty", QVariant( true ), l ) );
-        QCOMPARE( l.length(), 1 );
+        QVERIFY( !addPasswordCheck( "nonempty", QVariant( true ), l ) ); // still ignored
+        QCOMPARE( l.length(), 0 );
     }
 }
 
@@ -450,11 +446,11 @@ UserTests::testAutoLogin()
     QFETCH( QString, autoLoginGroupName );
 
     // BUILD_AS_TEST is the source-directory path
-    QFile fi( QString( "%1/%2" ).arg( BUILD_AS_TEST, filename ) );
+    QFileInfo fi( QString( "%1/%2" ).arg( BUILD_AS_TEST, filename ) );
     QVERIFY( fi.exists() );
 
     bool ok = false;
-    const auto map = CalamaresUtils::loadYaml( fi, &ok );
+    const auto map = Calamares::YAML::load( fi, &ok );
     QVERIFY( ok );
     QVERIFY( map.count() > 0 );
 
@@ -502,11 +498,11 @@ UserTests::testUserYAML()
     QFETCH( QString, shell );
 
     // BUILD_AS_TEST is the source-directory path
-    QFile fi( QString( "%1/%2" ).arg( BUILD_AS_TEST, filename ) );
+    QFileInfo fi( QString( "%1/%2" ).arg( BUILD_AS_TEST, filename ) );
     QVERIFY( fi.exists() );
 
     bool ok = false;
-    const auto map = CalamaresUtils::loadYaml( fi, &ok );
+    const auto map = Calamares::YAML::load( fi, &ok );
     QVERIFY( ok );
     QVERIFY( map.count() > 0 );
 
@@ -514,7 +510,6 @@ UserTests::testUserYAML()
     c.setConfigurationMap( map );
     QCOMPARE( c.userShell(), shell );
 }
-
 
 QTEST_GUILESS_MAIN( UserTests )
 

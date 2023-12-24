@@ -20,9 +20,9 @@
 #include "partition/Mount.h"
 #include "partition/PartitionIterator.h"
 #include "partition/PartitionQuery.h"
-#include "utils/CalamaresUtilsSystem.h"
 #include "utils/Logger.h"
 #include "utils/RAII.h"
+#include "utils/System.h"
 
 #include <kpmcore/backend/corebackend.h>
 #include <kpmcore/backend/corebackendmanager.h>
@@ -32,8 +32,12 @@
 #include <QProcess>
 #include <QTemporaryDir>
 
-using CalamaresUtils::Partition::isPartitionFreeSpace;
-using CalamaresUtils::Partition::isPartitionNew;
+using Calamares::Partition::isPartitionFreeSpace;
+using Calamares::Partition::isPartitionNew;
+
+using Calamares::Units::operator""_MiB;
+
+static constexpr qint64 efiSpecificationHardMinimumSize = 32_MiB;
 
 namespace PartUtils
 {
@@ -97,7 +101,7 @@ canBeReplaced( Partition* candidate, const Logger::Once& o )
     }
 
     qint64 availableStorageB = candidate->capacity();
-    qint64 requiredStorageB = CalamaresUtils::GiBtoBytes( requiredStorageGiB + 0.5 );
+    qint64 requiredStorageB = Calamares::GiBtoBytes( requiredStorageGiB + 0.5 );
 
     if ( availableStorageB > requiredStorageB )
     {
@@ -111,11 +115,10 @@ canBeReplaced( Partition* candidate, const Logger::Once& o )
         deb << Logger::Continuation << "Required  storage B:" << requiredStorageB
             << QString( "(%1GiB)" ).arg( requiredStorageGiB );
         deb << Logger::Continuation << "Available storage B:" << availableStorageB
-            << QString( "(%1GiB)" ).arg( CalamaresUtils::BytesToGiB( availableStorageB ) );
+            << QString( "(%1GiB)" ).arg( Calamares::BytesToGiB( availableStorageB ) );
         return false;
     }
 }
-
 
 bool
 canBeResized( Partition* candidate, const Logger::Once& o )
@@ -174,7 +177,7 @@ canBeResized( Partition* candidate, const Logger::Once& o )
     // We require a little more for partitioning overhead and swap file
     double advisedStorageGiB = requiredStorageGiB + 0.5 + 2.0;
     qint64 availableStorageB = candidate->available();
-    qint64 advisedStorageB = CalamaresUtils::GiBtoBytes( advisedStorageGiB );
+    qint64 advisedStorageB = Calamares::GiBtoBytes( advisedStorageGiB );
 
     if ( availableStorageB > advisedStorageB )
     {
@@ -189,13 +192,12 @@ canBeResized( Partition* candidate, const Logger::Once& o )
         deb << Logger::Continuation << "Required  storage B:" << advisedStorageB
             << QString( "(%1GiB)" ).arg( advisedStorageGiB );
         deb << Logger::Continuation << "Available storage B:" << availableStorageB
-            << QString( "(%1GiB)" ).arg( CalamaresUtils::BytesToGiB( availableStorageB ) ) << "for"
+            << QString( "(%1GiB)" ).arg( Calamares::BytesToGiB( availableStorageB ) ) << "for"
             << convenienceName( candidate ) << "length:" << candidate->length()
             << "sectorsUsed:" << candidate->sectorsUsed() << "fsType:" << candidate->fileSystem().name();
         return false;
     }
 }
-
 
 bool
 canBeResized( DeviceModel* dm, const QString& partitionPath, const Logger::Once& o )
@@ -205,7 +207,7 @@ canBeResized( DeviceModel* dm, const QString& partitionPath, const Logger::Once&
         for ( int i = 0; i < dm->rowCount(); ++i )
         {
             Device* dev = dm->deviceForIndex( dm->index( i ) );
-            Partition* candidate = CalamaresUtils::Partition::findPartitionByPath( { dev }, partitionPath );
+            Partition* candidate = Calamares::Partition::findPartitionByPath( { dev }, partitionPath );
             if ( candidate )
             {
                 return canBeResized( candidate, o );
@@ -221,14 +223,13 @@ canBeResized( DeviceModel* dm, const QString& partitionPath, const Logger::Once&
     }
 }
 
-
 static FstabEntryList
 lookForFstabEntries( const QString& partitionPath )
 {
     QStringList mountOptions { "ro" };
 
-    auto r = CalamaresUtils::System::runCommand( CalamaresUtils::System::RunLocation::RunInHost,
-                                                 { "blkid", "-s", "TYPE", "-o", "value", partitionPath } );
+    auto r = Calamares::System::runCommand( Calamares::System::RunLocation::RunInHost,
+                                            { "blkid", "-s", "TYPE", "-o", "value", partitionPath } );
     if ( r.getExitCode() )
     {
         cWarning() << "blkid on" << partitionPath << "failed.";
@@ -246,7 +247,7 @@ lookForFstabEntries( const QString& partitionPath )
 
     FstabEntryList fstabEntries;
 
-    CalamaresUtils::Partition::TemporaryMount mount( partitionPath, QString(), mountOptions.join( ',' ) );
+    Calamares::Partition::TemporaryMount mount( partitionPath, QString(), mountOptions.join( ',' ) );
     if ( mount.isValid() )
     {
         QFile fstabFile( mount.path() + "/etc/fstab" );
@@ -278,7 +279,6 @@ lookForFstabEntries( const QString& partitionPath )
 
     return fstabEntries;
 }
-
 
 static QString
 findPartitionPathForMountPoint( const FstabEntryList& fstab, const QString& mountPoint )
@@ -354,7 +354,6 @@ findPartitionPathForMountPoint( const FstabEntryList& fstab, const QString& moun
 
     return QString();
 }
-
 
 OsproberEntryList
 runOsprober( DeviceModel* dm )
@@ -476,10 +475,36 @@ isEfiFilesystemSuitableType( const Partition* candidate )
 }
 
 bool
-isEfiFilesystemSuitableSize( const Partition* candidate )
+isEfiFilesystemRecommendedSize( const Partition* candidate )
 {
     auto size = candidate->capacity();  // bytes
     if ( size <= 0 )
+    {
+        return false;
+    }
+
+    if ( size >= efiFilesystemRecommendedSize() )
+    {
+        return true;
+    }
+    else
+    {
+        cWarning() << "Filesystem for EFI is smaller than recommended (" << size << "bytes)";
+        return false;
+    }
+}
+
+bool
+isEfiFilesystemMinimumSize( const Partition* candidate )
+{
+    using Calamares::Units::operator""_MiB;
+
+    auto size = candidate->capacity();  // bytes
+    if ( size <= 0 )
+    {
+        return false;
+    }
+    if ( size < efiSpecificationHardMinimumSize )
     {
         return false;
     }
@@ -490,11 +515,10 @@ isEfiFilesystemSuitableSize( const Partition* candidate )
     }
     else
     {
-        cWarning() << "Filesystem for EFI is too small (" << size << "bytes)";
+        cWarning() << "Filesystem for EFI is below minimum (" << size << "bytes)";
         return false;
     }
 }
-
 
 bool
 isEfiBootable( const Partition* candidate )
@@ -506,30 +530,64 @@ isEfiBootable( const Partition* candidate )
     return flags.testFlag( KPM_PARTITION_FLAG_ESP );
 }
 
-// TODO: this is configurable via the config file **already**
-qint64
-efiFilesystemMinimumSize()
+QString
+efiFilesystemRecommendedSizeGSKey()
 {
-    using CalamaresUtils::Units::operator""_MiB;
+    return QStringLiteral( "efiSystemPartitionSize_i" );
+}
+
+qint64
+efiFilesystemRecommendedSize()
+{
+    const QString key = efiFilesystemRecommendedSizeGSKey();
 
     qint64 uefisys_part_sizeB = 300_MiB;
 
     // The default can be overridden; the key used here comes
     // from the partition module Config.cpp
     auto* gs = Calamares::JobQueue::instance()->globalStorage();
-    if ( gs->contains( "efiSystemPartitionSize_i" ) )
+    if ( gs->contains( key ) )
     {
-        qint64 v = gs->value( "efiSystemPartitionSize_i" ).toLongLong();
+        qint64 v = gs->value( key ).toLongLong();
         uefisys_part_sizeB = v > 0 ? v : 0;
     }
     // There is a lower limit of what can be configured
-    if ( uefisys_part_sizeB < 32_MiB )
+    if ( uefisys_part_sizeB < efiSpecificationHardMinimumSize )
     {
-        uefisys_part_sizeB = 32_MiB;
+        uefisys_part_sizeB = efiSpecificationHardMinimumSize;
     }
     return uefisys_part_sizeB;
 }
 
+QString
+efiFilesystemMinimumSizeGSKey()
+{
+    return QStringLiteral( "efiSystemPartitionMinimumSize_i" );
+}
+
+qint64
+efiFilesystemMinimumSize()
+{
+    const QString key = efiFilesystemMinimumSizeGSKey();
+
+    qint64 uefisys_part_sizeB = efiFilesystemRecommendedSize();
+
+    // The default can be overridden; the key used here comes
+    // from the partition module Config.cpp
+    auto* gs = Calamares::JobQueue::instance()->globalStorage();
+    if ( gs->contains( key ) )
+    {
+        qint64 v = gs->value( key ).toLongLong();
+        uefisys_part_sizeB = v > 0 ? v : 0;
+    }
+    // There is a lower limit of what can be configured
+    if ( uefisys_part_sizeB < efiSpecificationHardMinimumSize )
+    {
+        uefisys_part_sizeB = efiSpecificationHardMinimumSize;
+    }
+    return uefisys_part_sizeB;
+    return efiSpecificationHardMinimumSize;
+}
 
 QString
 canonicalFilesystemName( const QString& fsName, FileSystem::Type* fsType )
@@ -602,11 +660,15 @@ FstabEntry::fromEtcFstab( const QString& rawLine )
 {
     QString line = rawLine.simplified();
     if ( line.startsWith( '#' ) )
+    {
         return FstabEntry { QString(), QString(), QString(), QString(), 0, 0 };
+    }
 
     QStringList splitLine = line.split( ' ' );
     if ( splitLine.length() != 6 )
+    {
         return FstabEntry { QString(), QString(), QString(), QString(), 0, 0 };
+    }
 
     return FstabEntry {
         splitLine.at( 0 ),  // path, or UUID, or LABEL, etc.

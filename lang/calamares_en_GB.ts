@@ -829,6 +829,16 @@ The installer will quit and all changes will be lost.</translation>
       <translation type="unfinished"/>
     </message>
     <message>
+      <location filename="../src/modules/netinstall/PackageModel.cpp" line="240"/>
+      <source>Multiple Environments selected</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location filename="../src/modules/netinstall/PackageModel.cpp" line="241"/>
+      <source>Oops! Can't Move Forward 🚫\nIt seems you've selected multiple Desktop Environments/Window Managers. To continue, kindly uncheck the DE/WM settings package or the entire group. Thank you!</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
       <location filename="../src/modules/partition/jobs/ClearMountsJob.cpp" line="371"/>
       <source>Clear mounts for partitioning operations on %1</source>
       <translation>Clear mounts for partitioning operations on %1</translation>

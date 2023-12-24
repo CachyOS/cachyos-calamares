@@ -2866,6 +2866,16 @@ The installer will quit and all changes will be lost.</source>
       <source>Description</source>
       <translation>Описание</translation>
     </message>
+    <message>
+      <location filename="../src/modules/netinstall/PackageModel.cpp" line="240"/>
+      <source>Multiple Environments selected</source>
+      <translation>Выбрано несколько сред</translation>
+    </message>
+    <message>
+      <location filename="../src/modules/netinstall/PackageModel.cpp" line="241"/>
+      <source>Oops! Can&apos;t Move Forward\nIt seems you&apos;ve selected multiple Desktop Environments/Window Managers. To continue, kindly uncheck the DE/WM settings package or the entire group. Thank you!</source>
+      <translation>Упс! Не удается продвинуться вперед\nКажется, вы выбрали несколько сред рабочего стола / оконных менеджеров. Чтобы продолжить, пожалуйста, снимите флажок с пакета настроек DE/WM или со всей группы. Спасибо!</translation>
+    </message>
   </context>
   <context>
     <name>Page_Keyboard</name>

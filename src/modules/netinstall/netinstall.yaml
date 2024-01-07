@@ -15,7 +15,6 @@
      - linux-cachyos-lts
      - linux-cachyos-lts-headers
      - chwd
-     - chwd-db
 - name: "CachyOS Packages"
   description: "needed CachyOS packages"
   hidden: false

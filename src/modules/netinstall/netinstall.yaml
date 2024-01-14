@@ -212,6 +212,8 @@
   packages:
     - linux-cachyos-bore
     - linux-cachyos-bore-headers
+    - linux-cachyos-eevdf
+    - linux-cachyos-eevdf-headers
     - linux-cachyos-hardened
     - linux-cachyos-hardened-headers
     - linux-cachyos-lts
@@ -761,6 +763,7 @@
   critical: true
   packages:
     - linux-cachyos-bore-zfs
+    - linux-cachyos-eevdf-zfs
     - linux-cachyos-hardened-zfs
     - linux-cachyos-lts-zfs
     - linux-cachyos-sched-ext-zfs

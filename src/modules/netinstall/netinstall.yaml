@@ -168,6 +168,7 @@
           - mtools
           - sg3_utils
           - sof-firmware
+          - linux-firmware
       - name: "power"
         description: "Powermanagement support"
         selected: true
@@ -271,6 +272,7 @@
     - xsettingsd
     - xdg-desktop-portal
     - xdg-desktop-portal-kde
+    - phonon-qt5-vlc
 - name: "GNOME-Desktop"
   description: "GNOME Desktop - designed to put you in control and get things done."
   hidden: false

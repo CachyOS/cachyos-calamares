@@ -222,14 +222,14 @@ PackageModel::setData( const QModelIndex& index, const QVariant& value, int role
             .filter( "cachyos-" )
             .filter( "-settings" );
         const auto dotfilesCount = [](auto&& packageNames) {
-            using std::string_view_literals;
+            using namespace std::string_view_literals;
             static constexpr std::array kDotfilePackages{"cachyos-gnome-settings"sv, "cachyos-hyprland-settings"sv, "cachyos-i3wm-settings"sv, "cachyos-kde-settings"sv,
                                                          "cachyos-openbox-settings"sv, "cachyos-qtile-settings"sv, "cachyos-wayfire-settings"sv, "cachyos-xfce-settings"sv};
 
             size_t dotfilesCount{};
             for ( auto&& packageName : packageNames ) {
                 const auto pkgnameBytes = std::string_view{ packageName.toUtf8() };
-                if ( std::find(needles.begin(), needles.end(), pkgnameBytes ) != needles.end() ) {
+                if ( std::find(kDotfilePackages.begin(), kDotfilePackages.end(), pkgnameBytes ) != kDotfilePackages.end() ) {
                     ++dotfilesCount;
                 }
             }

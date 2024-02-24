@@ -12,12 +12,17 @@
 
 // This file is called PythonJob.h because it would otherwise
 // clashwith the Job.h in libcalamares proper.
-
+#include "DllMacro.h"
 #include "Job.h"
 
 #include <QVariantMap>
 
 #include <memory>
+
+#if WITH_PYBIND11
+#else
+#error Source only for pybind11
+#endif
 
 namespace Calamares
 {
@@ -27,10 +32,10 @@ class Job : public ::Calamares::Job
 {
     Q_OBJECT
 public:
-    explicit Job( const QString& scriptFile,
-                  const QString& workingPath,
-                  const QVariantMap& moduleConfiguration = QVariantMap(),
-                  QObject* parent = nullptr );
+    explicit DLLEXPORT Job( const QString& scriptFile,
+                            const QString& workingPath,
+                            const QVariantMap& moduleConfiguration = QVariantMap(),
+                            QObject* parent = nullptr );
     ~Job() override;
 
     QString prettyName() const override;
@@ -48,7 +53,7 @@ public:
      * a character literal or something that lives longer than the
      * job. Pass in @c nullptr to switch off pre-run code.
      */
-    static void setInjectedPreScript( const char* script );
+    static DLLEXPORT void setInjectedPreScript( const char* script );
 
     /** @brief Accessors for JobProxy */
     QString workingPath() const;

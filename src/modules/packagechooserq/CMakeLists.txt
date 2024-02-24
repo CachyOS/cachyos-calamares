@@ -11,46 +11,21 @@ endif()
 
 find_package(${qtname} ${QT_VERSION} CONFIG REQUIRED Core)
 
-# Add optional libraries here
-set(USER_EXTRA_LIB)
-
 # include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../packagechooser )
 set(_packagechooser ${CMAKE_CURRENT_SOURCE_DIR}/../packagechooser)
-include_directories(${_packagechooser})
 
 ### OPTIONAL AppData XML support in PackageModel
 #
 #
-option(BUILD_APPDATA "Support appdata: items in PackageChooser (requires QtXml)" ON)
+option(BUILD_APPDATA "Support appdata: items in PackageChooser (requires QtXml)" OFF)
 if(BUILD_APPDATA)
-    find_package(${qtname} COMPONENTS Xml)
-    if(TARGET ${qtname}::Xml)
-        add_definitions(-DHAVE_APPDATA)
-        list(APPEND _extra_libraries ${qtname}::Xml)
-        list(APPEND _extra_src ${_packagechooser}/ItemAppData.cpp)
-    endif()
+    find_package(${qtname} REQUIRED COMPONENTS Xml)
 endif()
 
 ### OPTIONAL AppStream support in PackageModel
 #
 #
-option(BUILD_APPSTREAM "Support appstream: items in PackageChooser (requires libappstream-qt)" ON)
-if(BUILD_APPSTREAM)
-    find_package(AppStreamQt)
-    set_package_properties(
-        AppStreamQt
-        PROPERTIES
-        DESCRIPTION "Support for AppStream (cache) data"
-        URL "https://github.com/ximion/appstream"
-        PURPOSE "AppStream provides package data"
-        TYPE OPTIONAL
-    )
-    if(AppStreamQt_FOUND)
-        add_definitions(-DHAVE_APPSTREAM_VERSION=${AppStreamQt_VERSION_MAJOR})
-        list(APPEND _extra_libraries AppStreamQt)
-        list(APPEND _extra_src ${_packagechooser}/ItemAppStream.cpp)
-    endif()
-endif()
+include(AppStreamHelper)
 
 calamares_add_plugin(packagechooserq
     TYPE viewmodule
@@ -67,3 +42,15 @@ calamares_add_plugin(packagechooserq
         ${_extra_libraries}
     SHARED_LIB
 )
+target_include_directories(${packagechooserq_TARGET} PRIVATE ${_packagechooser})
+
+if(AppStreamQt_FOUND)
+    target_link_libraries(${packagechooserq_TARGET} PRIVATE calamares::appstreamqt)
+    target_sources(${packagechooserq_TARGET} PRIVATE ${_packagechooser}/ItemAppStream.cpp)
+endif()
+
+if(BUILD_APPDATA AND TARGET ${qtname}::Xml)
+    target_compile_definitions(${packagechooserq_TARGET} PRIVATE HAVE_APPDATA)
+    target_link_libraries(${packagechooserq_TARGET} PRIVATE ${qtname}::Xml)
+    target_sources(${packagechooserq_TARGET} PRIVATE ${_packagechooser}/ItemAppData.cpp)
+endif()

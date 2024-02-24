@@ -115,13 +115,8 @@ LocaleTests::testLanguageScripts()
 void
 LocaleTests::testEsperanto()
 {
-#if QT_VERSION < QT_VERSION_CHECK( 5, 12, 2 )
-    QCOMPARE( QLocale( "eo" ).language(), QLocale::C );
-    QCOMPARE( QLocale( QLocale::Esperanto ).language(), QLocale::English );
-#else
     QCOMPARE( QLocale( "eo" ).language(), QLocale::Esperanto );
     QCOMPARE( QLocale( QLocale::Esperanto ).language(), QLocale::Esperanto );  // Probably fails on 5.12, too
-#endif
 }
 
 void
@@ -378,7 +373,7 @@ LocaleTests::testTZLookup()
 
     QVERIFY( zones.find( "America", "New_York" ) );
     QCOMPARE( zones.find( "America", "New_York" )->zone(), QStringLiteral( "New_York" ) );
-    QCOMPARE( zones.find( "America", "New_York" )->tr(), QStringLiteral( "New York" ) );
+    QCOMPARE( zones.find( "America", "New_York" )->translated(), QStringLiteral( "New York" ) );
 
     QVERIFY( !zones.find( "Europe", "New_York" ) );
     QVERIFY( !zones.find( "America", "New York" ) );

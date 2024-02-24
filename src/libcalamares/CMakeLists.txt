@@ -10,9 +10,6 @@
 # (non-GUI) jobs.
 #
 
-add_definitions(-DDLLEXPORT_PRO)
-include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
-
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CalamaresConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/CalamaresConfig.h)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CalamaresVersion.h.in ${CMAKE_CURRENT_BINARY_DIR}/CalamaresVersion.h)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CalamaresVersionX.h.in ${CMAKE_CURRENT_BINARY_DIR}/CalamaresVersionX.h)
@@ -35,6 +32,14 @@ endforeach()
 string(APPEND _names_tu "};\n} // namespace\n#endif\n\n")
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/CalamaresTranslations.cc "${_names_tu}")
 
+# Some implementation details are compiled twice, because
+# we want them in the library with visibility("hidden")
+# but also need them in tests.
+set(_geoip_src
+    geoip/GeoIPFixed.cpp
+    geoip/GeoIPJSON.cpp
+)
+
 add_library(
     calamares
     SHARED
@@ -48,8 +53,7 @@ add_library(
     Settings.cpp
     # GeoIP services
     geoip/Interface.cpp
-    geoip/GeoIPFixed.cpp
-    geoip/GeoIPJSON.cpp
+    ${_geoip_src}
     geoip/Handler.cpp
     # Locale-data service
     locale/Global.cpp
@@ -98,10 +102,18 @@ set_target_properties(
     PROPERTIES
         VERSION ${CALAMARES_VERSION_SHORT}
         SOVERSION ${CALAMARES_SOVERSION}
-        INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_INSTALL_FULL_INCLUDEDIR}/libcalamares
+        CXX_VISIBILITY_PRESET hidden
 )
 target_link_libraries(calamares LINK_PUBLIC yamlcpp::yamlcpp ${qtname}::Core ${qtname}::Network)
 target_link_libraries(calamares LINK_PUBLIC ${kfname}::CoreAddons)
+
+target_compile_definitions(calamares PRIVATE DLLEXPORT_PRO)
+target_include_directories(calamares PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(calamares PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:include/libcalamares>
+)
+target_include_directories(calamares PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
 
 ### OPTIONAL Automount support (requires dbus)
 #
@@ -190,7 +202,7 @@ install(
     DESTINATION include/libcalamares
 )
 # Install each subdir-worth of header files
-foreach(subdir geoip locale modulesystem network partition utils)
+foreach(subdir geoip locale modulesystem network partition utils compat packages)
     file(GLOB subdir_headers "${subdir}/*.h")
     install(FILES ${subdir_headers} DESTINATION include/libcalamares/${subdir})
 endforeach()
@@ -205,7 +217,7 @@ calamares_qrc_translations( localetest OUTPUT_VARIABLE localetest_qrc SUBDIRECTO
 #
 calamares_add_test(libcalamarestest SOURCES Tests.cpp)
 
-calamares_add_test(libcalamaresgeoiptest SOURCES geoip/GeoIPTests.cpp ${geoip_src})
+calamares_add_test(libcalamaresgeoiptest SOURCES geoip/GeoIPTests.cpp ${_geoip_src})
 
 calamares_add_test(libcalamareslocaletest SOURCES locale/Tests.cpp ${localetest_qrc})
 
@@ -230,7 +242,7 @@ calamares_add_test(libcalamaresutilspathstest SOURCES utils/TestPaths.cpp)
 
 # This is not an actual test, it's a test / demo application
 # for experimenting with GeoIP.
-add_executable(test_geoip geoip/test_geoip.cpp ${geoip_src})
+add_executable(test_geoip geoip/test_geoip.cpp ${_geoip_src})
 target_link_libraries(test_geoip Calamares::calamares ${qtname}::Network yamlcpp::yamlcpp)
 calamares_automoc( test_geoip )
 

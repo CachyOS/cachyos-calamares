@@ -196,12 +196,7 @@ getPVGroups( const QString& deviceName )
 
                 vgSet.insert( vgName );
             }
-// toList() was deprecated, but old-old versions don't support QStringList construction like this
-#if QT_VERSION < QT_VERSION_CHECK( 5, 15, 0 )
-            return vgSet.toList();
-#else
             return QStringList { vgSet.cbegin(), vgSet.cend() };
-#endif
         }
     }
     else
@@ -368,13 +363,13 @@ ClearMountsJob::ClearMountsJob( Device* device )
 QString
 ClearMountsJob::prettyName() const
 {
-    return tr( "Clear mounts for partitioning operations on %1" ).arg( m_deviceNode );
+    return tr( "Clear mounts for partitioning operations on %1", "@title" ).arg( m_deviceNode );
 }
 
 QString
 ClearMountsJob::prettyStatusMessage() const
 {
-    return tr( "Clearing mounts for partitioning operations on %1." ).arg( m_deviceNode );
+    return tr( "Clearing mounts for partitioning operations on %1…", "@status" ).arg( m_deviceNode );
 }
 
 Calamares::JobResult

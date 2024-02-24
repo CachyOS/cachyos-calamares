@@ -233,7 +233,7 @@ Config::setCurrentLocation()
 {
     if ( !m_currentLocation && m_startingTimezone.isValid() )
     {
-        setCurrentLocation( m_startingTimezone.first, m_startingTimezone.second );
+        setCurrentLocation( m_startingTimezone );
     }
     if ( !m_selectedLocaleConfiguration.explicit_lang )
     {
@@ -248,8 +248,14 @@ Config::setCurrentLocation( const QString& regionzone )
     auto r = Calamares::GeoIP::splitTZString( regionzone );
     if ( r.isValid() )
     {
-        setCurrentLocation( r.first, r.second );
+        setCurrentLocation( r );
     }
+}
+
+void
+Config::setCurrentLocation( const Calamares::GeoIP::RegionZonePair& tz )
+{
+    setCurrentLocation( tz.region(), tz.zone() );
 }
 
 void
@@ -390,7 +396,7 @@ Config::currentTimezoneName() const
 {
     if ( m_currentLocation )
     {
-        return m_regionModel->tr( m_currentLocation->region() ) + '/' + m_currentLocation->tr();
+        return m_regionModel->translated( m_currentLocation->region() ) + '/' + m_currentLocation->translated();
     }
     return QString();
 }
@@ -407,14 +413,14 @@ localeLabel( const QString& s )
 QString
 Config::currentLanguageStatus() const
 {
-    return tr( "The system language will be set to %1", "@info" )
+    return tr( "The system language will be set to %1.", "@info" )
         .arg( localeLabel( m_selectedLocaleConfiguration.language() ) );
 }
 
 QString
 Config::currentLCStatus() const
 {
-    return tr( "The numbers and dates locale will be set to %1", "@info" )
+    return tr( "The numbers and dates locale will be set to %1.", "@info" )
         .arg( localeLabel( m_selectedLocaleConfiguration.lc_numeric ) );
 }
 

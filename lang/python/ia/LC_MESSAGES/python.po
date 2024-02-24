@@ -1,0 +1,432 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# F V, 2024
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-02-12 21:37+0100\n"
+"PO-Revision-Date: 2017-08-09 10:34+0000\n"
+"Last-Translator: F V, 2024\n"
+"Language-Team: Interlingua (https://app.transifex.com/calamares/teams/20061/ia/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ia\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/modules/bootloader/main.py:46
+msgid "Install bootloader."
+msgstr "Installar cargator de initio."
+
+#: src/modules/bootloader/main.py:666
+msgid "Failed to install grub, no partitions defined in global storage"
+msgstr ""
+"Non poteva installar le “grub”, nulle partitiones definite in le "
+"immagazinage global."
+
+#: src/modules/bootloader/main.py:926
+msgid "Bootloader installation error"
+msgstr "Error de installation del cargator de initio"
+
+#: src/modules/bootloader/main.py:927
+msgid ""
+"The bootloader could not be installed. The installation command "
+"<pre>{!s}</pre> returned error code {!s}."
+msgstr ""
+"Le cargator de initio non poteva esser installate. Le commando de "
+"installation <pre>{!s}</pre> retornava le codice de error {!s}."
+
+#: src/modules/displaymanager/main.py:509
+msgid "Cannot write LXDM configuration file"
+msgstr "Non pote scriber le file de configuration LXDM"
+
+#: src/modules/displaymanager/main.py:510
+msgid "LXDM config file {!s} does not exist"
+msgstr "Le file de configuration de LXDM {!s} non existe"
+
+#: src/modules/displaymanager/main.py:598
+msgid "Cannot write LightDM configuration file"
+msgstr "Non pote scriber le file de configuration LightDM"
+
+#: src/modules/displaymanager/main.py:599
+msgid "LightDM config file {!s} does not exist"
+msgstr "Le file de configuration de LightDM {!s} non existe"
+
+#: src/modules/displaymanager/main.py:684
+msgid "Cannot configure LightDM"
+msgstr "Non pote configurar LightDM"
+
+#: src/modules/displaymanager/main.py:685
+msgid "No LightDM greeter installed."
+msgstr "Nulle systema de benvenita de LightDM installate."
+
+#: src/modules/displaymanager/main.py:716
+msgid "Cannot write SLIM configuration file"
+msgstr "Non pote scriber le file de configuration de SLIM"
+
+#: src/modules/displaymanager/main.py:717
+msgid "SLIM config file {!s} does not exist"
+msgstr "Le file de configuration de SLIM {!s} non existe"
+
+#: src/modules/displaymanager/main.py:938
+msgid "No display managers selected for the displaymanager module."
+msgstr ""
+"Nulle gestor de visualisation seligite pro le modulo de «displaymanager»."
+
+#: src/modules/displaymanager/main.py:939
+msgid ""
+"The displaymanagers list is empty or undefined in both globalstorage and "
+"displaymanager.conf."
+msgstr ""
+"Le lista de “displaymanagers” es vacue o non definite in “globalstorage” e "
+"in “displaymanager.conf”."
+
+#: src/modules/displaymanager/main.py:1026
+msgid "Display manager configuration was incomplete"
+msgstr "Le configuration del gestor de visualisation esseva incomplete"
+
+#: src/modules/dracut/main.py:29
+msgid "Creating initramfs with dracut."
+msgstr "Creation de initramfs con dracut."
+
+#: src/modules/dracut/main.py:63
+msgid "Failed to run dracut"
+msgstr "Non poteva executar dracut"
+
+#: src/modules/dracut/main.py:64
+#, python-brace-format
+msgid "Dracut failed to run on the target with return code: {return_code}"
+msgstr ""
+"Dracut non poteva executar sur le scopo con le codice de retorno: "
+"{return_code}"
+
+#: src/modules/dummypython/main.py:35
+msgid "Dummy python job."
+msgstr "Carga ficticie de python."
+
+#: src/modules/dummypython/main.py:37 src/modules/dummypython/main.py:104
+#: src/modules/dummypython/main.py:105
+msgid "Dummy python step {}"
+msgstr "Passo ficticie de python {}"
+
+#: src/modules/fstab/main.py:29
+msgid "Writing fstab."
+msgstr "Scribente le “fstab”."
+
+#: src/modules/fstab/main.py:378 src/modules/fstab/main.py:384
+#: src/modules/fstab/main.py:412 src/modules/initcpiocfg/main.py:256
+#: src/modules/initcpiocfg/main.py:260 src/modules/initramfscfg/main.py:85
+#: src/modules/initramfscfg/main.py:89 src/modules/localecfg/main.py:140
+#: src/modules/mount/main.py:334 src/modules/networkcfg/main.py:106
+#: src/modules/openrcdmcryptcfg/main.py:72
+#: src/modules/openrcdmcryptcfg/main.py:76 src/modules/rawfs/main.py:164
+msgid "Configuration Error"
+msgstr "Error de configuration"
+
+#: src/modules/fstab/main.py:379 src/modules/initramfscfg/main.py:86
+#: src/modules/mount/main.py:335 src/modules/openrcdmcryptcfg/main.py:73
+#: src/modules/rawfs/main.py:165
+msgid "No partitions are defined for <pre>{!s}</pre> to use."
+msgstr "Nulle partitiones es definite pro esser usate per <pre>{!s}</pre>."
+
+#: src/modules/fstab/main.py:385 src/modules/initramfscfg/main.py:90
+#: src/modules/localecfg/main.py:141 src/modules/networkcfg/main.py:107
+#: src/modules/openrcdmcryptcfg/main.py:77
+msgid "No root mount point is given for <pre>{!s}</pre> to use."
+msgstr ""
+"Nulle puncto de montage de radice es date pro esser usate per "
+"<pre>{!s}</pre>."
+
+#: src/modules/fstab/main.py:413
+msgid "No <pre>{!s}</pre> configuration is given for <pre>{!s}</pre> to use."
+msgstr ""
+"Nulle configuration <pre>{!s}</pre> es date pro esser usate per "
+"<pre>{!s}</pre>."
+
+#: src/modules/grubcfg/main.py:30
+msgid "Configure GRUB."
+msgstr "Configurar GRUB."
+
+#: src/modules/hwclock/main.py:26
+msgid "Setting hardware clock."
+msgstr "Configurante le horologio del apparato."
+
+#: src/modules/initcpiocfg/main.py:27
+msgid "Configuring mkinitcpio."
+msgstr " Configurante “mkinitcpio”."
+
+#: src/modules/initcpiocfg/main.py:257
+msgid "No partitions are defined for <pre>initcpiocfg</pre>."
+msgstr "Nulle partitiones es definite pro <pre>initcpiocfg</pre>."
+
+#: src/modules/initcpiocfg/main.py:261
+msgid "No root mount point for <pre>initcpiocfg</pre>."
+msgstr "Nulle partitiones es definite pro <pre>initcpiocfg</pre>."
+
+#: src/modules/initramfscfg/main.py:32
+msgid "Configuring initramfs."
+msgstr " Configurante “initramfs”."
+
+#: src/modules/localecfg/main.py:31
+msgid "Configuring locales."
+msgstr "Configurante parametros regional."
+
+#: src/modules/mkinitfs/main.py:27
+msgid "Creating initramfs with mkinitfs."
+msgstr "Creante “initramfs” con “mkinitfs”."
+
+#: src/modules/mkinitfs/main.py:49
+msgid "Failed to run mkinitfs on the target"
+msgstr "Non poteva executar “mkinitfs” sur le scopo"
+
+#: src/modules/mkinitfs/main.py:50
+msgid "The exit code was {}"
+msgstr "Le codice de exito esseva {}"
+
+#: src/modules/mount/main.py:43
+msgid "Mounting partitions."
+msgstr "Montage de partitiones."
+
+#: src/modules/mount/main.py:164 src/modules/mount/main.py:200
+msgid "Internal error mounting zfs datasets"
+msgstr "Error interne durante le montage de collection de datos de zfs"
+
+#: src/modules/mount/main.py:176
+msgid "Failed to import zpool"
+msgstr "Non poteva importar “zpool”"
+
+#: src/modules/mount/main.py:192
+msgid "Failed to unlock zpool"
+msgstr "Non poteva disblocar “zpool”"
+
+#: src/modules/mount/main.py:209 src/modules/mount/main.py:214
+msgid "Failed to set zfs mountpoint"
+msgstr "Non poteva definir le puncto de montage de zfs"
+
+#: src/modules/mount/main.py:370
+msgid "zfs mounting error"
+msgstr "Error de montage de zfs"
+
+#: src/modules/networkcfg/main.py:30
+msgid "Saving network configuration."
+msgstr "Salvante configuration de rete."
+
+#: src/modules/openrcdmcryptcfg/main.py:26
+msgid "Configuring OpenRC dmcrypt service."
+msgstr "Configuration del servicio OpenRC dmcrypt."
+
+#: src/modules/packages/main.py:54 src/modules/packages/main.py:65
+#: src/modules/packages/main.py:75
+msgid "Install packages."
+msgstr "Installar le pacchettos."
+
+#: src/modules/packages/main.py:63
+#, python-format
+msgid "Processing packages (%(count)d / %(total)d)"
+msgstr "Processante pacchettos (%(count)d / %(total)d)"
+
+#: src/modules/packages/main.py:68
+#, python-format
+msgid "Installing one package."
+msgid_plural "Installing %(num)d packages."
+msgstr[0] "Installante un pacchetto."
+msgstr[1] "Installante %(num)d pacchettos."
+
+#: src/modules/packages/main.py:71
+#, python-format
+msgid "Removing one package."
+msgid_plural "Removing %(num)d packages."
+msgstr[0] "Removente un pacchetto."
+msgstr[1] "Removente %(num)d pacchettos."
+
+#: src/modules/packages/main.py:740 src/modules/packages/main.py:752
+#: src/modules/packages/main.py:780
+msgid "Package Manager error"
+msgstr "Error del gestor de pacchettos"
+
+#: src/modules/packages/main.py:741
+msgid ""
+"The package manager could not prepare updates. The command <pre>{!s}</pre> "
+"returned error code {!s}."
+msgstr ""
+"Le gestor de pacchettos non poteva preparar le actualisationes. Le commando "
+"<pre>{!s}</pre> retornava le codice de error {!s}."
+
+#: src/modules/packages/main.py:753
+msgid ""
+"The package manager could not update the system. The command <pre>{!s}</pre>"
+" returned error code {!s}."
+msgstr ""
+"Le gestor de pacchettos non poteva actualisar le systema. Le commando "
+"<pre>{!s}</pre> retornava le codice de error {!s}."
+
+#: src/modules/packages/main.py:781
+msgid ""
+"The package manager could not make changes to the installed system. The "
+"command <pre>{!s}</pre> returned error code {!s}."
+msgstr ""
+"Le gestor de pacchettos non poteva facer le cambiamentos al systema "
+"installate. Le commando <pre>{!s}</pre> retornava le codice de error {!s}."
+
+#: src/modules/plymouthcfg/main.py:27
+msgid "Configure Plymouth theme"
+msgstr "Configurar thema Plymouth"
+
+#: src/modules/rawfs/main.py:26
+msgid "Installing data."
+msgstr "Installante le datos."
+
+#: src/modules/services-openrc/main.py:29
+msgid "Configure OpenRC services"
+msgstr "Configurar servicios OpenRC"
+
+#: src/modules/services-openrc/main.py:57
+msgid "Cannot add service {name!s} to run-level {level!s}."
+msgstr ""
+"Non pote adder le servicio {name!s} al nivello de execution {level!s}."
+
+#: src/modules/services-openrc/main.py:59
+msgid "Cannot remove service {name!s} from run-level {level!s}."
+msgstr ""
+"Non pote remover le servicio {name!s} del nivello de execution {level!s}."
+
+#: src/modules/services-openrc/main.py:61
+msgid ""
+"Unknown service-action <code>{arg!s}</code> for service {name!s} in run-"
+"level {level!s}."
+msgstr ""
+"Servicio de action <code>{arg!s}</code> incognite pro le servicio {name!s} "
+"in le nivello de execution {level!s}."
+
+#: src/modules/services-openrc/main.py:93
+msgid "Cannot modify service"
+msgstr "Non pote modificar le servicio"
+
+#: src/modules/services-openrc/main.py:94
+msgid ""
+"<code>rc-update {arg!s}</code> call in chroot returned error code {num!s}."
+msgstr ""
+"Le appello <code>rc-update {arg!s}</code> in “chroot” retornava le codice de"
+" error {num!s}."
+
+#: src/modules/services-openrc/main.py:101
+msgid "Target runlevel does not exist"
+msgstr "Le nivello de execution del scopo non existe"
+
+#: src/modules/services-openrc/main.py:102
+msgid ""
+"The path for runlevel {level!s} is <code>{path!s}</code>, which does not "
+"exist."
+msgstr ""
+"Le percurso pro le nivello de execution {level!s} es <code>{path!s}</code>, "
+"que no existe."
+
+#: src/modules/services-openrc/main.py:110
+msgid "Target service does not exist"
+msgstr "Le servicio de scopo non existe"
+
+#: src/modules/services-openrc/main.py:111
+msgid ""
+"The path for service {name!s} is <code>{path!s}</code>, which does not "
+"exist."
+msgstr ""
+"Le percurso pro le servicio {name!s} es <code>{path!s}</code>, que no "
+"existe."
+
+#: src/modules/services-systemd/main.py:26
+msgid "Configure systemd units"
+msgstr "Configurar unitates systemd"
+
+#: src/modules/services-systemd/main.py:64
+msgid "Cannot modify unit"
+msgstr "Non poteva modificar le unitate"
+
+#: src/modules/services-systemd/main.py:65
+msgid ""
+"<code>systemctl {_action!s}</code> call in chroot returned error code "
+"{_exit_code!s}."
+msgstr ""
+"Le appello <code>systemctl {_action!s}</code> in “chroot” retornava le "
+"codice de error {_exit_code!s}."
+
+#: src/modules/services-systemd/main.py:66
+msgid "Cannot {_action!s} systemd unit <code>{_name!s}</code>."
+msgstr "Non pote {_action!s} le unitate systemd <code>{_name!s}</code>."
+
+#: src/modules/unpackfs/main.py:34
+msgid "Filling up filesystems."
+msgstr "Reimplente le systemas de files. "
+
+#: src/modules/unpackfs/main.py:254
+msgid "rsync failed with error code {}."
+msgstr "“rsync” falleva con le codice de error {}."
+
+#: src/modules/unpackfs/main.py:299
+msgid "Unpacking image {}/{}, file {}/{}"
+msgstr "Dispacchettante le imagine {}/{}, file {}/{}"
+
+#: src/modules/unpackfs/main.py:314
+msgid "Starting to unpack {}"
+msgstr "Initiante a dispacchettar {}"
+
+#: src/modules/unpackfs/main.py:323 src/modules/unpackfs/main.py:467
+msgid "Failed to unpack image \"{}\""
+msgstr "Non poteva dispacchettar le imagina “{}”"
+
+#: src/modules/unpackfs/main.py:430
+msgid "No mount point for root partition"
+msgstr "Nulle puncto de montage pro le partition radice"
+
+#: src/modules/unpackfs/main.py:431
+msgid "globalstorage does not contain a \"rootMountPoint\" key."
+msgstr "“globalstorage” non contine un clave “rootMountPoint”."
+
+#: src/modules/unpackfs/main.py:434
+msgid "Bad mount point for root partition"
+msgstr "Le puncto de montage pro le partition radice incorrecte"
+
+#: src/modules/unpackfs/main.py:435
+msgid "rootMountPoint is \"{}\", which does not exist."
+msgstr "Le «rootMountPoint» es “{}”, que no existe."
+
+#: src/modules/unpackfs/main.py:439 src/modules/unpackfs/main.py:455
+#: src/modules/unpackfs/main.py:459 src/modules/unpackfs/main.py:465
+#: src/modules/unpackfs/main.py:480
+msgid "Bad unpackfs configuration"
+msgstr "Configuration de unpackfs incorrecte"
+
+#: src/modules/unpackfs/main.py:440
+msgid "There is no configuration information."
+msgstr "Il non ha information de configuration."
+
+#: src/modules/unpackfs/main.py:456
+msgid "The filesystem for \"{}\" ({}) is not supported by your current kernel"
+msgstr ""
+"Le systema de files para “{}” ({}) non es supportate per tu kernel actual"
+
+#: src/modules/unpackfs/main.py:460
+msgid "The source filesystem \"{}\" does not exist"
+msgstr "Le fonte del systema de files “{}” non existe"
+
+#: src/modules/unpackfs/main.py:466
+msgid ""
+"Failed to find unsquashfs, make sure you have the squashfs-tools package "
+"installed."
+msgstr ""
+"Non poteva trovar “unsquashfs”, assecura te que tu ha le pacchetto "
+"“squashfs-tools” installate."
+
+#: src/modules/unpackfs/main.py:481
+msgid "The destination \"{}\" in the target system is not a directory"
+msgstr "Le destination “{}” in le systema de scopo non es un directorio"
+
+#: src/modules/zfshostid/main.py:27
+msgid "Copying zfs generated hostid."
+msgstr "Copiante le «hostid» generate per zfs."

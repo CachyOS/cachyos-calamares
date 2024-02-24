@@ -4,42 +4,19 @@
 #   SPDX-License-Identifier: BSD-2-Clause
 #
 find_package(${qtname} COMPONENTS Core Gui Widgets REQUIRED)
-set(_extra_libraries "")
-set(_extra_src "")
 
 ### OPTIONAL AppData XML support in PackageModel
 #
 #
-option(BUILD_APPDATA "Support appdata: items in PackageChooser (requires QtXml)" ON)
+option(BUILD_APPDATA "Support appdata: items in PackageChooser (requires QtXml)" OFF)
 if(BUILD_APPDATA)
-    find_package(${qtname} COMPONENTS Xml)
-    if(TARGET ${qtname}::Xml)
-        add_definitions(-DHAVE_APPDATA)
-        list(APPEND _extra_libraries ${qtname}::Xml)
-        list(APPEND _extra_src ItemAppData.cpp)
-    endif()
+    find_package(${qtname} REQUIRED COMPONENTS Xml)
 endif()
 
 ### OPTIONAL AppStream support in PackageModel
 #
 #
-option(BUILD_APPSTREAM "Support appstream: items in PackageChooser (requires libappstream-qt)" ON)
-if(BUILD_APPSTREAM)
-    find_package(AppStreamQt)
-    set_package_properties(
-        AppStreamQt
-        PROPERTIES
-        DESCRIPTION "Support for AppStream (cache) data"
-        URL "https://github.com/ximion/appstream"
-        PURPOSE "AppStream provides package data"
-        TYPE OPTIONAL
-    )
-    if(AppStreamQt_FOUND)
-        add_definitions(-DHAVE_APPSTREAM_VERSION=${AppStreamQt_VERSION_MAJOR})
-        list(APPEND _extra_libraries AppStreamQt)
-        list(APPEND _extra_src ItemAppStream.cpp)
-    endif()
-endif()
+include(AppStreamHelper)
 
 calamares_add_plugin(packagechooser
     TYPE viewmodule
@@ -49,19 +26,27 @@ calamares_add_plugin(packagechooser
         PackageChooserPage.cpp
         PackageChooserViewStep.cpp
         PackageModel.cpp
-        ${_extra_src}
     RESOURCES
         packagechooser.qrc
     UI
         page_package.ui
-    LINK_PRIVATE_LIBRARIES
-        ${_extra_libraries}
     SHARED_LIB
 )
+
+if(AppStreamQt_FOUND)
+    target_link_libraries(${packagechooser_TARGET} PRIVATE calamares::appstreamqt)
+    target_sources(${packagechooser_TARGET} PRIVATE ItemAppStream.cpp)
+endif()
+
+if(BUILD_APPDATA AND TARGET ${qtname}::Xml)
+    target_compile_definitions(${packagechooser_TARGET} PRIVATE HAVE_APPDATA)
+    target_link_libraries(${packagechooser_TARGET} PRIVATE ${qtname}::Xml)
+    target_sources(${packagechooser_TARGET} PRIVATE ItemAppData.cpp)
+endif()
 
 calamares_add_test(
     packagechoosertest
     GUI
     SOURCES Tests.cpp
-    LIBRARIES calamares_viewmodule_packagechooser ${_extra_libraries}
+    LIBRARIES ${packagechooser_TARGET}
 )

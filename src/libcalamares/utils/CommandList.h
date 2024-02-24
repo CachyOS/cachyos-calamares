@@ -11,6 +11,7 @@
 #ifndef UTILS_COMMANDLIST_H
 #define UTILS_COMMANDLIST_H
 
+#include "DllMacro.h"
 #include "Job.h"
 
 #include <QStringList>
@@ -23,29 +24,26 @@ class KMacroExpanderBase;
 
 namespace Calamares
 {
-using CommandLineBase = std::pair< QString, std::chrono::seconds >;
-
 /**
  * Each command can have an associated timeout in seconds. The timeout
  * defaults to 10 seconds. Provide some convenience naming and construction.
  */
-struct CommandLine : public CommandLineBase
+struct CommandLine
 {
     static inline constexpr std::chrono::seconds TimeoutNotSet() { return std::chrono::seconds( -1 ); }
 
     /// An invalid command line
-    CommandLine()
-        : CommandLineBase( QString(), TimeoutNotSet() )
-    {
-    }
+    CommandLine() = default;
 
     CommandLine( const QString& s )
-        : CommandLineBase( s, TimeoutNotSet() )
+        : first( s )
+        , second( TimeoutNotSet() )
     {
     }
 
     CommandLine( const QString& s, std::chrono::seconds t )
-        : CommandLineBase( s, t )
+        : first( s )
+        , second( t )
     {
     }
 
@@ -61,13 +59,17 @@ struct CommandLine : public CommandLineBase
      * This will normally be a Calamares::String::DictionaryExpander
      * instance, which handles the ROOT and USER variables.
      */
-    CommandLine expand( KMacroExpanderBase& expander ) const;
+    DLLEXPORT CommandLine expand( KMacroExpanderBase& expander ) const;
     /** @brief As above, with a default macro-expander.
      *
      * The default macro-expander assumes RunInHost (e.g. ROOT will
      * expand to the RootMountPoint set in Global Storage).
      */
-    CommandLine expand() const;
+    DLLEXPORT CommandLine expand() const;
+
+private:
+    QString first;
+    std::chrono::seconds second = std::chrono::seconds( -1 );
 };
 
 /** @brief Abbreviation, used internally. */
@@ -81,7 +83,7 @@ using CommandList_t = QList< CommandLine >;
  * Documentation for the format of commands can be found in
  * `shellprocess.conf`.
  */
-class CommandList : protected CommandList_t
+class DLLEXPORT CommandList : protected CommandList_t
 {
 public:
     /** @brief empty command-list with timeout to apply to entries. */

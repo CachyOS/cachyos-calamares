@@ -19,7 +19,7 @@
 #
 # calamares_add_plugin(
 #   module-name
-#   TYPE <view|job>
+#   TYPE <viewmodule|job>
 #   EXPORT_MACRO macro-name
 #   SOURCES source-file...
 #   UI ui-file...
@@ -35,7 +35,7 @@
 #   [WEIGHT w]
 # )
 #
-# Function parameters:
+# Function optional parameters:
 #  - COMPILE_DEFINITIONS
 #       Definitions are set on the resulting module with a suitable
 #       flag (i.e. `-D`) so only state the name (optionally, also the value)
@@ -65,6 +65,11 @@
 # SKIPPED_MODULES is set in the parent (i.e. caller's) scope with the
 # reason why. This should rarely be a concern as AddModuleSubdirectory
 # already handles skip-reasons and collects them for reporting.
+#
+# The target defined this way is called "calamares_<TYPE>_<module-name>",
+# e.g. "calamares_viewmodule_packagechooserq". The function sets a variable
+# in its **calling** scope, `<module-name>_TARGET` with the full name
+# of the target.
 
 include( CMakeParseArguments )
 
@@ -126,7 +131,7 @@ function( calamares_add_plugin )
     set( target "calamares_${PLUGIN_TYPE}_${PLUGIN_NAME}" )
 
     # automatic library linkage
-    if(PLUGIN_TYPE STREQUAL "view" OR PLUGIN_TYPE STREQUAL "viewmodule")
+    if(PLUGIN_TYPE STREQUAL "viewmodule")
         list(APPEND PLUGIN_LINK_PRIVATE_LIBRARIES Calamares::calamaresui)
     elseif(PLUGIN_TYPE STREQUAL "job")
         list(APPEND PLUGIN_LINK_PRIVATE_LIBRARIES Calamares::calamares)
@@ -223,4 +228,6 @@ function( calamares_add_plugin )
             message( "" )
         endif()
     endif()
+
+    set(${NAME}_TARGET ${target} PARENT_SCOPE)
 endfunction()

@@ -11,12 +11,18 @@
 #ifndef CALAMARES_PYTHONJOB_H
 #define CALAMARES_PYTHONJOB_H
 
+#include "DllMacro.h"
 #include "Job.h"
 #include "modulesystem/InstanceKey.h"
 
 #include <QVariantMap>
 
 #include <memory>
+
+#if WITH_PYBIND11
+#error Source only for Boost::Python
+#else
+#endif
 
 namespace CalamaresPython
 {
@@ -27,7 +33,7 @@ class Helper;
 namespace Calamares
 {
 
-class PythonJob : public Job
+class DLLEXPORT PythonJob : public Job
 {
     Q_OBJECT
 public:

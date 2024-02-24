@@ -15,6 +15,7 @@
 #include "utils/Logger.h"
 #include "utils/Variant.h"
 #include "utils/Yaml.h"
+#include "widgets/TranslationFix.h"
 
 #include <algorithm>
 #include <array>
@@ -245,6 +246,7 @@ PackageModel::setData( const QModelIndex& index, const QVariant& value, int role
                                 tr( "Multiple Environments selected" ),
                                 tr( "Oops! Can't Move Forward\nIt seems you've selected multiple Desktop Environments/Window Managers. To continue, kindly uncheck the DE/WM settings package or the entire group. Thank you!" ),
                                 QMessageBox::Ok );
+                Calamares::fixButtonLabels( &mb );
                 mb.exec();
                 gShowConfError = true;
             }

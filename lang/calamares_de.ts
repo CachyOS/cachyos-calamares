@@ -2924,6 +2924,16 @@ Dies wird das Installationsprogramm beenden und alle Änderungen gehen verloren.
       <source>Description</source>
       <translation>Beschreibung</translation>
     </message>
+    <message>
+      <location filename="../src/modules/netinstall/PackageModel.cpp" line="245"/>
+      <source>Multiple Environments selected</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location filename="../src/modules/netinstall/PackageModel.cpp" line="246"/>
+      <source>Oops! Can't Move Forward\nIt seems you've selected multiple Desktop Environments/Window Managers. To continue, kindly uncheck the DE/WM settings package or the entire group. Thank you!</source>
+      <translation type="unfinished"/>
+    </message>
   </context>
   <context>
     <name>Page_Keyboard</name>

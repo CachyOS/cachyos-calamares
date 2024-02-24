@@ -652,6 +652,8 @@
     - egl-wayland
     - wayland-protocols
     - wofi
+    - foot
+    - wmenu
     - ly
     - xorg-xwayland
     - xdg-desktop-portal

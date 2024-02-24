@@ -17,7 +17,9 @@
 #include "utils/Yaml.h"
 
 #include <algorithm>
+#include <array>
 #include <string_view>
+#include <utility>
 
 #include <QMessageBox>
 
@@ -217,21 +219,23 @@ PackageModel::setData( const QModelIndex& index, const QVariant& value, int role
         const auto checkedStateInfo = static_cast< Qt::CheckState >( value.toInt() );
         item->setSelected( checkedStateInfo );
 
-        static constexpr std::array<std::string_view, 8> kDotfilePackages{"cachyos-gnome-settings", "cachyos-hyprland-settings", "cachyos-i3wm-settings", "cachyos-kde-settings", "cachyos-openbox-settings", "cachyos-qtile-settings", "cachyos-wayfire-settings", "cachyos-xfce-settings"};
-
         auto filteredPkgNames = getPackageNames( getPackages() )
             .filter( "cachyos-" )
             .filter( "-settings" );
-        const auto dotfilesCount = [](auto&& packageNames, auto&& needles) {
+        const auto dotfilesCount = [](auto&& packageNames) {
+            using std::string_view_literals;
+            static constexpr std::array kDotfilePackages{"cachyos-gnome-settings"sv, "cachyos-hyprland-settings"sv, "cachyos-i3wm-settings"sv, "cachyos-kde-settings"sv,
+                                                         "cachyos-openbox-settings"sv, "cachyos-qtile-settings"sv, "cachyos-wayfire-settings"sv, "cachyos-xfce-settings"sv};
+
             size_t dotfilesCount{};
             for ( auto&& packageName : packageNames ) {
-                const auto pkgnameBytes = packageName.toUtf8();
-                if ( std::find(needles.begin(), needles.end(), std::string_view{ pkgnameBytes } ) != needles.end() ) {
+                const auto pkgnameBytes = std::string_view{ packageName.toUtf8() };
+                if ( std::find(needles.begin(), needles.end(), pkgnameBytes ) != needles.end() ) {
                     ++dotfilesCount;
                 }
             }
             return dotfilesCount;
-        }( filteredPkgNames, kDotfilePackages );
+        }( std::move( filteredPkgNames ) );
 
         if ( dotfilesCount > 1 && checkedStateInfo == Qt::CheckState::Checked ) {
             m_nextUpdateCall( false );

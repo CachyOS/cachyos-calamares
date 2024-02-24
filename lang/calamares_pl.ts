@@ -2375,7 +2375,7 @@ Instalator zostanie zamknięty i wszystkie zmiany zostaną utracone.</translatio
             and timezone settings for you. You can fine-tune the suggested settings below. Search the map by dragging
             to move and using the +/- buttons to zoom in/out or use mouse scrolling for zooming.</source>
       <comment>@info</comment>
-      <translation>Wybierz preferowaną lokalizację na mapie, aby instalator mógł zasugerować ustawienia regionalne 
+      <translation>Wybierz preferowaną lokalizację na mapie, aby instalator mógł zasugerować ustawienia regionalne
             i ustawienia strefy czasowej. Możesz dostosować sugerowane ustawienia poniżej. Wyszukaj mapę, przeciągając
             aby przesuwać i używać przycisków +/-, aby powiększać/pomniejszać lub używać przewijania myszą do powiększania.</translation>
     </message>
@@ -2394,7 +2394,7 @@ Instalator zostanie zamknięty i wszystkie zmiany zostaną utracone.</translatio
             and timezone settings for you. You can fine-tune the suggested settings below. Search the map by dragging
             to move and using the +/- buttons to zoom in/out or use mouse scrolling for zooming.</source>
       <comment>@label</comment>
-      <translation>Wybierz preferowaną lokalizację na mapie, aby instalator mógł zasugerować ustawienia regionalne 
+      <translation>Wybierz preferowaną lokalizację na mapie, aby instalator mógł zasugerować ustawienia regionalne
             i ustawienia strefy czasowej. Możesz dostosować sugerowane ustawienia poniżej. Wyszukaj mapę, przeciągając
             aby przesuwać i używać przycisków +/-, aby powiększać/pomniejszać lub używać przewijania myszą do powiększania.</translation>
     </message>
@@ -2945,6 +2945,16 @@ Instalator zostanie zamknięty i wszystkie zmiany zostaną utracone.</translatio
       <location filename="../src/modules/netinstall/PackageModel.cpp" line="206"/>
       <source>Description</source>
       <translation>Opis</translation>
+    </message>
+    <message>
+      <location filename="../src/modules/netinstall/PackageModel.cpp" line="245"/>
+      <source>Multiple Environments selected</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location filename="../src/modules/netinstall/PackageModel.cpp" line="246"/>
+      <source>Oops! Can't Move Forward\nIt seems you've selected multiple Desktop Environments/Window Managers. To continue, kindly uncheck the DE/WM settings package or the entire group. Thank you!</source>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -3684,7 +3694,7 @@ Wyjście:
       <location filename="../src/modules/fsresizer/ResizeFSJob.cpp" line="163"/>
       <source>The file-system resize job has an invalid configuration and will not run.</source>
       <comment>@error</comment>
-      <translation>Zadanie zmiany rozmiaru systemu plików ma nieprawidłową konfigurację 
+      <translation>Zadanie zmiany rozmiaru systemu plików ma nieprawidłową konfigurację
 i nie uruchomi się</translation>
     </message>
     <message>

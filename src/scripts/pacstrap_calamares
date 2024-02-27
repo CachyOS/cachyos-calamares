@@ -58,7 +58,6 @@ declare -A fsck_types=([btrfs]=1
                        [jfs]=1
                        [minix]=1
                        [msdos]=1
-                       [reiserfs]=1
                        [vfat]=1
                        [xfs]=1
                        [zfs]=1)

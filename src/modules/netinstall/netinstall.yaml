@@ -252,7 +252,7 @@
     - plasma-wayland-protocols
     - plasma-wayland-session
     - plasma-desktop
-    - plasma-framework5
+    - plasma-framework
     - plasma-nm
     - plasma-pa
     - plasma-workspace
@@ -270,7 +270,7 @@
     - xsettingsd
     - xdg-desktop-portal
     - xdg-desktop-portal-kde
-    - phonon-qt5-vlc
+    - phonon-qt6-vlc
 - name: "GNOME-Desktop"
   description: "GNOME Desktop - designed to put you in control and get things done."
   hidden: false

@@ -243,16 +243,13 @@
     - kate
     - kdeconnect
     - kde-gtk-config
-    - khotkeys
     - kinfocenter
     - kinit
     - kscreen
     - kwallet-pam
     - kwalletmanager
-    - plasma-wayland-protocols
-    - plasma-wayland-session
     - plasma-desktop
-    - plasma-framework
+    - libplasma
     - plasma-nm
     - plasma-pa
     - plasma-workspace
@@ -262,7 +259,6 @@
     - plasma-systemmonitor
     - plasma-thunderbolt
     - powerdevil
-    - ksysguard
     - spectacle
     - sddm
     - sddm-kcm

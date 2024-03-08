@@ -185,8 +185,10 @@ def get_kernel_params(uuid):
 
     if cryptdevice_params:
         kernel_params.extend(cryptdevice_params)
-    else:
+    elif len(uuid) != 0:
         kernel_params.append("root=UUID={!s}".format(uuid))
+    else:
+        libcalamares.utils.warning("UUID generated for root is empty. keep going")
 
     if swap_uuid:
         kernel_params.append("resume=UUID={!s}".format(swap_uuid))

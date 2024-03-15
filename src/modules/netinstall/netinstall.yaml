@@ -204,22 +204,14 @@
           - nano
           - vim
           - openssh
-- name: "CachyOS Kernels"
-  description: "Selection of additonal cachyos kernels"
+- name: "LTS Kernel"
+  description: "Selection of additonal LTS Kernel, as backup"
   hidden: false
   selected: false
   critical: true
   packages:
-    - linux-cachyos-bore
-    - linux-cachyos-bore-headers
-    - linux-cachyos-eevdf
-    - linux-cachyos-eevdf-headers
-    - linux-cachyos-hardened
-    - linux-cachyos-hardened-headers
     - linux-cachyos-lts
     - linux-cachyos-lts-headers
-    - linux-cachyos-sched-ext
-    - linux-cachyos-sched-ext-headers
 - name: "KDE-Desktop"
   description: "KDE-Plasma Desktop - Simple by default, powerful when needed."
   hidden: false
@@ -762,17 +754,6 @@
     - cups
     - cups-filters
     - cups-pdf
-- name: "Additonal ZFS kernel modules, only needed if multiple kernels are selected"
-  description: "Kernel ZFS built in modules are needed for the zfs filesystem and their kernel"
-  hidden: false
-  selected: false
-  critical: true
-  packages:
-    - linux-cachyos-bore-zfs
-    - linux-cachyos-eevdf-zfs
-    - linux-cachyos-hardened-zfs
-    - linux-cachyos-lts-zfs
-    - linux-cachyos-sched-ext-zfs
 - name: "Accessibility Tools"
   description: "Screen reader and mouse tweaks (impaired vision)"
   hidden: false

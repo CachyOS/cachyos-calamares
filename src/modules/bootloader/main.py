@@ -244,9 +244,10 @@ def create_loader(loader_path, installation_root_path):
     :param installation_root_path: The path to the root of the target installation
     """
 
+    #Obsolete since default was changed to @saved from machine-id
     # get the machine-id
-    with open(os.path.join(installation_root_path, "etc", "machine-id"), 'r') as machineid_file:
-        machine_id = machineid_file.read().rstrip('\n')
+    #with open(os.path.join(installation_root_path, "etc", "machine-id"), 'r') as machineid_file:
+    #    machine_id = machineid_file.read().rstrip('\n')
 
     try:
         loader_entries = libcalamares.job.configuration["loaderEntries"]

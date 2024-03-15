@@ -12,8 +12,6 @@
      - cachyos-rate-mirrors
      - linux-cachyos
      - linux-cachyos-headers
-     - linux-cachyos-lts
-     - linux-cachyos-lts-headers
      - chwd
 - name: "CachyOS Packages"
   description: "needed CachyOS packages"

@@ -255,7 +255,7 @@ def create_loader(loader_path, installation_root_path):
         loader_entries = []
         pass
 
-    lines = [f"default {machine_id}*"]
+    lines = [f"default @saved"]
 
     lines.extend(loader_entries)
 

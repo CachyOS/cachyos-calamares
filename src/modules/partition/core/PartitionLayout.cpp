@@ -178,6 +178,7 @@ PartitionLayout::setDefaultFsType( FileSystem::Type defaultFsType )
     case FileSystem::F2fs:
         // ok
         break;
+    case FileSystem::Bcachefs:
     case FileSystem::Fat16:
     case FileSystem::Hfs:
     case FileSystem::HfsPlus:

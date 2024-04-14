@@ -182,6 +182,7 @@ def find_initcpio_features(partitions, root_mount_point):
 
     swap_uuid = ""
     uses_btrfs = False
+    uses_bcachefs = False
     uses_zfs = False
     uses_lvm2 = False
     encrypt_hook = False
@@ -204,6 +205,9 @@ def find_initcpio_features(partitions, root_mount_point):
 
         if partition["fs"] == "btrfs":
             uses_btrfs = True
+
+        if partition["fs"] == "bcachefs":
+            uses_bcachefs = True
 
         # In addition to checking the filesystem, check to ensure that zfs is enabled
         if partition["fs"] == "zfs" and libcalamares.globalstorage.contains("zfsPoolInfo"):
@@ -243,7 +247,7 @@ def find_initcpio_features(partitions, root_mount_point):
     else:
         hooks.extend(["filesystems"])
 
-    if uses_btrfs:
+    if uses_btrfs or uses_bcachefs:
         modules.append("crc32c-intel" if cpuinfo().is_intel else "crc32c")
     else:
         hooks.append("fsck")

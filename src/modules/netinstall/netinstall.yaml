@@ -1,218 +1,722 @@
-# Example configuration with groups and packages, taken from Chakra Linux.
-#
-# SPDX-FileCopyrightText: no
-# SPDX-License-Identifier: CC0-1.0
-#
-# This example is rather limited. See `netinstall.conf` for full documentation
-# on the configuration format. The module configuration file `netinstall.conf`
-# **may** contain the package-list, but that is only useful for static
-# package-lists. If you are updating the package lists or changing the package
-# offerings, an online `netinstall.yaml` is the way to go; or you can put the
-# `netinstall.yaml` on the installation media and modify that, while keeping
-# your Calamares configuration constant.
-#
-# Which approach works depends on what you want to offer and how your
-# ISO-image toolchain works.
-- name: "Default"
-  description: "Default group"
+- name: "CachyOS"
+  description: "needed CachyOS packages"
   hidden: true
   selected: true
-  critical: false
+  critical: true
   packages:
-    - base
-    - chakra-live-skel
-    - cdemu-client
-    - lsb-release
-    - avahi
-    - grub
-    # disk utils
-    - dosfstools
-    - e2fsprogs
-    - fuse
-    - gptfdisk
-    - jfsutils
-    - ntfs-3g
-    - reiserfsprogs
-    - xfsprogs
-    # power
-    - acpi_call
-    - pmtools
-    # network
-    - dnsutils
-    - iputils
-    - netcfg
-    - xinetd
-    # firmwares
-    - alsa-firmware
-    - linux-firmware
-    # sound
-    - alsa-lib
-    - alsa-utils
-    - gstreamer
-    - gst-plugins-good
-    - gst-plugins-bad
-    - libao
-    - libcanberra-gstreamer
-    - libcanberra-pulse
-    - pulseaudio
-    - pulseaudio-alsa
-    # tools
-    - bash-completion
-    - hwinfo
-    - lsof
-    - man-db
-    - mlocate
-    - nano
-    - openssh
-    - sudo
-    - vim
-    - zsh # :D
-    # archivers
-    - p7zip
-    - unarj
-    - unrar
-    - unzip
-    - zip
-    # xorg base
-    - xorg
-    - xorg-apps
-    - xorg-fonts-alias
-    - xorg-fonts-encodings
-    - xorg-fonts-misc
-    - xorg-res-utils
+     - alacritty
+     - btop
+     - cachyos
+     - cachy-browser
+     - cachyos-fish-config
+     - cachyos-hello
+     - cachyos-hooks
+     - cachyos-kernel-manager
+     - cachyos-keyring
+     - cachyos-mirrorlist
+     - cachyos-rate-mirrors
+     - cachyos-packageinstaller
+     - cachyos-settings
+     - cachyos-v3-mirrorlist
+     - cachyos-zsh-config
+     - linux-cachyos
+     - linux-cachyos-headers
+     - mhwd-cachyos
+     - mhwd-nvidia-390xx
+     - micro
+     - nano
+     - nerd-fonts-meslo
+     - vim
+- name: "Base-devel + Common packages"
+  description: "Recommended. Don't change unless you know what you're doing (generic)."
+  hidden: false
+  selected: true
+  critical: true
+  subgroups:
+      - name: "X-system"
+        description: "Default X-system"
+        selected: true
+        packages:
+           - libwnck3
+           - mesa-utils
+           - xf86-input-libinput
+           - xorg-xdpyinfo
+           - xorg-server
+           - xorg-xinit
+           - xorg-xinput
+           - xorg-xkill
+           - xorg-xrandr
+      - name: "GPU drivers"
+        description: "Graphics hardware drivers"
+        selected: true
+        packages:
+          - xf86-video-amdgpu
+          - xf86-video-ati
+          - xf86-video-intel
+      - name: "Network"
+        description: "Network apps drivers and tools"
+        selected: true
+        packages:
+          - b43-fwcutter
+          - broadcom-wl-dkms
+          - dhclient
+          - dnsmasq
+          - dnsutils
+          - ethtool
+          - iwd
+          - modemmanager
+          - networkmanager
+          - networkmanager-openvpn
+          - nss-mdns
+          - usb_modeswitch
+          - wpa_supplicant
+          - xl2tpd
+      - name: "firewall"
+        description: "Firewall support"
+        selected: true
+        packages:
+          - firewalld
+          - python-pyqt5
+          - python-capng
+      - name: "packages management"
+        description: "Packages tools"
+        selected: true
+        packages:
+          - libpamac-aur
+          - pacman-contrib
+          - pamac-aur
+          - pkgfile
+          - rebuild-detector
+          - reflector
+          - paru
+          - yay
+      - name: "desktop integration"
+        description: "Useful helper tools and libs for desktop usage"
+        selected: true
+        packages:
+          - accountsservice
+          - bash-completion
+          - bluetooth-support
+          - ffmpegthumbnailer
+          - gst-libav
+          - gst-plugin-pipewire
+          - gst-plugins-bad
+          - gst-plugins-ugly
+          - libdvdcss
+          - libgsf
+          - libopenraw
+          - mesa-utils
+          - mlocate
+          - poppler-glib
+          - xdg-user-dirs
+          - xdg-utils
+      - name: "filesystem"
+        description: "Filesystem tools and apps"
+        selected: true
+        packages:
+          - efitools
+          - haveged
+          - nfs-utils
+          - nilfs-utils
+          - ntp
+          - smartmontools
+          - unrar
+          - unzip
+          - xz
+      - name: "fonts"
+        description: "CachyOS font selection"
+        selected: true
+        packages:
+          - adobe-source-han-sans-cn-fonts
+          - adobe-source-han-sans-jp-fonts
+          - adobe-source-han-sans-kr-fonts
+          - noto-fonts-emoji
+          - cantarell-fonts
+          - freetype2
+          - noto-fonts
+          - opendesktop-fonts
+          - ttf-bitstream-vera
+          - ttf-dejavu
+          - ttf-liberation
+          - ttf-opensans
+      - name: "audio"
+        description: "Audio handling tools apps and libs"
+        selected: true
+        packages:
+          - alsa-firmware
+          - alsa-plugins
+          - alsa-utils
+          - easyeffects
+          - gst-plugin-pipewire
+          - pavucontrol
+          - pipewire-pulse
+          - wireplumber
+          - pipewire-alsa
+          - pipewire-jack
+          - rtkit
+      - name: "hardware"
+        description: "Hardware support libs and firmware"
+        selected: true
+        packages:
+          - amd-ucode
+          - intel-ucode
+          - dmidecode
+          - dmraid
+          - hdparm
+          - hwdetect
+          - lsscsi
+          - mtools
+          - sg3_utils
+          - sof-firmware
+      - name: "power"
+        description: "Powermanagement support"
+        selected: true
+        packages:
+          - cpupower
+          - power-profiles-daemon
+          - upower
+      - name: "Some applications selection"
+        description: "General tools and applications"
+        selected: true
+        packages:
+          - duf
+          - findutils
+          - fsarchiver
+          - git
+          - glances
+          - hwinfo
+          - inxi
+          - meld
+          - nano-syntax-highlighting
+          - neofetch
+          - fastfetch
+          - pcurses
+          - pv
+          - python-defusedxml
+          - python-packaging
+          - rsync
+          - sed
+          - snapper
+          - timeshift
+          - vi
+          - wget
+          - ripgrep
+- name: "CachyOS - ZFS - Kernels"
+  description: "Kernel ZFS built in modules are needed for the zfs filesystem and their kernel"
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - linux-cachyos-bmq-zfs
+    - linux-cachyos-bore-zfs
+    - linux-cachyos-cacule-zfs
+    - linux-cachyos-cfs-zfs
+    - linux-cachyos-hardened-zfs
+    - linux-cachyos-pds-zfs
+    - linux-cachyos-tt-zfs
+- name: "CachyOS Kernels"
+  description: "Selection of different cachyos kernels"
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - linux-cachyos-bmq
+    - linux-cachyos-bmq-headers
+    - linux-cachyos-bore
+    - linux-cachyos-bore-headers
+    - linux-cachyos-cacule
+    - linux-cachyos-cacule-headers
+    - linux-cachyos-cfs
+    - linux-cachyos-cfs-headers
+    - linux-cachyos-hardened
+    - linux-cachyos-hardened-headers
+    - linux-cachyos-pds
+    - linux-cachyos-pds-headers
+    - linux-cachyos-tt
+    - linux-cachyos-tt-headers
+- name: "CuteFish"
+  description: "CuteFish – An Elegant, Beautiful and Easy-to-Use Linux Desktop."
+  hidden: false
+  selected: false
+  expanded: false
+  critical: true
+  packages:
+    - fishui
+    - cutefish-calculator
+    - cutefish-core
+    - cutefish-dock
+    - cutefish-filemanager
+    - cutefish-kwin-plugins
+    - cutefish-launcher
+    - cutefish-screenlocker
+    - cutefish-settings
+    - cutefish-statusbar
+    - cutefish-terminal
+    - cutefish-wallpapers
+    - cutefish-icons
+    - cutefish-qt-plugins
+    - libwnck3
+    - sddm
+    - xf86-input-libinput
+    - xorg-xdpyinfo
     - xorg-server
-    - xorg-server-utils
-    - xorg-xauth
     - xorg-xinit
-    - xorg-xkb-utils
-    # xorg video drivers
-    - xf86-video-apm
-    - xf86-video-ark
+    - xorg-xinput
+    - xorg-xkill
+    - xorg-xrandr
+    - xorg-xbacklight
+    - xorg-xdpyinfo
+    - xf86-video-amdgpu
     - xf86-video-ati
-    - xf86-video-chips
-    - xf86-video-cirrus
-    - xf86-video-glint
-    - xf86-video-i128
-    - xf86-video-i740
     - xf86-video-intel
-    - xf86-video-mach64
-    - xf86-video-mga
-    - xf86-video-neomagic
-    - xf86-video-nouveau
-    - xf86-video-nv
-    - xf86-video-openchrome
-    - xf86-video-r128
-    - xf86-video-rendition
-    - xf86-video-s3
-    - xf86-video-s3virge
-    - xf86-video-savage
-    - xf86-video-siliconmotion
-    - xf86-video-sisusb
-    - xf86-video-tdfx
-    - xf86-video-trident
-    - xf86-video-tseng
-    - xf86-video-v4l
+    - xf86-input-libinput
+    - xf86-video-fbdev
     - xf86-video-vesa
-    - xf86-video-voodoo
-    - mesa-libgl
-    # xorg input drivers
-    - xf86-input-synaptics
-    - xf86-input-wacom
-    - xf86-input-evdev
-    - xf86-input-keyboard
-    - xf86-input-mouse
-    # fonts
-    - terminus-font
-    - ttf-dejavu
-    - ttf-liberation
-    - wqy-microhei
-    - xorg-fonts-100dpi
-    - xorg-fonts-75dpi
-    - xorg-fonts-cyrillic
-    # additional stuff that needs xorg
-    - hicolor-icon-theme
-    # kde
-    - chakra-common
-    - qt
-    - kde-baseapps
-    - kde-baseapps-dolphin
-    - kde-baseapps-konsole
-    - kde-runtime
-    - kde-workspace
-    - kdelibs
-    - kdepimlibs
-    - kdemultimedia-kmix
+- name: "i3-Window-Manager"
+  description: "i3 tiling window manager, primarily targeted at developers and advanced users."
+  hidden: false
+  selected: false
+  expanded: false
+  critical: true
+  packages:
+    - i3-wm
+    - i3blocks
+    - i3lock-color
+    - i3status
+    - rofi
+    - polybar
+    - ly
+    - cachyos-picom-config
+    - dunst
+    - cachyos-i3wm-settings
+    - libwnck3
+    - xf86-input-libinput
+    - xorg-xdpyinfo
+    - xorg-server
+    - xorg-xinit
+    - xorg-xinput
+    - xorg-xkill
+    - xorg-xrandr
+    - xorg-xbacklight
+    - xorg-xdpyinfo
+    - xf86-video-amdgpu
+    - xf86-video-ati
+    - xf86-video-intel
+    - xf86-input-libinput
+    - xf86-video-fbdev
+    - xf86-video-vesa
+- name: "KDE-Desktop"
+  description: "KDE-Plasma Desktop - Simple by default, powerful when needed."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - ark
+    - audiocd-kio
+    - bluedevil
+    - breeze-gtk
+    - cachyos-nord-kde-theme-git
+    - cachyos-lavender-kde-theme-git
+    - cachyos-iridescent-kde
+    - cachyos-kde-settings
+    - dolphin
+    - egl-wayland
+    - konsole
+    - kate
+    - kdeconnect
+    - kscreen
+    - kde-gtk-config
+    - khotkeys
+    - kinfocenter
+    - kinit
+    - kinfocenter
+    - khotkeys
+    - plasma
+    - plasma-wayland-protocols
+    - plasma-wayland-session
+    - plasma-desktop
+    - plasma-framework
+    - plasma-nm
+    - plasma-pa
+    - plasma-workspace
+    - plasma-integration
+    - plasma-firewall
+    - plasma-browser-integration
+    - plasma-systemmonitor
+    - plasma-thunderbolt
+    - ksysguard
+    - pamac-aur
+    - octopi
+    - spectacle
+    - sddm
+    - sddm-kcm
+    - libwnck3
+    - xf86-input-libinput
+    - xorg-xdpyinfo
+    - xorg-server
+    - xorg-xinit
+    - xorg-xinput
+    - xorg-xkill
+    - xorg-xrandr
+    - xorg-xbacklight
+    - xorg-xdpyinfo
+    - xf86-video-amdgpu
+    - xf86-video-ati
+    - xf86-video-intel
+    - xf86-input-libinput
+    - xf86-video-fbdev
+    - xf86-video-vesa
+    - xorg-xwayland
+    - xsettingsd
+- name: "GNOME-Desktop"
+  description: "GNOME Desktop - designed to put you in control and get things done."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - adwaita-icon-theme
+    - cachyos-gnome-settings
+    - eog
+    - evince
+    - file-roller
+    - gdm
+    - gedit
+    - gnome-calculator
+    - gnome-control-center
+    - gnome-disk-utility
+    - gnome-keyring
+    - gnome-nettool
+    - gnome-power-manager
+    - gnome-screenshot
+    - gnome-shell
+    - gnome-terminal
+    - gnome-themes-extra
+    - gnome-tweaks
+    - gnome-usage
+    - gvfs
+    - gvfs-afc
+    - gvfs-gphoto2
+    - gvfs-mtp
+    - gvfs-nfs
+    - gvfs-smb
+    - nautilus
+    - nautilus-sendto
+    - sushi
+    - totem
+    - xdg-user-dirs-gtk
+    - libwnck3
+    - xf86-input-libinput
+    - xorg-xdpyinfo
+    - xorg-server
+    - xorg-xinit
+    - xorg-xinput
+    - xorg-xkill
+    - xorg-xrandr
+    - xorg-xbacklight
+    - xorg-xdpyinfo
+    - xf86-video-amdgpu
+    - xf86-video-ati
+    - xf86-video-intel
+    - xf86-input-libinput
+    - xf86-video-fbdev
+    - xf86-video-vesa
+- name: "Openbox"
+  description: "Openbox is a highly configurable, floating window manager with extensive standards support."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - cachyos-openbox-settings
+    - obconf
+    - libwnck3
+    - acpi
+    - arandr
+    - archlinux-xdg-menu
+    - dex
+    - dmenu
+    - dunst
+    - feh
+    - gtk-engine-murrine
+    - gvfs
+    - gvfs-afc
+    - gvfs-gphoto2
+    - gvfs-mtp
+    - gvfs-nfs
+    - gvfs-smb
+    - jgmenu
+    - jq
+    - lightdm
+    - lightdm-slick-greeter
+    - lxappearance-gtk3
+    - mpv
+    - network-manager-applet
+    - nitrogen
+    - obconf
+    - openbox
+    - pasystray
+    - picom
+    - polkit-gnome
+    - rofi
+    - scrot
+    - slock
+    - sysstat
+    - thunar
+    - thunar-archive-plugin
+    - thunar-media-tags-plugin
+    - thunar-volman
+    - tint2
+    - ttf-nerd-fonts-symbols-1000-em
+    - tumbler
+    - xbindkeys
+    - xcursor-neutral
+    - xdg-user-dirs-gtk
+    - xed
+    - xfce4-terminal
+    - libwnck3
+    - xf86-input-libinput
+    - xorg-xdpyinfo
+    - xorg-server
+    - xorg-xinit
+    - xorg-xinput
+    - xorg-xkill
+    - xorg-xrandr
+    - xorg-xbacklight
+    - xorg-xdpyinfo
+    - xf86-video-amdgpu
+    - xf86-video-ati
+    - xf86-video-intel
+    - xf86-input-libinput
+    - xf86-video-fbdev
+    - xf86-video-vesa
+- name: "Wayfire"
+  description: "Wayfire is a wayland compositor based on wlroots. It aims to create a customizable, extendable and lightweight environment without sacrificing its appearance."
+  hidden: false
+  selected: false
+  expanded: false
+  critical: true
+  packages:
+    - cachyos-wayfire-settings
+    - wayfire-desktop-git
+    - egl-wayland
+    - wayland-protocols
+    - wofi
+    - ly
+    - xorg-xhost
+    - xorg-xwayland
+- name: "LXQT-Desktop"
+  description: "The Lightweight Qt Desktop Environment."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - audiocd-kio
+    - baka-mplayer
+    - breeze
+    - breeze-gtk
+    - featherpad
+    - gvfs
+    - gvfs-mtp
+    - kio-fuse
+    - libstatgrab
+    - libsysstat
+    - lm_sensors
+    - lxqt
+    - lxqt-archiver
+    - network-manager-applet
     - oxygen-icons
-    - phonon-backend-gstreamer
-    # chakra theme (including kapudan options)
-    - chakra-wallpapers-dharma
-    - chakra-wallpapers-curie
-    - chakra-wallpapers-descartes
-    - grub2-themes-sirius
-    - kapudan-kde-themes-caledonia
-    - kde-kdm-themes-sirius
-    - kde-ksplash-themes-sirius
-    - kde-plasma-themes-caledonia
-    - python2-imaging
-    - python2-v4l2capture
-    - python2-xlib
-    - caledonia-colors
-    - yakuake-themes-ronak
-    # kde (everything else)
-    - kdeadmin-kcron
-    - kdeadmin-kuser
-    - kdeplasma-addons-applets-icontasks
-    - kdesdk-kate
-    - kdeutils-ark
-    - kdeutils-kgpg
-    - kdeutils-sweeper
-    # kde network
-    - kdeplasma-applets-plasma-nm
-    - networkmanager-dispatcher-ntpd
-    - kcm-ufw
-    # applications
-    - rekonq
-    - yakuake
-    # enable systemd-units
-    - chakra-init-live
-    # overlay pkgs
-    - partitionmanager
-    - octopi-notifier
-    - kapudan
-- name: "Wireless"
-  description: "Tools for wireless connections"
+    - pavucontrol-qt
+    - print-manager
+    - qt5-translations
+    - sddm
+    - xdg-utils
+    - xscreensaver
+    - xsettingsd
+- name: "bspwm"
+  description: "bspwm is a tiling window manager that represents windows as the leaves of a full binary tree. bspwm supports multiple monitors and is configured and controlled through messages."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - bspwm
+    - sxhkd
+    - polybar
+    - lightdm
+    - cachyos-picom-config
+    - alacritty
+    - openssh
+    - btop
+    - libwnck3
+    - xf86-input-libinput
+    - xorg-xdpyinfo
+    - xorg-server
+    - xorg-xinit
+    - xorg-xinput
+    - xorg-xkill
+    - xorg-xrandr
+    - xorg-xbacklight
+    - xorg-xdpyinfo
+    - xf86-video-amdgpu
+    - xf86-video-ati
+    - xf86-video-intel
+    - xf86-input-libinput
+    - xf86-video-fbdev
+    - xf86-video-vesa
+- name: "Kofuku"
+  description: "Kofuku (bliss in Japanese) is a lightweight and minimalist Linux setup. This setup uses BSPWM as the tiling window manager."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - bspwm
+    - sxhkd
+    - polybar
+    - lightdm
+    - cachyos-picom-config
+    - rofi
+    - lightdm-webkit2-greeter
+    - cachyos-kofuku
+    - libwnck3
+    - xf86-input-libinput
+    - xorg-xdpyinfo
+    - xorg-server
+    - xorg-xinit
+    - xorg-xinput
+    - xorg-xkill
+    - xorg-xrandr
+    - xorg-xbacklight
+    - xorg-xdpyinfo
+    - xf86-video-amdgpu
+    - xf86-video-ati
+    - xf86-video-intel
+    - xf86-input-libinput
+    - xf86-video-fbdev
+    - xf86-video-vesa
+- name: "Sway"
+  description: "Sway is a tiling Wayland compositor and a drop-in replacement for the i3 window manager for X11. It works with your existing i3 configuration and supports most of i3's features, plus a few extras."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - sway
+    - waybar
+    - wl-clipboard
+    - egl-wayland
+    - wayland-protocols
+    - wofi
+    - ly
+    - xorg-xhost
+    - xorg-xwayland
+- name: "Xfce4"
+  description: "Xfce is a lightweight desktop environment for UNIX-like operating systems. It aims to be fast and low on system resources, while still being visually appealing and user friendly."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - file-roller
+    - galculator
+    - gvfs
+    - gvfs-afc
+    - gvfs-gphoto2
+    - gvfs-mtp
+    - gvfs-nfs
+    - gvfs-smb
+    - lightdm
+    - lightdm-gtk-greeter
+    - lightdm-gtk-greeter-settings
+    - network-manager-applet
+    - parole
+    - ristretto
+    - thunar-archive-plugin
+    - thunar-media-tags-plugin
+    - xdg-user-dirs-gtk
+    - xed
+    - xfce4
+    - xfce4-battery-plugin
+    - xfce4-datetime-plugin
+    - xfce4-mount-plugin
+    - xfce4-netload-plugin
+    - xfce4-notifyd
+    - xfce4-pulseaudio-plugin
+    - xfce4-screensaver
+    - xfce4-screenshooter
+    - xfce4-taskmanager
+    - xfce4-wavelan-plugin
+    - xfce4-weather-plugin
+    - xfce4-whiskermenu-plugin
+    - xfce4-xkb-plugin
+    - cachyos-xfce-settings
+    - libwnck3
+    - xf86-input-libinput
+    - xorg-xdpyinfo
+    - xorg-server
+    - xorg-xinit
+    - xorg-xinput
+    - xorg-xkill
+    - xorg-xrandr
+    - xorg-xbacklight
+    - xorg-xdpyinfo
+    - xf86-video-amdgpu
+    - xf86-video-ati
+    - xf86-video-intel
+    - xf86-input-libinput
+    - xf86-video-fbdev
+    - xf86-video-vesa
+- name: "Firefox and language package"
+  description: "Add firefox and language pack if possible"
+  hidden: false
+  selected: false
   critical: false
   packages:
-    - crda
-    - ndiswrapper
-    - usb-modeswitch
-    - wireless-regdb
-    - wireless_tools
-    - wpa_supplicant
-- name: "CCR"
-  description: "Tools for the Chakra Community Repository"
+    - firefox
+    - firefox-i18n-$LOCALE
+- name: "NVIDIA Drivers"
+  description: "Select them if you want to use the nvidia drivers"
+  hidden: false
+  selected: false
+  critical: true
   packages:
-    - ccr
-    - base-devel
-- name: "Graphics"
-  description: "Applications to work with graphics"
+    - nvidia-utils
+    - lib32-nvidia-utils
+    - nvidia-dkms
+    - nvidia-settings
+    - lib32-opencl-nvidia
+    - opencl-nvidia
+- name: "Printing-Support"
+  description: "Support for printing (Cups)"
+  hidden: false
+  selected: false
+  critical: true
   packages:
-    - kdegraphics-gwenview
-    - kdegraphics-kamera
-    - kdegraphics-kcolorchooser
-    - kdegraphics-kgamma
-    - kdegraphics-kolourpaint
-    - kdegraphics-kruler
-    - kdegraphics-ksaneplugin
-    - kdegraphics-ksnapshot
-    - kdegraphics-libkdcraw
-    - kdegraphics-libkexiv2
-    - kdegraphics-libkipi
-    - kdegraphics-libksane
-    - kdegraphics-mobipocket
-    - kdegraphics-okular
-    - kdegraphics-strigi-analyzer
-    - kdegraphics-svgpart
-    - kdegraphics-thumbnailers
-    - imagemagick
-
+    - cups
+    - cups-filters
+    - cups-pdf
+    - foomatic-db
+    - foomatic-db-engine
+    - foomatic-db-gutenprint-ppds
+    - foomatic-db-nonfree
+    - foomatic-db-nonfree-ppds
+    - foomatic-db-ppds
+    - ghostscript
+    - gsfonts
+    - gutenprint
+    - splix
+    - system-config-printer
+- name: "Support for HP Printer/Scanner"
+  description: "Extra Packages for HP Printer/Scanner"
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - hplip
+    - python-pyqt5
+    - python-reportlab
+    - xsane
+- name: "Accessibility Tools"
+  description: "Screen reader and mouse tweaks (impaired vision)"
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - espeak-ng
+    - mousetweaks
+    - orca

@@ -69,9 +69,7 @@
         description: "Firewall support"
         selected: true
         packages:
-          - firewalld
-          - python-pyqt5
-          - python-capng
+          - ufw
       - name: "bluetooth"
         description: "Bluetooth support"
         selected: true

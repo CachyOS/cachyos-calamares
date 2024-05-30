@@ -201,14 +201,6 @@
           - nano
           - vim
           - openssh
-- name: "LTS Kernel"
-  description: "Selection of additonal LTS Kernel, as backup"
-  hidden: false
-  selected: false
-  critical: true
-  packages:
-    - linux-cachyos-lts
-    - linux-cachyos-lts-headers
 - name: "KDE-Desktop"
   description: "KDE-Plasma Desktop - Simple by default, powerful when needed."
   hidden: false

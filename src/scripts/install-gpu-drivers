@@ -14,4 +14,8 @@ if [[ $(lspci -d "*:*:0302") ]]; then
   chwd -a pci nonfree 0302
 fi
 
+if [[ $(lspci -d "*:*:0000") ]]; then
+  chwd -a pci free 0000
+fi
+
 # vim:set ft=bash sw=2 sts=2 et:

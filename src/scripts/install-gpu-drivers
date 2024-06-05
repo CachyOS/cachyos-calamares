@@ -14,8 +14,14 @@ if [[ $(lspci -d "*:*:0302") ]]; then
   chwd -a pci nonfree 0302
 fi
 
+# Check for MacBook T2
 if [[ $(lspci -d "*:*:0000") ]]; then
   chwd -a pci free 0000
+fi
+
+# Check for network PCI
+if [[ $(lspci -d "*:*:0200") ]]; then
+  chwd -a pci nonfree 0200
 fi
 
 # vim:set ft=bash sw=2 sts=2 et:

@@ -185,9 +185,7 @@
           - inxi
           - meld
           - nano-syntax-highlighting
-          - neofetch
           - fastfetch
-          - pcurses
           - pv
           - python-defusedxml
           - python-packaging

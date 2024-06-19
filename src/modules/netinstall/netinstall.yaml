@@ -280,7 +280,6 @@
     - gvfs-nfs
     - gvfs-smb
     - nautilus
-    - nautilus-sendto
     - sushi
     - totem
     - qt6-wayland

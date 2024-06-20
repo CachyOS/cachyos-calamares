@@ -248,6 +248,9 @@ ZfsJob::exec()
             cWarning() << "Failed to create /etc/hostid";
         }
 
+        // Put information about native ZFS encryption into GS
+        gs->insert( "zfsEncrypted", encrypt );
+
         // Create the zpool
         ZfsResult zfsResult;
         if ( encrypt )

@@ -1,31 +1,42 @@
 #!/bin/bash
+
+# Pacman Files
 pacman_conf="/etc/pacman.conf"
 pacman_conf_cachyos="/etc/pacman-more.conf"
-pacman_conf_path_backup="/etc/pacman.conf.bak"
-check_v3="$(/lib/ld-linux-x86-64.so.2 --help|grep 'x86-64-v3 ('|awk '{print $1}')"
-check_v4="$(/lib/ld-linux-x86-64.so.2 --help|grep 'x86-64-v4 ('|awk '{print $1}')"
+pacman_conf_path_backup="${pacman_conf}.bak"
 
+# Architecture Check
+check_v3="$(/lib/ld-linux-x86-64.so.2 --help | grep 'x86-64-v3 (' | awk '{print $1}')"
+check_v4="$(/lib/ld-linux-x86-64.so.2 --help | grep 'x86-64-v4 (' | awk '{print $1}')"
+check_znver4_znver5="$(gcc -march=native -Q --help=target 2>&1 | head -n 35 | grep -E '(znver4|znver5)')"
 
-if [ $check_v4 == "x86-64-v4" ];then
-echo "x86-64-v4 is supported"
-sed -i 's/#<disabled_v4>//g' $pacman_conf_cachyos
-sed -e -i '/#<disabled_v3>/d' $pacman_conf_cachyos
-echo "backup old config"
-mv $pacman_conf $pacman_conf_path_backup
-echo "CachyOS -v4 Repo changed"
-mv $pacman_conf_cachyos $pacman_conf
-elif [ $check_v3 == "x86-64-v3" ];then
-echo "x86-64-v3 is supported"
-sed -i 's/#<disabled_v3>//g' $pacman_conf_cachyos
-sed -e -i '/#<disabled_v4>/d' $pacman_conf_cachyos
-echo "backup old config"
-mv $pacman_conf $pacman_conf_path_backup
-echo "CachyOS -v3 Repo changed"
-mv $pacman_conf_cachyos $pacman_conf
+if [ -n "$check_znver4_znver5" ]; then
+  echo "znver4 or znver5 is supported"
+  sed -i 's/#<disabled_znverv4>//g' $pacman_conf_cachyos
+  echo "backup old config"
+  mv $pacman_conf $pacman_conf_path_backup
+  echo "CachyOS -znver4 Repo changed"
+  mv $pacman_conf_cachyos $pacman_conf
+elif [ $check_v4 == "x86-64-v4" ]; then
+  echo "x86-64-v4 is supported"
+  sed -i 's/#<disabled_v4>//g' $pacman_conf_cachyos
+  sed -e -i '/#<disabled_v3>/d' $pacman_conf_cachyos
+  echo "backup old config"
+  mv $pacman_conf $pacman_conf_path_backup
+  echo "CachyOS -v4 Repo changed"
+  mv $pacman_conf_cachyos $pacman_conf
+elif [ $check_v3 == "x86-64-v3" ]; then
+  echo "x86-64-v3 is supported"
+  sed -i 's/#<disabled_v3>//g' $pacman_conf_cachyos
+  sed -e -i '/#<disabled_v4>/d' $pacman_conf_cachyos
+  echo "backup old config"
+  mv $pacman_conf $pacman_conf_path_backup
+  echo "CachyOS -v3 Repo changed"
+  mv $pacman_conf_cachyos $pacman_conf
 else
-echo "x86-64-v3 is not supported"
-echo "backup old config"
-mv $pacman_conf $pacman_conf_path_backup
-echo "CachyOS Repo changed"
-mv $pacman_conf_cachyos $pacman_conf
+  echo "x86-64-v4 and x86-64 is not supported"
+  echo "backup old config"
+  mv $pacman_conf $pacman_conf_path_backup
+  echo "CachyOS Repo changed"
+  mv $pacman_conf_cachyos $pacman_conf
 fi

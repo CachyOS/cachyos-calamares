@@ -12,7 +12,7 @@ check_znver4_znver5="$(gcc -march=native -Q --help=target 2>&1 | head -n 35 | gr
 
 if [ -n "$check_znver4_znver5" ]; then
   echo "znver4 or znver5 is supported"
-  sed -i 's/#<disabled_znverv4>//g' $pacman_conf_cachyos
+  sed -i 's/#<disabled_znver4>//g' $pacman_conf_cachyos
   echo "backup old config"
   mv $pacman_conf $pacman_conf_path_backup
   echo "CachyOS -znver4 Repo changed"

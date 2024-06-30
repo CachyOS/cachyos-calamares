@@ -253,8 +253,6 @@
   selected: false
   critical: true
   packages:
-    - cachyos-gnome-settings
-    - cachyos-nord-gtk-theme-git
     - adwaita-icon-theme
     - eog
     - evince

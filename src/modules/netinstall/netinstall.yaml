@@ -28,6 +28,7 @@
      - cachyos-settings
      - cachyos-zsh-config
      - cachyos-micro-settings
+     - cachyos-wallpapers
 - name: "Base-devel + Common packages"
   description: "Recommended. Don't change unless you know what you're doing (generic)."
   hidden: false
@@ -208,7 +209,6 @@
     - cachyos-emerald-kde-theme-git
     - cachyos-kde-settings
     - cachyos-themes-sddm
-    - cachyos-wallpapers
     - ark
     - bluedevil
     - breeze-gtk
@@ -434,7 +434,6 @@
     - bemenu-wayland
     - xorg-xwayland
     - capitaine-cursors
-    - cachyos-wallpapers
     - kvantum-theme-nordic-git
     - cachyos-nord-gtk-theme-git
 - name: "LXDE-Desktop"

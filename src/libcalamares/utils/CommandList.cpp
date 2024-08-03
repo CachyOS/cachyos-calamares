@@ -270,7 +270,7 @@ CommandList::run()
         {
             runner.enableOutputProcessing();
             QObject::connect(
-                &runner, &Calamares::Utils::Runner::output, []( QString output ) { cDebug() << output; } );
+                &runner, &Calamares::Utils::Runner::output, []( QString output ) { cInfo() << output; } );
         }
         ProcessResult r = runner.run();
 

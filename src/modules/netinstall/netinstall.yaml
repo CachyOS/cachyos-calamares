@@ -385,6 +385,37 @@
     - metacity
     - lightdm
     - lightdm-gtk-greeter
+- name: "Cosmic-Alpha"
+  description: "Linux desktop which is fully written in Rust and provides a Gnome like experience."
+  hidden: false
+  selected: false
+  critical: true
+  packages:
+    - cosmic-applets
+    - cosmic-applibrary
+    - cosmic-bg
+    - cosmic-comp
+    - cosmic-edit
+    - cosmic-files
+    - cosmic-greeter
+    - cosmic-icons
+    - cosmic-launcher
+    - cosmic-notifications
+    - cosmic-osd
+    - cosmic-panel
+    - cosmic-randr
+    - cosmic-screenshot
+    - cosmic-settings
+    - cosmic-settings-daemon
+    - cosmic-term
+    - cosmic-wallpapers
+    - cosmic-workspaces
+    - cosmic-session
+    - otf-fira-mono
+    - otf-fira-sans
+    - sddm
+    - xdg-desktop-portal-cosmic
+    - xorg-xwayland
 - name: "i3-Window-Manager"
   description: "i3 tiling window manager, primarily targeted at developers and advanced users."
   hidden: false

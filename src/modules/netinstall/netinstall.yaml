@@ -395,10 +395,10 @@
     - cosmic-applibrary
     - cosmic-bg
     - cosmic-comp
-    - cosmic-edit
+    - cosmic-text-editor
     - cosmic-files
     - cosmic-greeter
-    - cosmic-icons
+    - cosmic-icon-theme
     - cosmic-launcher
     - cosmic-notifications
     - cosmic-osd
@@ -407,7 +407,7 @@
     - cosmic-screenshot
     - cosmic-settings
     - cosmic-settings-daemon
-    - cosmic-term
+    - cosmic-terminal
     - cosmic-wallpapers
     - cosmic-workspaces
     - cosmic-session

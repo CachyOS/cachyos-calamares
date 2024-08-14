@@ -743,7 +743,6 @@
     - hplip
     - python-pyqt5
     - python-reportlab
-    - xsane
     - cups
     - cups-filters
     - cups-pdf

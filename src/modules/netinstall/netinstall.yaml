@@ -392,7 +392,7 @@
   critical: true
   packages:
     - cosmic-applets
-    - cosmic-applibrary
+    - cosmic-app-library
     - cosmic-bg
     - cosmic-comp
     - cosmic-text-editor

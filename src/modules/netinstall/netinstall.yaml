@@ -385,7 +385,7 @@
     - metacity
     - lightdm
     - lightdm-gtk-greeter
-- name: "Cosmic-Alpha"
+- name: "Cosmic"
   description: "Linux desktop which is fully written in Rust and provides a Gnome like experience."
   hidden: false
   selected: false

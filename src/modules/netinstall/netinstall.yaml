@@ -386,7 +386,7 @@
     - lightdm
     - lightdm-gtk-greeter
 - name: "Cosmic"
-  description: "Linux desktop which is fully written in Rust and provides a Gnome like experience."
+  description: "Linux desktop, which provides an environment that features advanced functionality and a responsive design."
   hidden: false
   selected: false
   critical: true

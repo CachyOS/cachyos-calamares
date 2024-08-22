@@ -75,7 +75,7 @@ def run():
                 "exist, doing nothing".format(root_mount_point))
 
     # run the command in chroot
-    shell_command = ["arch-chroot", root_mount_point, "/etc/calamares/scripts/install-gpu-drivers"]
+    shell_command = ["arch-chroot", root_mount_point, "chwd --autoconfigure"]
 
     try:
         run_in_host(shell_command, line_cb)
@@ -83,11 +83,6 @@ def run():
         return "Failed to run chwd", "chwd failed with error {!s}".format(cpe.stderr)
     except HostError as host_err:
         return "Failed to run chwd", format(host_err)
-
-    # remove leftover from the target system
-    script_path = root_mount_point + "/etc/calamares/scripts/install-gpu-drivers"
-    os.remove(script_path)
-    libcalamares.utils.debug("Removed gpu script file {!s}".format(script_path))
 
     libcalamares.job.setprogress(1.0)
 

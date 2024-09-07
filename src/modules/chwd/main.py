@@ -75,7 +75,7 @@ def run():
                 "exist, doing nothing".format(root_mount_point))
 
     # run the command in chroot
-    shell_command = ["arch-chroot", root_mount_point, "chwd --autoconfigure"]
+    shell_command = ["arch-chroot", root_mount_point, "chwd", "--autoconfigure"]
 
     try:
         run_in_host(shell_command, line_cb)

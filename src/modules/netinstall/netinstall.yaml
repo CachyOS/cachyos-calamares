@@ -63,6 +63,7 @@
           - nss-mdns
           - usb_modeswitch
           - wpa_supplicant
+          - wireless-regdb
           - xl2tpd
       - name: "firewall"
         description: "Firewall support"

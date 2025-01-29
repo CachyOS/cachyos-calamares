@@ -19,15 +19,19 @@
   selected: true
   critical: true
   packages:
-     - cachyos-fish-config
-     - cachyos-ananicy-rules
      - cachyos-hello
      - cachyos-kernel-manager
      - cachyos-packageinstaller
      - cachyos-settings
-     - cachyos-zsh-config
      - cachyos-micro-settings
      - cachyos-wallpapers
+- name: "CachyOS shell configuration"
+  description: "Shell packages for CachyOS"
+  hidden: false
+  selected: true
+  packages:
+     - cachyos-fish-config
+     - cachyos-zsh-config
 - name: "Base-devel + Common packages"
   description: "Recommended. Don't change unless you know what you're doing (generic)."
   hidden: false

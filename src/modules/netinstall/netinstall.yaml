@@ -257,46 +257,43 @@
     - xdg-desktop-portal-kde
     - xsettingsd
 - name: "GNOME-Desktop"
-  description: "GNOME Desktop - designed to put you in control and get things done."
+  description: "GNOME desktop environment - designed to put you in control and get things done."
   hidden: false
   selected: false
   critical: true
   packages:
-    - adwaita-icon-theme
-    - eog
-    - evince
-    - file-roller
     - fwupd
     - gdm
     - gedit
-    - gnome
     - gnome-backgrounds
-    - gnome-calculator
+    - gnome-console
     - gnome-control-center
-    - gnome-disk-utility
     - gnome-keyring
-    - gnome-nettool
-    - gnome-power-manager
-    - gnome-screenshot
     - gnome-shell
-    - gnome-terminal
-    - gnome-themes-extra
     - gnome-tweaks
-    - gnome-usage
-    - malcontent
     - libnma
-    - gvfs
-    - gvfs-afc
-    - gvfs-gphoto2
-    - gvfs-mtp
-    - gvfs-nfs
-    - gvfs-smb
-    - nautilus
     - sushi
-    - totem
-    - qt6-wayland
-    - xdg-user-dirs-gtk
-    - xdg-desktop-portal-gnome
+  subgroups:
+      - name: "GNOME Apps"
+        description: "Additional software from the GNOME project"
+        critical: false
+        packages:
+          - papers
+          - loupe
+          - file-roller
+          - simple-scan
+          - gnome-disk-utility
+          - gnome-power-manager
+          - gnome-calculator
+          - gnome-nettool
+          - gnome-usage
+          - malcontent
+          - showtime
+          - gvfs-afc
+          - gvfs-nfs
+          - gvfs-smb
+          - gvfs-gphoto2
+          - gvfs-mtp
 - name: "Xfce4"
   description: "Xfce is a lightweight desktop environment for UNIX-like operating systems. It aims to be fast and low on system resources, while still being visually appealing and user friendly."
   hidden: false

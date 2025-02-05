@@ -295,7 +295,6 @@
   selected: false
   critical: true
   packages:
-    - cachyos-xfce-settings
     - blueman
     - file-roller
     - galculator

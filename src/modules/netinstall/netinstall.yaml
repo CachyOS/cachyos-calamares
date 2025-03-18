@@ -147,9 +147,10 @@
           - alsa-plugins
           - alsa-utils
           - pavucontrol
+          - pipewire-alsa
+          - pipewire-jack
           - pipewire-pulse
           - wireplumber
-          - pipewire-alsa
           - rtkit
       - name: "hardware"
         description: "Hardware support libs and firmware"

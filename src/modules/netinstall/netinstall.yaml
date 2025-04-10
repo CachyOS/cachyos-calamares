@@ -488,7 +488,7 @@
     - gvfs-nfs
     - gvfs-smb
     - lxappearance-gtk3
-    - obconf
+    - obconf-qt
     - lxde-common
     - lxde-icon-theme
     - lxhotkey-gtk3
@@ -562,7 +562,7 @@
   critical: true
   packages:
     - cachyos-openbox-settings
-    - obconf
+    - obconf-qt
     - libwnck3
     - acpi
     - arandr
@@ -586,7 +586,6 @@
     - mpv
     - network-manager-applet
     - nitrogen
-    - obconf
     - openbox
     - pasystray
     - picom

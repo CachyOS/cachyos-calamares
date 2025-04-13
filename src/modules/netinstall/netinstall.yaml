@@ -217,6 +217,7 @@
     - dolphin
     - egl-wayland
     - gwenview
+    - haruna
     - konsole
     - kate
     - kdeconnect
@@ -247,7 +248,7 @@
     - xsettingsd
     - xdg-desktop-portal
     - xdg-desktop-portal-kde
-    - phonon-qt6-vlc
+    - phonon-qt6-mpv
 - name: "GNOME-Desktop"
   description: "GNOME Desktop - designed to put you in control and get things done."
   hidden: false

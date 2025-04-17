@@ -730,10 +730,11 @@ def add_additional_entries_limine(efi_directory, installation_root_path, fw_type
                 config_file.write(f"\tdrive: {drive}\n")
                 config_file.write(f"\tpartition: {partition_number}\n")
 
-def update_limine_config(efi_directory, installation_root_path):
+def update_limine_config(efi_directory, installation_root_path, fw_type):
     """
     :param efi_directory: The path to the efi directory relative to the root
     :param installation_root_path: The path to the root of the installation
+    :param fw_type: A string which is "efi" for UEFI installs.  Any other value results in a BIOS install
     """
     config_path = os.path.join(installation_root_path + efi_directory, "limine.conf")
     uuid = get_uuid()
@@ -741,7 +742,10 @@ def update_limine_config(efi_directory, installation_root_path):
 
     with open(config_path, 'w') as config_file:
         config_file.write("timeout: 5\n")
-        config_file.write("default_entry: 2\n\n")
+        config_file.write("default_entry: 2\n")
+        if fw_type == "efi":
+            config_file.write("remember_last_entry: yes\n")
+        config_file.write("\n")
 
         # Copy splash logo
         try:
@@ -856,9 +860,9 @@ def install_limine(efi_directory, fw_type):
         bios_sys_source = installation_root_path + "/usr/share/limine/limine-bios.sys"
         shutil.copy2(bios_sys_source, install_efi_directory)
         check_target_env_call(["limine", "bios-install", boot_loader["installPath"]])
-        update_limine_config(efi_directory, installation_root_path)
+        update_limine_config(efi_directory, installation_root_path, fw_type)
 
-    update_limine_config(efi_directory, installation_root_path)
+    update_limine_config(efi_directory, installation_root_path, fw_type)
     add_additional_entries_limine(efi_directory, installation_root_path, fw_type)
 
 

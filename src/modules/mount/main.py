@@ -113,7 +113,11 @@ def get_mount_options(filesystem, mount_options, partition, efi_location = None)
 
     # Append the appropriate options for ssd or hdd if set
     if is_ssd_disk(partition):
-        option_items.extend(options.get("ssdOptions", []))
+        name = os.path.basename(partition["device"])
+        if name.startswith("/dev/nvme"):
+            option_items.extend(options.get("nvmeOptions", []))
+        else:
+            option_items.extend(options.get("ssdOptions", []))
     else:
         option_items.extend(options.get("hddOptions", []))
 

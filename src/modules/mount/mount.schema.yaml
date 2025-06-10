@@ -36,6 +36,7 @@ properties:
             properties:
                 filesystem: { type: string }
                 options: { type: array }
+                nvmeOptions: { type: array }
                 ssdOptions: { type: array }
                 hddOptions: { type: array }
             required: [ filesystem ]

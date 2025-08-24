@@ -62,6 +62,12 @@ def get_uuid():
 
     return ""
 
+def get_machine_id(installation_root_path):
+    with open(os.path.join(installation_root_path, "etc", "machine-id"), 'r') as machineid_file:
+        machine_id = machineid_file.read().rstrip('\n')
+
+    return machine_id
+
 
 def get_kernel_line(kernel_type):
     """
@@ -231,8 +237,7 @@ def create_systemd_boot_conf(installation_root_path, efi_dir, uuid, kernel, kern
     libcalamares.utils.debug(f"Configuring kernel version {kernel_version}")
 
     # get the machine-id
-    with open(os.path.join(installation_root_path, "etc", "machine-id"), 'r') as machineid_file:
-        machine_id = machineid_file.read().rstrip('\n')
+    machine_id = get_machine_id(installation_root_path)
 
     # Ensure the directory exists
     machine_dir = os.path.join(installation_root_path + efi_dir, machine_id)
@@ -780,6 +785,8 @@ def update_limine_config(efi_directory, installation_root_path, fw_type):
         except KeyError:
             libcalamares.utils.warning('limineSplashLogo not set. Skipping wallpaper in limine.conf')
 
+        machine_id = get_machine_id(installation_root_path)
+        config_file.write(f"comment: machine-id={machine_id}\n")
         config_file.write(f"/+CachyOS\n")
 
     with open(limine_entry_config_path, 'w') as limine_entry_config:

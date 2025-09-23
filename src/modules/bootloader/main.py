@@ -733,6 +733,7 @@ def add_additional_entries_limine(efi_directory, installation_root_path, fw_type
             elif fw_type != "efi" and len(partition) == 1:
                 (devname,) = partition
                 drive, partition_number = get_partition_drive(devname)
+                drive = drive.replace("/dev/", "")
                 with open(f"/sys/block/{drive}/diskseq") as f:
                     diskseq = f.readline().strip()
 

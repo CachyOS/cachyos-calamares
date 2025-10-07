@@ -109,6 +109,7 @@
           - libopenraw
           - mlocate
           - poppler-glib
+          - vlc-plugins-all
           - xdg-user-dirs
           - xdg-utils
       - name: "filesystem"

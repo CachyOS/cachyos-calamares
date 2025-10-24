@@ -543,7 +543,7 @@
     - gvfs-mtp
     - gvfs-nfs
     - gvfs-smb
-    - lxappearance-gtk3
+    - lxappearance
     - obconf-qt
     - lxde-common
     - lxde-icon-theme
@@ -638,7 +638,7 @@
     - jq
     - lightdm
     - lightdm-slick-greeter
-    - lxappearance-gtk3
+    - lxappearance
     - mpv
     - network-manager-applet
     - nitrogen

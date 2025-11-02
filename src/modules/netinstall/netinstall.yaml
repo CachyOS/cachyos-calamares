@@ -455,35 +455,17 @@
   expanded: false
   critical: true
   packages:
-    - cachyos-hyprland-settings
     - hyprland
-    - kvantum
-    - qt5ct
     - sddm
-    - swaybg
-    - swaylock-effects-git
-    - swaylock-fancy-git
-    - waybar
     - xdg-desktop-portal-hyprland
-    - grimblast-git
-    - slurp
-    - mako
-    - wob
-    - pamixer
-    - rofi
-    - rofi-emoji
+    - playerctl
     - wofi
-    - wlogout
-    - swappy
+    - dolphin
+    - kitty
     - uwsm
     - wl-clipboard
     - polkit-kde-agent
-    - bemenu
-    - bemenu-wayland
     - xorg-xwayland
-    - capitaine-cursors
-    - kvantum-theme-nordic-git
-    - cachyos-nord-gtk-theme-git
 - name: "Niri"
   description: "A scrollable-tiling Wayland compositor."
   hidden: false

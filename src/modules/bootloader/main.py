@@ -29,7 +29,7 @@ import subprocess
 
 import libcalamares
 
-from libcalamares.utils import check_target_env_call, check_target_env_output
+from libcalamares.utils import target_env_call, check_target_env_call, check_target_env_output
 
 import gettext
 
@@ -688,6 +688,26 @@ def run_grub_install(fw_type, partitions, efi_directory, install_hybrid_grub):
                                    boot_loader_install_path])
 
 
+def show_broken_uefi_warning():
+    warning = (
+        "Due to a probably bug of your UEFI, system bootloader has been installed "
+        "but not listed in the entry list. You need to select drive on which you "
+        "install the system by yourself for default boot later."
+    )
+    title = "Bootloader installation partially broken"
+
+    subprocess.call([
+        "yad",
+        "--width",
+        "600",
+        "--title",
+        title,
+        "--image",
+        "dialog-warning",
+        "--text",
+        warning
+    ])
+
 def get_partition_drive(partition):
     devname = partition.replace("/dev/", "")
 
@@ -819,7 +839,20 @@ def install_limine(efi_directory, fw_type):
 
     if fw_type == "efi":
         libcalamares.utils.debug("Bootloader: limine (efi)")
-        check_target_env_call(["limine-install"])
+
+        exit_code = target_env_call(["limine-install"])
+
+        # Retry using fallback option if initial attempt failed
+        if exit_code != 0:
+            libcalamares.utils.warning(_("Failed to install limine bootloader, trying fallback option"))
+
+            check_target_env_call(["limine-install", "--skip-uefi", "--fallback"])
+            show_broken_uefi_warning()
+
+            config_path = os.path.join(installation_root_path + "/etc/default", "limine")
+            with open(config_path, 'a') as config:
+                config.write("SKIP_UEFI=yes\n")
+                config.write("ENABLE_LIMINE_FALLBACK=yes\n")
     else:
         libcalamares.utils.debug("Bootloader: limine (bios)")
 

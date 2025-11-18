@@ -74,6 +74,7 @@
           - bluez
           - bluez-hid2hci
           - bluez-libs
+          - bluez-obex
           - bluez-utils
       - name: "packages management"
         description: "Packages tools"

@@ -877,7 +877,7 @@ class DMcosmicgreeter(DisplayManager):
     def set_autologin(self, username, do_autologin, default_desktop_environment):
         if do_autologin:
             libcalamares.utils.warning("cosmic-greeter does not support autologin; skipping autologin setup.")
-
+        return super().set_autologin()
 
 class DMgreetd(DisplayManager):
     name = "greetd"

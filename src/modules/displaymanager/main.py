@@ -806,7 +806,10 @@ class DMplasmalogin(DisplayManager):
         configuration.optionxform = str
 
         if os.path.isfile(config_path):
-            configuration.read(config_path)
+            try:
+                configuration.read(config_path)
+            except configparser.Error as error:
+                return (_("Failed to read plasmalogin config {!s}: {!s}").format(config_path, error))
 
         if 'Autologin' not in configuration:
             configuration.add_section('Autologin')

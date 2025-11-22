@@ -10,7 +10,7 @@ properties:
         type: array
         items:
             type: string
-            enum: [slim, plasmalogin, sddm, lightdm, gdm, mdm, lxdm, greetd]
+            enum: [slim, plasmalogin, sddm, lightdm, gdm, mdm, lxdm, greetd, cosmic-greeter]
         minItems: 1  # Must be non-empty, if present at all
     defaultDesktopEnvironment:
         type: object

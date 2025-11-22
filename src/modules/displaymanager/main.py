@@ -840,6 +840,42 @@ class DMplasmalogin(DisplayManager):
         pass
 
 
+class DMcosmicgreeter(DisplayManager):
+    name = "cosmic-greeter"
+    executable = "cosmic-greeter"
+    service_name = "cosmic-greeter.service"
+
+    def have_dm(self):
+        service_locations = [
+            os.path.join(self.root_mount_point, "usr/lib/systemd/system", self.service_name),
+            os.path.join(self.root_mount_point, "lib/systemd/system", self.service_name)
+        ]
+        if any(os.path.exists(path) for path in service_locations):
+            return True
+        return super().have_dm()
+
+    def basic_setup(self):
+        pass
+
+    def desktop_environment_setup(self, desktop_environment):
+        pass
+
+    def greeter_setup(self):
+        # cosmic-greeter only needs its systemd service enabled.
+        result = libcalamares.utils.target_env_call(
+            ["systemctl", "enable", self.service_name]
+        )
+        if result != 0:
+            return (
+                _("Cannot configure cosmic-greeter"),
+                _("Failed to enable {!s} (exit code {!s}).").format(self.service_name, result)
+            )
+
+    def set_autologin(self, username, do_autologin, default_desktop_environment):
+        if do_autologin:
+            libcalamares.utils.warning("cosmic-greeter does not support autologin; skipping autologin setup.")
+
+
 class DMgreetd(DisplayManager):
     name = "greetd"
     executable = "greetd"

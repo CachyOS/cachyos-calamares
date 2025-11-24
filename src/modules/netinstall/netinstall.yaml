@@ -264,12 +264,9 @@
   critical: true
   packages:
     - adwaita-icon-theme
-    - eog
-    - evince
     - file-roller
     - fwupd
     - gdm
-    - gedit
     - gnome
     - gnome-backgrounds
     - gnome-calculator
@@ -278,12 +275,9 @@
     - gnome-keyring
     - gnome-nettool
     - gnome-power-manager
-    - gnome-screenshot
     - gnome-shell
-    - gnome-terminal
     - gnome-themes-extra
     - gnome-tweaks
-    - gnome-usage
     - malcontent
     - libnma
     - gvfs
@@ -294,7 +288,6 @@
     - gvfs-smb
     - nautilus
     - sushi
-    - totem
     - qt6-wayland
     - xdg-user-dirs-gtk
     - xdg-desktop-portal-gnome

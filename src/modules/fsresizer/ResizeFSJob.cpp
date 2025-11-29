@@ -79,7 +79,7 @@ ResizeFSJob::findPartition()
  *
  * Returns a sector number. Returns -1 if something is wrong (e.g.
  * can't resize at all, or missing data). Returns 0 if the resize
- * won't fit because it doesn't satisfy the settings for atleast
+ * won't fit because it doesn't satisfy the settings for at least
  * and size (or won't grow at all because the partition is blocked
  * by occupied space after it).
  */

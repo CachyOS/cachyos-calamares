@@ -13,7 +13,7 @@ to other documents that you will need.
 ## Code of Conduct
 
 The Calamares community -- of developers, translators, and downstream (distro) users --
-aims to be courteous, professional, and inclusive. Harrassment, discriminatory
+aims to be courteous, professional, and inclusive. Harassment, discriminatory
 statements and abuse are not tolerated. In general, we apply the
 [KDE Code of Conduct](https://www.kde.org/code-of-conduct/) and the
 [GNOME Code of Conduct](https://wiki.gnome.org/Foundation/CodeOfConduct) (the
@@ -262,4 +262,3 @@ but the real proof of the pudding comes with an actual installation
 of *some* distro using Calamares.
 
 The UI components should get some specific usability testing instructions soon.
-

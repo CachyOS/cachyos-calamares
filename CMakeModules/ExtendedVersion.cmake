@@ -16,7 +16,7 @@
 #       - the short version is also copied into the variable *long_var*,
 #   If *short_only* is false, then:
 #       - the *version-string* plus date and git information, is copied
-#         into the varialbe *long_var*, in the format {version}-{date}-{hash}
+#         into the variable *long_var*, in the format {version}-{date}-{hash}
 #
 #
 

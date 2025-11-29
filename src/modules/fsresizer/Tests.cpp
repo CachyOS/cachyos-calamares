@@ -79,7 +79,7 @@ FSResizerTests::testConfigurationValues()
     QCOMPARE( j.size().value(), 100 );
     QCOMPARE( j.minimumSize().value(), 600 );
 
-    // Silly config has bad atleast value
+    // Silly config has bad at least value
     doc0 = YAML::Load( R"(---
                        fs: /
                        dev: /dev/m00
@@ -94,7 +94,7 @@ FSResizerTests::testConfigurationValues()
     QCOMPARE( j.size().value(), 72 );
     QCOMPARE( j.minimumSize().value(), 0 );
 
-    // Silly config has bad atleast value
+    // Silly config has bad at least value
     doc0 = YAML::Load( R"(---
                        dev: /dev/m00
                        size: 72  MiB

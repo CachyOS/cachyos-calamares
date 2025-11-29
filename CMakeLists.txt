@@ -73,7 +73,7 @@ project(CALAMARES VERSION ${CALAMARES_VERSION_SHORT} LANGUAGES C CXX HOMEPAGE_UR
 if(NOT CALAMARES_RELEASE_MODE AND CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
     message(FATAL_ERROR "Do not build development versions in the source-directory.")
 endif()
-# Calamares in the 3.3 series promises ABI compatbility, so it sets a
+# Calamares in the 3.3 series promises ABI compatibility, so it sets a
 # .so-version equal to the series number. We use ci/abicheck.sh to
 # keep track of this. Note that the **alpha** releases also have
 # such an .so-version, but are not ABI-stable yet.

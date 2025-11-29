@@ -44,7 +44,7 @@ class DesktopEnvironment:
         """
         Search for @p pathname within @p root_mount_point .
         If the pathname is absolute, just check there inside
-        the target, otherwise earch in a sort-of-sensible $PATH.
+        the target, otherwise search in a sort-of-sensible $PATH.
 
         Returns the full (including @p root_mount_point) path
         to that executable, or None.
@@ -114,7 +114,7 @@ class DesktopEnvironment:
 
     def update_from_desktop_file(self, root_mount_point):
         """
-        Find thie DE in the target system at @p root_mount_point.
+        Find the DE in the target system at @p root_mount_point.
         This can update the *executable* configuration value if
         the configured executable isn't found but the TryExec line
         from the .desktop file is.

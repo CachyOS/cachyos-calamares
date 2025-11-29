@@ -83,7 +83,7 @@ function( _calamares_add_module_subdirectory_impl )
     # Skip list check applies to all kinds of modules
     calamares_check_skip( ${_modulename} SKIPPED_MODULES )
     if ( SKIPPED_MODULES )
-        # If it's skipped by infrastucture, the message already includes the module
+        # If it's skipped by infrastructure, the message already includes the module
         # name. We don't need to do any further checking.
         set( SKIPPED_MODULES "${SKIPPED_MODULES}" PARENT_SCOPE )
         return()

@@ -57,7 +57,7 @@ private:
      * @p poolName is a string containing the name of the pool to create
      * @p poolOptions are the options to pass to zpool create
      * @p encrypt is a boolean which determines if the pool should be encrypted
-     * @p passphrase is a string continaing the passphrase
+     * @p passphrase is a string containing the passphrase
      *
      */
     ZfsResult createZpool( QString deviceName,
@@ -74,7 +74,7 @@ private:
      */
     void collectMountpoints( const QVariantList& partitions );
 
-    /** @brief Check to see if a given mountpoint overlaps with one of the defined moutnpoints
+    /** @brief Check to see if a given mountpoint overlaps with one of the defined mountpoints
      *
      * Iterates over m_partitions and checks if @p targetMountpoint overlaps with them by comparing
      * the beginning of targetMountpoint with all the values in m_mountpoints.  Of course, / is excluded

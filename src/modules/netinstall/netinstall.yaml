@@ -217,6 +217,7 @@
     - cachyos-themes-sddm
     - char-white
     - dolphin
+    - dolphin-plugins
     - egl-wayland
     - ffmpegthumbs
     - filelight
@@ -237,15 +238,18 @@
     - kwallet-pam
     - kwalletmanager
     - libplasma
+    - okular
     - phonon-qt6-vlc
     - plasma-browser-integration
     - plasma-desktop
+    - plasma-disks
     - plasma-firewall
     - plasma-integration
     - plasma-nm
     - plasma-pa
     - plasma-systemmonitor
     - plasma-thunderbolt
+    - plasma-vault
     - plasma-workspace
     - plymouth-kcm
     - powerdevil

@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 echo "Updating rate-mirrors"
-sudo pacman -Sy --noconfirm cachyos-rate-mirrors rate-mirrors
+sudo pacman -Sy --noconfirm --needed cachyos-rate-mirrors rate-mirrors
 sudo cachyos-rate-mirrors

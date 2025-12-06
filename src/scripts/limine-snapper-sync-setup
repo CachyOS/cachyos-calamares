@@ -6,14 +6,14 @@ if [ -e "$limine_snapper_config" ]; then
 
     # It's NOT right, but we have no choice because the snapper setup doesn't
     # work correctly at pacstrap step.
-    pacman -S --noconfirm cachyos-snapper-support
+    pacman -S --noconfirm --needed cachyos-snapper-support
     systemctl enable limine-snapper-sync.service &>/dev/null
 fi
 
 # Replace limine-entry-tool with limine-mkinitcpio-hook to automate handling of
 # new kernels
 pacman -R --noconfirm limine-entry-tool
-pacman -S --noconfirm limine-mkinitcpio-hook
+pacman -S --noconfirm --needed limine-mkinitcpio-hook
 
 if [ -e "$limine_snapper_config" ]; then
     cat << 'EOF' > /etc/mkinitcpio.conf.d/10-limine-snapper-sync.conf

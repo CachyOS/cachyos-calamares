@@ -453,7 +453,7 @@ class PMPacman(PackageManager):
             pacman = dict()
         self.pacman_num_retries = pacman.get("num_retries", 0)
         self.pacman_disable_timeout = pacman.get("disable_download_timeout", False)
-        self.pacman_needed_only = pacman.get("needed_only", True)
+        self.pacman_needed_only = pacman.get("needed_only", False)
 
     def reset_progress(self):
         self.in_package_changes = False

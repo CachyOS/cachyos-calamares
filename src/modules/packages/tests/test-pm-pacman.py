@@ -24,7 +24,7 @@ else:
     filename = None
     retry = 0
     timeout = False
-    needed = True
+    needed = False
 
 libcalamares.utils.warning("Expecting {!s} retry={!s} timeout={!s} needed={!s}".format(filename, retry, timeout, needed))
 

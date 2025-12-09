@@ -236,6 +236,7 @@
     - kscreen
     - kwallet-pam
     - kwalletmanager
+    - partitionmanager
     - phonon-qt6-vlc
     - plasma-browser-integration
     - plasma-desktop

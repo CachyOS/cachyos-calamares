@@ -353,7 +353,7 @@ chroot_setup "$newroot" || die "failed to setup chroot %s" "$newroot"
 
 
 msg 'Installing packages to %s' "$newroot"
-if ! pacman -r "$newroot" -Sy "${pacman_args[@]}"; then
+if ! pacman --sysroot "$newroot" -Sy "${pacman_args[@]}"; then
   die 'Failed to install packages to new root'
 fi
 

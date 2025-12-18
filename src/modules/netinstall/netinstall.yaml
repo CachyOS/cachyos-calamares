@@ -206,7 +206,6 @@
     - cachyos-nord-kde-theme-git
     - cachyos-iridescent-kde
     - cachyos-emerald-kde-theme-git
-    - cachyos-themes-sddm
     - cachyos-wallpapers
     - cachyos-handheld
     - v4l-utils
@@ -241,8 +240,7 @@
     - plasma-thunderbolt
     - powerdevil
     - spectacle
-    - sddm
-    - sddm-kcm
+    - plasma-login-manager
     - qt6-wayland
     - xsettingsd
     - xdg-desktop-portal

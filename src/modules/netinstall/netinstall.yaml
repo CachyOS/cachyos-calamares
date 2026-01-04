@@ -13,6 +13,9 @@
      - linux-cachyos-deckify
      - linux-cachyos-deckify-headers
      - chwd
+     - inputplumber
+     - steamos-manager
+     - steamos-powerbuttond
 - name: "CachyOS Packages"
   description: "needed CachyOS packages"
   hidden: false

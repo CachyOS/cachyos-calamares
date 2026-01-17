@@ -1243,16 +1243,47 @@ ChoicePage::setupEfiSystemPartitionSelector()
     }
     else if ( efiSystemPartitions.count() == 1 )  //probably most usual situation
     {
-        m_efiLabel->setText( tr( "The EFI system partition at %1 will be used for "
-                                 "starting %2.",
-                                 "@info, %1 is partition path, %2 is product name" )
-                                 .arg( efiSystemPartitions.first()->partitionPath() )
-                                 .arg( Calamares::Branding::instance()->shortProductName() ) );
+        Partition* efiPartition = efiSystemPartitions.first();
+        QString text = tr( "The EFI system partition at %1 will be used for "
+                           "starting %2.",
+                           "@info, %1 is partition path, %2 is product name" )
+                           .arg( efiPartition->partitionPath() )
+                           .arg( Calamares::Branding::instance()->shortProductName() );
+
+        if ( !PartUtils::isEfiFilesystemRecommendedSize( efiPartition ) )
+        {
+            text += QStringLiteral( "<br/><font color=\"red\">" )
+                    + tr( "The EFI system partition is too small." )
+                    + QStringLiteral( "</font>" );
+        }
+        m_efiLabel->setText( text );
     }
     else
     {
         m_efiComboBox->show();
-        m_efiLabel->setText( tr( "EFI system partition:", "@label" ) );
+
+        auto updateLabel = [ this, efiSystemPartitions ]( int index )
+        {
+            if ( index >= 0 && index < efiSystemPartitions.count() )
+            {
+                Partition* efiPartition = efiSystemPartitions.at( index );
+                QString text = tr( "EFI system partition:", "@label" );
+                if ( !PartUtils::isEfiFilesystemRecommendedSize( efiPartition ) )
+                {
+                    text += QStringLiteral( "<br/><font color=\"red\">" )
+                            + tr( "The EFI system partition is too small." )
+                            + QStringLiteral( "</font>" );
+                }
+                m_efiLabel->setText( text );
+            }
+            updateNextEnabled();
+        };
+
+        connect( m_efiComboBox,
+                 QOverload< int >::of( &QComboBox::currentIndexChanged ),
+                 this,
+                 updateLabel );
+
         for ( int i = 0; i < efiSystemPartitions.count(); ++i )
         {
             Partition* efiPartition = efiSystemPartitions.at( i );
@@ -1264,6 +1295,9 @@ ChoicePage::setupEfiSystemPartitionSelector()
                 m_efiComboBox->setCurrentIndex( i );
             }
         }
+
+        // Initialize label
+        updateLabel( m_efiComboBox->currentIndex() );
     }
 }
 
@@ -1540,9 +1574,30 @@ ChoicePage::calculateNextEnabled() const
          && ( m_config->installChoice() == InstallChoice::Alongside
               || m_config->installChoice() == InstallChoice::Replace ) )
     {
-        if ( m_core->efiSystemPartitions().count() == 0 )
+        QList< Partition* > efiSystemPartitions = m_core->efiSystemPartitions();
+        if ( efiSystemPartitions.count() == 0 )
         {
             cDebug() << "No EFI partition for alongside or replace";
+            return false;
+        }
+
+        Partition* efiPartition = nullptr;
+        if ( efiSystemPartitions.count() == 1 )
+        {
+            efiPartition = efiSystemPartitions.first();
+        }
+        else if ( m_efiComboBox && m_efiComboBox->isVisible() )
+        {
+            int index = m_efiComboBox->currentIndex();
+            if ( index >= 0 && index < efiSystemPartitions.count() )
+            {
+                efiPartition = efiSystemPartitions.at( index );
+            }
+        }
+
+        if ( efiPartition && !PartUtils::isEfiFilesystemRecommendedSize( efiPartition ) )
+        {
+            cDebug() << "Selected EFI partition is too small";
             return false;
         }
     }

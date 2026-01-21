@@ -108,7 +108,7 @@
           - libdvdcss
           - libgsf
           - libopenraw
-          - mlocate
+          - plocate
           - poppler-glib
           - vlc-plugins-all
           - xdg-user-dirs

@@ -40,18 +40,6 @@
   selected: true
   critical: true
   subgroups:
-      - name: "X-system"
-        description: "Default X-system"
-        selected: true
-        packages:
-           - libwnck3
-           - mesa-utils
-           - xorg-xdpyinfo
-           - xorg-server
-           - xorg-xinit
-           - xorg-xinput
-           - xorg-xkill
-           - xorg-xrandr
       - name: "Network"
         description: "Network apps drivers and tools"
         selected: true
@@ -154,11 +142,12 @@
           - dmraid
           - hdparm
           - hwdetect
+          - linux-firmware
           - lsscsi
+          - mesa-utils
           - mtools
           - sg3_utils
           - sof-firmware
-          - linux-firmware
       - name: "power"
         description: "Powermanagement support"
         selected: true
@@ -330,6 +319,9 @@
     - ly
     - alacritty
     - openssh
+    - xorg-server
+    - xorg-xinit
+    - xorg-xrandr
 - name: "Budgie-Desktop"
   description: "Budgie - an independent, familiar, and modern desktop."
   hidden: false
@@ -426,6 +418,9 @@
     - polybar
     - ly
     - dunst
+    - xorg-server
+    - xorg-xinit
+    - xorg-xrandr
 - name: "Hyprland"
   description: "Hyprland is a highly customizable dynamic tiling Wayland compositor that doesn't sacrifice on its looks."
   hidden: false
@@ -594,6 +589,9 @@
     - thunar
     - polkit-gnome
     - qt5ct
+    - xorg-server
+    - xorg-xinit
+    - xorg-xrandr
     - noto-fonts
     - flameshot
     - gnome-themes-extra

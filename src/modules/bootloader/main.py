@@ -689,24 +689,12 @@ def run_grub_install(fw_type, partitions, efi_directory, install_hybrid_grub):
 
 
 def show_broken_uefi_warning():
-    warning = (
+    libcalamares.utils.show_warning(
+        "Bootloader installation partially broken",
         "Due to a probably bug of your UEFI, system bootloader has been installed "
         "but not listed in the entry list. You need to select drive on which you "
         "install the system by yourself for default boot later."
     )
-    title = "Bootloader installation partially broken"
-
-    subprocess.call([
-        "yad",
-        "--width",
-        "600",
-        "--title",
-        title,
-        "--image",
-        "dialog-warning",
-        "--text",
-        warning
-    ])
 
 def get_partition_drive(partition):
     devname = partition.replace("/dev/", "")

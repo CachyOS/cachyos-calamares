@@ -193,6 +193,12 @@ BOOST_PYTHON_MODULE( libcalamares )
              "Returns list of languages (most to least-specific) for gettext." );
 
     bp::def( "gettext_path", &Calamares::Python::gettext_path, "Returns path for gettext search." );
+
+    // .. UI functions
+    bp::def( "show_warning",
+             &Calamares::Python::show_warning,
+             bp::args( "title", "description" ),
+             "Displays warning to user" );
 }
 
 

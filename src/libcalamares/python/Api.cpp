@@ -23,6 +23,8 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QStandardPaths>
+#include <qcontainerfwd.h>
+#include <qmessagebox.h>
 
 namespace
 {
@@ -201,6 +203,16 @@ mount( const std::string& device_path,
                                         QString::fromStdString( mount_point ),
                                         QString::fromStdString( filesystem_name ),
                                         QString::fromStdString( options ) );
+}
+
+Python::Object
+show_warning( const std::string& title, const std::string& description )
+{
+    QMessageBox::warning( 0,
+                         QString::fromStdString( title ),
+                         QString::fromStdString( description ),
+                         QMessageBox::Ok );
+    return Python::None();
 }
 
 }

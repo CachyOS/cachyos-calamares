@@ -42,6 +42,7 @@ namespace Python __attribute__( ( visibility( "hidden" ) ) )
             const std::string& filesystem_name = std::string(),
             const std::string& options = std::string() );
 
+    Object show_warning( const std::string& title, const std::string& description );
 }
 }
 

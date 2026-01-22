@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-29 13:55+0100\n"
+"POT-Creation-Date: 2025-12-18 16:42+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,22 +18,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: src/modules/bootloader/main.py:46
+#: src/modules/bootloader/main.py:47
 msgid "Install bootloader."
 msgstr ""
 
-#: src/modules/bootloader/main.py:671
+#: src/modules/bootloader/main.py:663
+msgid "Cannot find the drive containing the EFI system partition!"
+msgstr ""
+
+#: src/modules/bootloader/main.py:828
+msgid "Failed to install limine, no partitions defined in global storage"
+msgstr ""
+
+#: src/modules/bootloader/main.py:847
+msgid "Failed to install limine bootloader, trying fallback option"
+msgstr ""
+
+#: src/modules/bootloader/main.py:884
 msgid "Failed to install grub, no partitions defined in global storage"
 msgstr ""
 
-#: src/modules/bootloader/main.py:931
+#: src/modules/bootloader/main.py:1157
 msgid "Bootloader installation error"
 msgstr ""
 
-#: src/modules/bootloader/main.py:932
+#: src/modules/bootloader/main.py:1158
 msgid ""
 "The bootloader could not be installed. The installation command <pre>{!s}</"
 "pre> returned error code {!s}."
+msgstr ""
+
+#: src/modules/chwd/main.py:34
+msgid "Installing needed drivers for CachyOS..."
 msgstr ""
 
 #: src/modules/displaymanager/main.py:525
@@ -68,17 +84,29 @@ msgstr ""
 msgid "SLIM config file {!s} does not exist"
 msgstr ""
 
-#: src/modules/displaymanager/main.py:956
+#: src/modules/displaymanager/main.py:812
+msgid "Failed to read plasmalogin config {!s}: {!s}"
+msgstr ""
+
+#: src/modules/displaymanager/main.py:873
+msgid "Cannot configure cosmic-greeter"
+msgstr ""
+
+#: src/modules/displaymanager/main.py:874
+msgid "Failed to enable {!s} (exit code {!s})."
+msgstr ""
+
+#: src/modules/displaymanager/main.py:1043
 msgid "No display managers selected for the displaymanager module."
 msgstr ""
 
-#: src/modules/displaymanager/main.py:957
+#: src/modules/displaymanager/main.py:1044
 msgid ""
 "The displaymanagers list is empty or undefined in both globalstorage and "
 "displaymanager.conf."
 msgstr ""
 
-#: src/modules/displaymanager/main.py:1044
+#: src/modules/displaymanager/main.py:1131
 msgid "Display manager configuration was incomplete"
 msgstr ""
 
@@ -90,17 +118,13 @@ msgstr ""
 msgid "Failed to run dracut"
 msgstr ""
 
-#: src/modules/dracut/main.py:64
-#, python-brace-format
-msgid "Dracut failed to run on the target with return code: {return_code}"
-msgstr ""
-
 #: src/modules/dummypython/main.py:35
 msgid "Dummy python job."
 msgstr ""
 
-#: src/modules/dummypython/main.py:37 src/modules/dummypython/main.py:104
-#: src/modules/dummypython/main.py:105
+#: src/modules/dummypython/main.py:37 src/modules/dummypython/main.py:112
+#: src/modules/dummypython/main.py:113
+#, python-brace-format
 msgid "Dummy python step {}"
 msgstr ""
 
@@ -109,8 +133,8 @@ msgid "Writing fstab."
 msgstr ""
 
 #: src/modules/fstab/main.py:382 src/modules/fstab/main.py:388
-#: src/modules/fstab/main.py:416 src/modules/initcpiocfg/main.py:267
-#: src/modules/initcpiocfg/main.py:271 src/modules/initramfscfg/main.py:85
+#: src/modules/fstab/main.py:416 src/modules/initcpiocfg/main.py:229
+#: src/modules/initcpiocfg/main.py:233 src/modules/initramfscfg/main.py:85
 #: src/modules/initramfscfg/main.py:89 src/modules/localecfg/main.py:140
 #: src/modules/mount/main.py:344 src/modules/networkcfg/main.py:106
 #: src/modules/openrcdmcryptcfg/main.py:72
@@ -146,11 +170,11 @@ msgstr ""
 msgid "Configuring mkinitcpio."
 msgstr ""
 
-#: src/modules/initcpiocfg/main.py:268
+#: src/modules/initcpiocfg/main.py:230
 msgid "No partitions are defined for <pre>initcpiocfg</pre>."
 msgstr ""
 
-#: src/modules/initcpiocfg/main.py:272
+#: src/modules/initcpiocfg/main.py:234
 msgid "No root mount point for <pre>initcpiocfg</pre>."
 msgstr ""
 
@@ -171,6 +195,7 @@ msgid "Failed to run mkinitfs on the target"
 msgstr ""
 
 #: src/modules/mkinitfs/main.py:50
+#, python-brace-format
 msgid "The exit code was {}"
 msgstr ""
 
@@ -206,51 +231,55 @@ msgstr ""
 msgid "Configuring OpenRC dmcrypt service."
 msgstr ""
 
-#: src/modules/packages/main.py:54 src/modules/packages/main.py:65
-#: src/modules/packages/main.py:75
+#: src/modules/packages/main.py:55 src/modules/packages/main.py:66
+#: src/modules/packages/main.py:76
 msgid "Install packages."
 msgstr ""
 
-#: src/modules/packages/main.py:63
+#: src/modules/packages/main.py:64
 #, python-format
 msgid "Processing packages (%(count)d / %(total)d)"
 msgstr ""
 
-#: src/modules/packages/main.py:68
+#: src/modules/packages/main.py:69
 #, python-format
 msgid "Installing one package."
 msgid_plural "Installing %(num)d packages."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/modules/packages/main.py:71
+#: src/modules/packages/main.py:72
 #, python-format
 msgid "Removing one package."
 msgid_plural "Removing %(num)d packages."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/modules/packages/main.py:775 src/modules/packages/main.py:787
-#: src/modules/packages/main.py:815
+#: src/modules/packages/main.py:779 src/modules/packages/main.py:791
+#: src/modules/packages/main.py:819
 msgid "Package Manager error"
 msgstr ""
 
-#: src/modules/packages/main.py:776
+#: src/modules/packages/main.py:780
 msgid ""
 "The package manager could not prepare updates. The command <pre>{!s}</pre> "
 "returned error code {!s}."
 msgstr ""
 
-#: src/modules/packages/main.py:788
+#: src/modules/packages/main.py:792
 msgid ""
 "The package manager could not update the system. The command <pre>{!s}</pre> "
 "returned error code {!s}."
 msgstr ""
 
-#: src/modules/packages/main.py:816
+#: src/modules/packages/main.py:820
 msgid ""
 "The package manager could not make changes to the installed system. The "
 "command <pre>{!s}</pre> returned error code {!s}."
+msgstr ""
+
+#: src/modules/pacstrap/main.py:36
+msgid "Install base system"
 msgstr ""
 
 #: src/modules/plymouthcfg/main.py:27
@@ -329,63 +358,71 @@ msgstr ""
 msgid "Filling up filesystems."
 msgstr ""
 
-#: src/modules/unpackfs/main.py:255
+#: src/modules/unpackfs/main.py:256
+#, python-brace-format
 msgid "rsync failed with error code {}."
 msgstr ""
 
-#: src/modules/unpackfs/main.py:300
+#: src/modules/unpackfs/main.py:301
+#, python-brace-format
 msgid "Unpacking image {}/{}, file {}/{}"
 msgstr ""
 
-#: src/modules/unpackfs/main.py:315
+#: src/modules/unpackfs/main.py:316
+#, python-brace-format
 msgid "Starting to unpack {}"
 msgstr ""
 
-#: src/modules/unpackfs/main.py:324 src/modules/unpackfs/main.py:480
+#: src/modules/unpackfs/main.py:325 src/modules/unpackfs/main.py:487
+#, python-brace-format
 msgid "Failed to unpack image \"{}\""
 msgstr ""
 
-#: src/modules/unpackfs/main.py:443
+#: src/modules/unpackfs/main.py:444
 msgid "No mount point for root partition"
 msgstr ""
 
-#: src/modules/unpackfs/main.py:444
+#: src/modules/unpackfs/main.py:445
 msgid "globalstorage does not contain a \"rootMountPoint\" key."
 msgstr ""
 
-#: src/modules/unpackfs/main.py:447
+#: src/modules/unpackfs/main.py:448
 msgid "Bad mount point for root partition"
 msgstr ""
 
-#: src/modules/unpackfs/main.py:448
+#: src/modules/unpackfs/main.py:449
+#, python-brace-format
 msgid "rootMountPoint is \"{}\", which does not exist."
 msgstr ""
 
-#: src/modules/unpackfs/main.py:452 src/modules/unpackfs/main.py:468
-#: src/modules/unpackfs/main.py:472 src/modules/unpackfs/main.py:478
-#: src/modules/unpackfs/main.py:515
+#: src/modules/unpackfs/main.py:453 src/modules/unpackfs/main.py:470
+#: src/modules/unpackfs/main.py:479 src/modules/unpackfs/main.py:485
+#: src/modules/unpackfs/main.py:522
 msgid "Bad unpackfs configuration"
 msgstr ""
 
-#: src/modules/unpackfs/main.py:453
+#: src/modules/unpackfs/main.py:454
 msgid "There is no configuration information."
 msgstr ""
 
-#: src/modules/unpackfs/main.py:469
+#: src/modules/unpackfs/main.py:471
+#, python-brace-format
 msgid "The filesystem for \"{}\" ({}) is not supported by your current kernel"
 msgstr ""
 
-#: src/modules/unpackfs/main.py:473
+#: src/modules/unpackfs/main.py:480
+#, python-brace-format
 msgid "The source filesystem \"{}\" does not exist"
 msgstr ""
 
-#: src/modules/unpackfs/main.py:479
+#: src/modules/unpackfs/main.py:486
 msgid ""
 "Failed to find unsquashfs, make sure you have the squashfs-tools package "
 "installed."
 msgstr ""
 
-#: src/modules/unpackfs/main.py:516
+#: src/modules/unpackfs/main.py:523
+#, python-brace-format
 msgid "The destination \"{}\" in the target system is not a directory"
 msgstr ""
 

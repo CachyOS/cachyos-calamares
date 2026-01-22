@@ -143,6 +143,12 @@ populate_utils( py::module_& m )
            "-1 = QProcess crash\n"
            "-2 = QProcess cannot start\n"
            "-3 = bad arguments" );
+
+    m.def( "show_warning",
+           &Calamares::Python::show_warning,
+           "Displays warning to user",
+           py::arg( "title" ),
+           py::arg( "description" ));
 }
 
 void

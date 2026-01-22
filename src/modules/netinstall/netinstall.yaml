@@ -46,7 +46,6 @@
         packages:
            - libwnck3
            - mesa-utils
-           - xf86-input-libinput
            - xorg-xdpyinfo
            - xorg-server
            - xorg-xinit
@@ -57,7 +56,6 @@
         description: "Network apps drivers and tools"
         selected: true
         packages:
-          - dhclient
           - dnsmasq
           - dnsutils
           - ethtool
@@ -108,7 +106,7 @@
           - libdvdcss
           - libgsf
           - libopenraw
-          - mlocate
+          - plocate
           - poppler-glib
           - vlc-plugins-all
           - xdg-user-dirs
@@ -118,23 +116,18 @@
         selected: true
         packages:
           - efitools
-          - haveged
           - nfs-utils
           - nilfs-utils
-          - ntp
           - smartmontools
           - unrar
           - unzip
-          - xz
       - name: "fonts"
         description: "CachyOS font selection"
         selected: true
         packages:
           - awesome-terminal-fonts
           - noto-fonts-emoji
-          - noto-color-emoji-fontconfig
           - cantarell-fonts
-          - freetype2
           - noto-fonts
           - ttf-bitstream-vera
           - ttf-dejavu
@@ -154,7 +147,6 @@
           - pipewire-pulse
           - pipewire-alsa
           - pipewire-jack
-          - rtkit
       - name: "hardware"
         description: "Hardware support libs and firmware"
         selected: true
@@ -182,12 +174,10 @@
           - alacritty
           - btop
           - duf
-          - findutils
           - fsarchiver
           - git
           - glances
           - hwinfo
-          - inxi
           - meld
           - nano-syntax-highlighting
           - fastfetch
@@ -195,7 +185,6 @@
           - python-defusedxml
           - python-packaging
           - rsync
-          - sed
           - vi
           - wget
           - ripgrep

@@ -86,7 +86,6 @@
         packages:
           - accountsservice
           - bash-completion
-          - ffmpegthumbnailer
           - gst-libav
           - gst-plugin-pipewire
           - gst-plugins-bad

@@ -289,6 +289,7 @@
     - ristretto
     - thunar-archive-plugin
     - thunar-media-tags-plugin
+    - ffmpegthumbnailer
     - xdg-user-dirs-gtk
     - xed
     - xfce4
@@ -350,6 +351,7 @@
     - nemo
     - nemo-fileroller
     - nemo-preview
+    - ffmpegthumbnailer
     - network-manager-applet
     - sushi
     - totem
@@ -367,6 +369,7 @@
     - gnome-terminal
     - blueberry
     - metacity
+    - ffmpegthumbnailer
     - lightdm
     - lightdm-gtk-greeter
 - name: "Cosmic"
@@ -568,6 +571,7 @@
     - tint2
     - ttf-nerd-fonts-symbols
     - tumbler
+    - ffmpegthumbnailer
     - xbindkeys
     - xcursor-neutral
     - xdg-user-dirs-gtk

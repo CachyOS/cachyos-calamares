@@ -1,42 +1,66 @@
-#!/bin/bash
-
-## Copied & renamed from src/scripts/try-v3
-## Detect machine architecture, pick corresponding CachyOS optimized repositories, create /etc/pacman-target.conf
-## This is supposed to run on live system w/o chroot.
-
-# Pacman Files
-pacman_conf_live=/etc/pacman.conf
-pacman_conf_cachyos="/etc/pacman-more.conf"
-pacman_conf_target=/etc/pacman-target.conf
+#!/usr/bin/env bash
 
 # Architecture Check
 check_v3="$(/lib/ld-linux-x86-64.so.2 --help | grep 'x86-64-v3 (' | awk '{print $1}')"
 check_v4="$(/lib/ld-linux-x86-64.so.2 --help | grep 'x86-64-v4 (' | awk '{print $1}')"
-check_znver4_znver5="$(gcc -march=native -Q --help=target 2>&1 | head -n 37 | grep -E '(znver4|znver5)')"
 
-if [ -n "$check_znver4_znver5" ]; then
-  echo "znver4 or znver5 is supported (but we only have znver4
-  available)"
-  sed -e 's/#<disabled_znver4>//g' \
-    -e '/disabled_v[34]/d' $pacman_conf_cachyos \
-    > $pacman_conf_target
+is_zen45() {
+    local family="$(grep -Po 'cpu family\s+:\s+\K([0-9]+)' /proc/cpuinfo | head -n1)"
+    local model="$(grep -Po 'model\s+:\s+\K([0-9]+)' /proc/cpuinfo | head -n1)"
+
+    case "$family" in
+        $((0x19))) # Zen 4
+            if ((model <= 0x0f)); then
+                return 1
+            elif ((model >= 0x10 && model <= 0x1f)) ||
+                ((model >= 0x60 && model <= 0xaf)); then
+                return 0
+            elif grep -q -w "avx512f" /proc/cpuinfo; then
+                return 0
+            fi
+            ;;
+        $((0x1a))) # Zen 5+
+            return 0
+            ;;
+    esac
+
+    return 1
+}
+
+if is_zen45; then
+  sed -i '/^\[cachyos\]$/i \
+[cachyos-znver4] \
+Include = /etc/pacman.d/cachyos-v4-mirrorlist \
+\
+[cachyos-core-znver4] \
+Include = /etc/pacman.d/cachyos-v4-mirrorlist \
+\
+[cachyos-extra-znver4] \
+Include = /etc/pacman.d/cachyos-v4-mirrorlist\n' "$1"
+
+  echo "znver4 or znver5 is supported (but we only have znver4 available)"
 elif [ "$check_v4" == "x86-64-v4" ]; then
-  echo "x86-64-v4 is supported"
-  sed -e 's/#<disabled_v4>//g' \
-    -e '/disabled_v3/d' \
-    -e '/disabled_znver4/d' $pacman_conf_cachyos \
-    > $pacman_conf_target
-elif [ "$check_v3" == "x86-64-v3" ]; then
-  echo "x86-64-v3 is supported"
-  sed -e 's/#<disabled_v3>//g' \
-    -e '/disabled_znver4/d' \
-    -e '/disabled_v4/d' $pacman_conf_cachyos \
-    > $pacman_conf_target
-else
-  echo "Legacy hardware assumed"
-  # Assuming that Live OS needs to run on unoptimized x86_64 repo
-  # for compatibility
-  cp $pacman_conf_live $pacman_conf_target
-fi
+  sed -i '/^\[cachyos\]$/i \
+[cachyos-v4] \
+Include = /etc/pacman.d/cachyos-v4-mirrorlist \
+\
+[cachyos-extra-v4] \
+Include = /etc/pacman.d/cachyos-v4-mirrorlist \
+\
+[cachyos-core-v4] \
+Include = /etc/pacman.d/cachyos-v4-mirrorlist\n' "$1"
 
-echo Repo configured in /etc/pacman-target.conf
+  echo "x86-64-v4 is supported"
+elif [ "$check_v3" == "x86-64-v3" ]; then
+  sed -i '/^\[cachyos\]$/i \
+[cachyos-v3] \
+Include = /etc/pacman.d/cachyos-v3-mirrorlist \
+\
+[cachyos-extra-v3] \
+Include = /etc/pacman.d/cachyos-v3-mirrorlist \
+\
+[cachyos-core-v3] \
+Include = /etc/pacman.d/cachyos-v3-mirrorlist\n' "$1"
+
+  echo "x86-64-v3 is supported"
+fi

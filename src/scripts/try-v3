@@ -5,34 +5,12 @@ pacman_conf="/etc/pacman.conf"
 pacman_conf_cachyos="/etc/pacman-more.conf"
 pacman_conf_path_backup="${pacman_conf}.bak"
 
-is_zen45() {
-    local family="$(grep -Po 'cpu family\s+:\s+\K([0-9]+)' /proc/cpuinfo | head -n1)"
-    local model="$(grep -Po 'model\s+:\s+\K([0-9]+)' /proc/cpuinfo | head -n1)"
-
-    case "$family" in
-        $((0x19))) # Zen 4
-            if ((model <= 0x0f)); then
-                return 1
-            elif ((model >= 0x10 && model <= 0x1f)) ||
-                ((model >= 0x60 && model <= 0xaf)); then
-                return 0
-            elif grep -q -w "avx512f" /proc/cpuinfo; then
-                return 0
-            fi
-            ;;
-        $((0x1a))) # Zen 5+
-            return 0
-            ;;
-    esac
-
-    return 1
-}
-
 # Architecture Check
 check_v3="$(/lib/ld-linux-x86-64.so.2 --help | grep 'x86-64-v3 (' | awk '{print $1}')"
 check_v4="$(/lib/ld-linux-x86-64.so.2 --help | grep 'x86-64-v4 (' | awk '{print $1}')"
+check_znver4_znver5="$(gcc -march=native -Q --help=target 2>&1 | head -n 37 | grep -E '(znver4|znver5)')"
 
-if is_zen45; then
+if [ -n "$check_znver4_znver5" ]; then
   echo "znver4 or znver5 is supported"
   sed -i 's/#<disabled_znver4>//g' $pacman_conf_cachyos
   sed -i '/disabled_v[34]/d' $pacman_conf_cachyos

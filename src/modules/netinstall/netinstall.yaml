@@ -350,7 +350,6 @@
     - lightdm-slick-greeter
     - nemo
     - nemo-fileroller
-    - nemo-preview
     - ffmpegthumbnailer
     - network-manager-applet
     - sushi
@@ -367,7 +366,6 @@
     - system-config-printer
     - gnome-keyring
     - gnome-terminal
-    - blueberry
     - metacity
     - ffmpegthumbnailer
     - lightdm

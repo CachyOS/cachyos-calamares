@@ -173,7 +173,6 @@
           - python-defusedxml
           - python-packaging
           - rsync
-          - vi
           - wget
           - ripgrep
           - micro

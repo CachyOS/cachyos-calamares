@@ -51,7 +51,7 @@ def disk_name_for_partition(partition):
     """
     name = os.path.basename(partition["device"])
 
-    if name.startswith("/dev/mmcblk") or name.startswith("/dev/nvme"):
+    if name.startswith("mmcblk") or name.startswith("nvme"):
         return re.sub("p[0-9]+$", "", name)
 
     return re.sub("[0-9]+$", "", name)
@@ -114,7 +114,7 @@ def get_mount_options(filesystem, mount_options, partition, efi_location = None)
     # Append the appropriate options for ssd or hdd if set
     if is_ssd_disk(partition):
         name = os.path.basename(partition["device"])
-        if name.startswith("/dev/nvme"):
+        if name.startswith("nvme"):
             option_items.extend(options.get("nvmeOptions", []))
         else:
             option_items.extend(options.get("ssdOptions", []))

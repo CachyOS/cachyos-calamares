@@ -295,6 +295,10 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             os.makedirs(root_mount_point + os.path.dirname(s["subvolume"]), exist_ok=True)
             subprocess.check_call(["btrfs", "subvolume", "create",
                                    root_mount_point + s["subvolume"]])
+            # Set secure permissions for /root subvolume (750 instead of default 755)
+            if s["mountPoint"] == "/root":
+                os.chmod(root_mount_point + s["subvolume"], 0o750)
+
             if s["mountPoint"] == "/":
                 # insert the root subvolume into global storage
                 libcalamares.globalstorage.insert("btrfsRootSubvolume", s["subvolume"])

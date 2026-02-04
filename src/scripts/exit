@@ -1,2 +1,3 @@
 pkill pacman
 pkill gpg-agent
+sleep 1

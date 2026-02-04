@@ -302,7 +302,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             if s["mountPoint"] == "/":
                 # insert the root subvolume into global storage
                 libcalamares.globalstorage.insert("btrfsRootSubvolume", s["subvolume"])
-        subprocess.check_call(["umount", "-l", "-v", root_mount_point])
+        subprocess.check_call(["umount", "-R", "-v", root_mount_point])
 
         device = partition["device"]
 

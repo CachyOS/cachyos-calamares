@@ -340,64 +340,49 @@ def enable_swap_partition(devices):
 
 
 def run():
-    """
-    Mount all the partitions from GlobalStorage and from the job configuration.
-    Partitions are mounted in-lexical-order of their mountPoint.
-    """
+    partitions = libcalamares.globalstorage.value("partitions")
+    if not partitions:
+        libcalamares.utils.warning("partitions is empty")
+        return (_("Configuration Error"), _("No partitions defined."))
 
-    partitions = libcalamares.globalstorage.value("partitions")
+    # 1. Restore Swap Activation (Physical swap first)
+    claimed_swap = [p for p in partitions if p["fs"] == "linuxswap" and p.get("claimed", False)]
+    swap_devices = [p["device"] if p["fsName"] == "linuxswap" else 
+                    "/dev/mapper/" + p["luksMapperName"] for p in claimed_swap]
+    enable_swap_partition(swap_devices)
 
-    if not partitions:
-        libcalamares.utils.warning("partitions is empty, {!s}".format(partitions))
-        return (_("Configuration Error"),
-                _("No partitions are defined for <pre>{!s}</pre> to use.").format("mount"))
+    # 2. Setup Environment
+    root_mount_point = tempfile.mkdtemp(prefix="calamares-root-")
+    mount_options = libcalamares.job.configuration.get("mountOptions")
+    extra_mounts = libcalamares.job.configuration.get("extraMounts") or []
+    mount_options_list = []
 
-    # Find existing swap partitions that are part of the installation and enable them now
-    claimed_swap_partitions = [p for p in partitions if p["fs"] == "linuxswap" and p.get("claimed", False)]
-    plain_swap = [p for p in claimed_swap_partitions if p["fsName"] == "linuxswap"]
-    luks_swap = [p for p in claimed_swap_partitions if p["fsName"] == "luks" or p["fsName"] == "luks2"]
-    swap_devices = [p["device"] for p in plain_swap] + ["/dev/mapper/" + p["luksMapperName"] for p in luks_swap]
+    # 3. EFI Logic (Filtered properly)
+    efi_location = None
+    if libcalamares.globalstorage.value("firmwareType") == "efi":
+        efi_location = libcalamares.globalstorage.value("efiSystemPartition")
+    else:
+        extra_mounts = [m for m in extra_mounts if not m.get("efi")]
 
-    enable_swap_partition(swap_devices)
+    # 4. Phase One: Physical (Depth Sort: / before /var) 
+    physical = [p for p in partitions if "mountPoint" in p and p["mountPoint"]]
+    physical.sort(key=lambda x: x["mountPoint"].count('/'))
 
-    root_mount_point = tempfile.mkdtemp(prefix="calamares-root-")
+    try:
+        for p in physical:
+            mount_partition(root_mount_point, p, partitions, mount_options, mount_options_list, efi_location)
+        
+        # 5. Phase Two: Bind/Virtual (After Btrfs subvolumes exist)
+        extra = [p for p in extra_mounts if "mountPoint" in p and p["mountPoint"]]
+        extra.sort(key=lambda x: x["mountPoint"].count('/'))
 
-    # Get the mountOptions, if this is None, that is OK and will be handled later
-    mount_options = libcalamares.job.configuration.get("mountOptions")
+        for p in extra:
+            mount_partition(root_mount_point, p, partitions, mount_options, mount_options_list, efi_location)
 
-    # Guard against missing keys (generally a sign that the config file is bad)
-    extra_mounts = libcalamares.job.configuration.get("extraMounts") or []
-    if not extra_mounts:
-        libcalamares.utils.warning("No extra mounts defined. Does mount.conf exist?")
+    except ZfsException as ze:
+        return _("zfs mounting error"), ze.message
 
-    efi_location = None
-    if libcalamares.globalstorage.value("firmwareType") == "efi":
-        efi_location = libcalamares.globalstorage.value("efiSystemPartition")
-    else:
-        for mount in extra_mounts:
-            if mount.get("efi", None) is True:
-                extra_mounts.remove(mount)
-
-    # Add extra mounts to the partitions list and sort by mount points.
-    # This way, we ensure / is mounted before the rest, and every mount point
-    # is created on the right partition (e.g. if a partition is to be mounted
-    # under /tmp, we make sure /tmp is mounted before the partition)
-    mountable_partitions = [p for p in partitions + extra_mounts if "mountPoint" in p and p["mountPoint"]]
-    mountable_partitions.sort(key=lambda x: x["mountPoint"])
-
-    # mount_options_list will be inserted into global storage for use in fstab later
-    mount_options_list = []
-    try:
-        for partition in mountable_partitions:
-            mount_partition(root_mount_point, partition, partitions, mount_options, mount_options_list, efi_location)
-    except ZfsException as ze:
-        return _("zfs mounting error"), ze.message
-
-    if not mount_options_list:
-        libcalamares.utils.warning("No mount options defined, {!s} partitions, {!s} mountable".format(len(partitions), len(mountable_partitions)))
-
-    libcalamares.globalstorage.insert("rootMountPoint", root_mount_point)
-    libcalamares.globalstorage.insert("mountOptionsList", mount_options_list)
-
-    # Remember the extra mounts for the unpackfs module
-    libcalamares.globalstorage.insert("extraMounts", extra_mounts)
+    # 6. Global Storage Persistence
+    libcalamares.globalstorage.insert("rootMountPoint", root_mount_point)
+    libcalamares.globalstorage.insert("mountOptionsList", mount_options_list)
+    libcalamares.globalstorage.insert("extraMounts", extra_mounts)

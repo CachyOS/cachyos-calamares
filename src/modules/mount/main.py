@@ -300,6 +300,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     # Step 3: Mount remaining subvolumes (like /home)
     for s in btrfs_subvolumes:
         if s["mountPoint"] == "/":
+            libcalamares.globalstorage.insert("btrfsRootSubvolume", s["subvolume"])
             continue
             
         # This builds the path INSIDE your new root

@@ -279,7 +279,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             # Manually release the SSD so Python can delete setup_dir
             subprocess.check_call(["umount", "-v", setup_dir])
     # Step 2: Swap raw mount for @ subvolume mount
-    subprocess.check_call(["umount", "-v", root_mount_point])
+    subprocess.check_call(["umount", "-l", "-v", root_mount_point])
     
     root_sub = next((s for s in btrfs_subvolumes if s["mountPoint"] == "/"), None)
     if not root_sub:

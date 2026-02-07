@@ -244,7 +244,16 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     # SELinux-enabled systems.
 
     os.makedirs(mount_point, exist_ok=True)
-    os.chmod(mount_point, 0o755)  # Ensure root/pacman can write here
+
+    # Hardening: Only chmod physical paths. 
+    # Skip virtuals (sys, proc, dev, run) and unformatted partitions.
+    is_virtual = any(raw_mount_point.startswith(v) for v in ["/sys", "/proc", "/dev", "/run"])
+    if not is_virtual and fstype != "unformatted":
+        try:
+            os.chmod(mount_point, 0o755)
+        except OSError as e:
+            libcalamares.utils.warning(f"Could not chmod {mount_point}: {e}")
+
     try:
         subprocess.call(['chcon', '--reference=' + raw_mount_point, mount_point])
     except FileNotFoundError as e:

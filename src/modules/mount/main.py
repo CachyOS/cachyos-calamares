@@ -365,7 +365,7 @@ def run():
 
     # 4. Phase One: Physical (Depth Sort: / before /var)  
     physical = [p for p in partitions if "mountPoint" in p and p["mountPoint"]]
-    physical.sort(key=lambda x: x["mountPoint"].count('/'))
+    physical.sort(key=lambda x: x["mountPoint"])
 
     try:
         for p in physical:
@@ -373,7 +373,7 @@ def run():
          
         # 5. Phase Two: Bind/Virtual (After Btrfs subvolumes exist)
         extra = [p for p in extra_mounts if "mountPoint" in p and p["mountPoint"]]
-        extra.sort(key=lambda x: x["mountPoint"].count('/'))
+        extra.sort(key=lambda x: x["mountPoint"])
 
         for p in extra:
             mount_partition(root_mount_point, p, partitions, mount_options, mount_options_list, efi_location)

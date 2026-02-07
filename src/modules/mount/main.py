@@ -270,11 +270,14 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     # Step 1: Private side-mount to create subvolumes
     with tempfile.TemporaryDirectory(prefix="calam-btrfs-") as setup_dir:
         libcalamares.utils.mount(device, setup_dir, fstype, "defaults")
-        for s in btrfs_subvolumes:
-            if s["subvolume"]:
-                os.makedirs(setup_dir + os.path.dirname(s["subvolume"]), exist_ok=True)
-                subprocess.check_call(["btrfs", "subvolume", "create", setup_dir + s["subvolume"]])
-
+        try:  # <--- You need this line!
+            for s in btrfs_subvolumes:
+                if s["subvolume"]:
+                    os.makedirs(setup_dir + os.path.dirname(s["subvolume"]), exist_ok=True)
+                    subprocess.check_call(["btrfs", "subvolume", "create", setup_dir + s["subvolume"]])
+        finally: # <--- This matches the 'try'
+            # Manually release the SSD so Python can delete setup_dir
+            subprocess.check_call(["umount", "-v", setup_dir])
     # Step 2: Swap raw mount for @ subvolume mount
     subprocess.check_call(["umount", "-v", root_mount_point])
     

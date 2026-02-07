@@ -310,7 +310,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         sub_opts = f"subvol={s['subvolume']},{mount_options_string}"
         
         if libcalamares.utils.mount(device, sub_path, fstype, sub_opts) == 0:
-            mount_options_list.append({"mountpoint": raw_mount_point, "option_string": mount_options_string})
+            mount_options_list.append({"mountpoint": s["mountPoint"], "option_string": mount_options_string})
         else:
             libcalamares.utils.warning(f"Failed to mount subvolume {s['subvolume']}")
             

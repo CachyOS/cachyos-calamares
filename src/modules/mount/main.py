@@ -143,8 +143,10 @@ def get_btrfs_subvolumes(partitions):
     # Filter: Skip subvolume if it IS a partition OR is INSIDE a partition
     btrfs_subvolumes = [
         s for s in btrfs_subvolumes 
-        if not any(s["mountPoint"] == m or s["mountPoint"].startswith(m + "/") 
-                   for m in non_root_partition_mounts)
+        if s["mountPoint"] == "/" or not any(
+            m and (s["mountPoint"] == m or s["mountPoint"].startswith(m + "/"))
+            for m in non_root_partition_mounts
+        )
     ]
 
     # If we have a swap **file**, give it a separate subvolume.

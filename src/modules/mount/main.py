@@ -290,9 +290,11 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     for s in btrfs_subvolumes:
         if s["mountPoint"] == "/":
             continue
-        
+            
+        # This builds the path INSIDE your new root
         sub_path = root_mount_point + s["mountPoint"]
         os.makedirs(sub_path, exist_ok=True)
+        # This tells Linux: "Put this specific subvolume here"
         sub_opts = f"subvol={s['subvolume']},{mount_options_string}"
         
         if libcalamares.utils.mount(device, sub_path, fstype, sub_opts) != 0:

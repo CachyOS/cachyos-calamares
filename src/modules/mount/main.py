@@ -338,51 +338,50 @@ def enable_swap_partition(devices):
     except subprocess.CalledProcessError:
         libcalamares.utils.warning(f"Failed to enable swap for devices: {devices}")
 
-
 def run():
-    partitions = libcalamares.globalstorage.value("partitions")
-    if not partitions:
-        libcalamares.utils.warning("partitions is empty")
-        return (_("Configuration Error"), _("No partitions defined."))
+    partitions = libcalamares.globalstorage.value("partitions")
+    if not partitions:
+        libcalamares.utils.warning("partitions is empty")
+        return (_("Configuration Error"), _("No partitions defined."))
 
-    # 1. Restore Swap Activation (Physical swap first)
-    claimed_swap = [p for p in partitions if p["fs"] == "linuxswap" and p.get("claimed", False)]
-    swap_devices = [p["device"] if p["fsName"] == "linuxswap" else 
-                    "/dev/mapper/" + p["luksMapperName"] for p in claimed_swap]
-    enable_swap_partition(swap_devices)
+    # 1. Restore Swap Activation (Physical swap first)
+    claimed_swap = [p for p in partitions if p["fs"] == "linuxswap" and p.get("claimed", False)]
+    swap_devices = [p["device"] if p["fsName"] == "linuxswap" else 
+                    "/dev/mapper/" + p["luksMapperName"] for p in claimed_swap]
+    enable_swap_partition(swap_devices)
 
-    # 2. Setup Environment
-    root_mount_point = tempfile.mkdtemp(prefix="calamares-root-")
-    mount_options = libcalamares.job.configuration.get("mountOptions")
-    extra_mounts = libcalamares.job.configuration.get("extraMounts") or []
-    mount_options_list = []
+    # 2. Setup Environment
+    root_mount_point = tempfile.mkdtemp(prefix="calamares-root-")
+    mount_options = libcalamares.job.configuration.get("mountOptions")
+    extra_mounts = libcalamares.job.configuration.get("extraMounts") or []
+    mount_options_list = []
 
-    # 3. EFI Logic (Filtered properly)
-    efi_location = None
-    if libcalamares.globalstorage.value("firmwareType") == "efi":
-        efi_location = libcalamares.globalstorage.value("efiSystemPartition")
-    else:
-        extra_mounts = [m for m in extra_mounts if not m.get("efi")]
+    # 3. EFI Logic (Filtered properly)
+    efi_location = None
+    if libcalamares.globalstorage.value("firmwareType") == "efi":
+        efi_location = libcalamares.globalstorage.value("efiSystemPartition")
+    else:
+        extra_mounts = [m for m in extra_mounts if not m.get("efi")]
 
-    # 4. Phase One: Physical (Depth Sort: / before /var) 
-    physical = [p for p in partitions if "mountPoint" in p and p["mountPoint"]]
-    physical.sort(key=lambda x: x["mountPoint"].count('/'))
+    # 4. Phase One: Physical (Depth Sort: / before /var)  
+    physical = [p for p in partitions if "mountPoint" in p and p["mountPoint"]]
+    physical.sort(key=lambda x: x["mountPoint"].count('/'))
 
-    try:
-        for p in physical:
-            mount_partition(root_mount_point, p, partitions, mount_options, mount_options_list, efi_location)
-        
-        # 5. Phase Two: Bind/Virtual (After Btrfs subvolumes exist)
-        extra = [p for p in extra_mounts if "mountPoint" in p and p["mountPoint"]]
-        extra.sort(key=lambda x: x["mountPoint"].count('/'))
+    try:
+        for p in physical:
+            mount_partition(root_mount_point, p, partitions, mount_options, mount_options_list, efi_location)
+         
+        # 5. Phase Two: Bind/Virtual (After Btrfs subvolumes exist)
+        extra = [p for p in extra_mounts if "mountPoint" in p and p["mountPoint"]]
+        extra.sort(key=lambda x: x["mountPoint"].count('/'))
 
-        for p in extra:
-            mount_partition(root_mount_point, p, partitions, mount_options, mount_options_list, efi_location)
+        for p in extra:
+            mount_partition(root_mount_point, p, partitions, mount_options, mount_options_list, efi_location)
 
-    except ZfsException as ze:
-        return _("zfs mounting error"), ze.message
+    except ZfsException as ze:
+        return _("zfs mounting error"), ze.message
 
-    # 6. Global Storage Persistence
-    libcalamares.globalstorage.insert("rootMountPoint", root_mount_point)
-    libcalamares.globalstorage.insert("mountOptionsList", mount_options_list)
-    libcalamares.globalstorage.insert("extraMounts", extra_mounts)
+    # 6. Global Storage Persistence
+    libcalamares.globalstorage.insert("rootMountPoint", root_mount_point)
+    libcalamares.globalstorage.insert("mountOptionsList", mount_options_list)
+    libcalamares.globalstorage.insert("extraMounts", extra_mounts)

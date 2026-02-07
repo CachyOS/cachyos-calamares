@@ -257,12 +257,12 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         return
 
     mount_options_string = get_mount_options(fstype, mount_options, partition, efi_location)
-
+    mount_options_list.append({"mountpoint": raw_mount_point, "option_string": mount_options_string})
     # Standard mount for everything EXCEPT Btrfs root
     if not (fstype == "btrfs" and raw_mount_point == '/'):
         if libcalamares.utils.mount(device, mount_point, fstype, mount_options_string) != 0:
             libcalamares.utils.warning(f"Cannot mount {device}")
-        mount_options_list.append({"mountpoint": raw_mount_point, "option_string": mount_options_string})
+
         return
 
     # Btrfs Root "Magic Trick" Logic

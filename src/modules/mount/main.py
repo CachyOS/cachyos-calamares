@@ -126,30 +126,26 @@ def get_mount_options(filesystem, mount_options, partition, efi_location = None)
     else:
         return "defaults"
 
-
 def get_btrfs_subvolumes(partitions):
     """
-    Gets the job-configuration for btrfs subvolumes, or if there is
-    none given, returns a default configuration that matches
-    the setup (/ and /home) from before configurability was introduced.
-
-    @param partitions
-        The partitions (from the partitioning module) that will exist on disk.
-        This is used to filter out subvolumes that don't need to be created
-        because they get a dedicated partition instead.
+    Gets the job-configuration for btrfs subvolumes.
     """
     btrfs_subvolumes = libcalamares.job.configuration.get("btrfsSubvolumes", None)
-    # Warn if there's no configuration at all, and empty configurations are
-    # replaced by a simple root-only layout.
     if btrfs_subvolumes is None:
         libcalamares.utils.warning("No configuration for btrfsSubvolumes")
     if not btrfs_subvolumes:
         btrfs_subvolumes = [dict(mountPoint="/", subvolume="/@"), dict(mountPoint="/home", subvolume="/@home")]
 
-    # Filter out the subvolumes which have a dedicated partition
+    # Identify dedicated partitions (excluding root)
     non_root_partition_mounts = [m for m in [p.get("mountPoint", None) for p in partitions] if
                                  m is not None and m != '/']
-    btrfs_subvolumes = list(filter(lambda s: s["mountPoint"] not in non_root_partition_mounts, btrfs_subvolumes))
+
+    # Filter: Skip subvolume if it IS a partition OR is INSIDE a partition
+    btrfs_subvolumes = [
+        s for s in btrfs_subvolumes 
+        if not any(s["mountPoint"] == m or s["mountPoint"].startswith(m + "/") 
+                   for m in non_root_partition_mounts)
+    ]
 
     # If we have a swap **file**, give it a separate subvolume.
     swap_choice = libcalamares.globalstorage.value("partitionChoices")
@@ -159,8 +155,7 @@ def get_btrfs_subvolumes(partitions):
         libcalamares.globalstorage.insert("btrfsSwapSubvol", swap_subvol)
 
     return btrfs_subvolumes
-
-
+    
 def mount_zfs(root_mount_point, partition):
     """ Mounts a zfs partition at @p root_mount_point
 
@@ -337,6 +332,7 @@ def enable_swap_partition(devices):
             libcalamares.utils.host_env_process_output(["swapon", d])
     except subprocess.CalledProcessError:
         libcalamares.utils.warning(f"Failed to enable swap for devices: {devices}")
+
 
 def run():
     partitions = libcalamares.globalstorage.value("partitions")

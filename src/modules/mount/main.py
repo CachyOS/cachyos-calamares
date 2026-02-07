@@ -292,7 +292,8 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     root_opts = f"subvol={root_sub['subvolume']},{mount_options_string}"
     if libcalamares.utils.mount(device, root_mount_point, fstype, root_opts) != 0:
         raise Exception(f"Failed to mount root subvolume {root_sub['subvolume']}")
-
+    # Add this after the root subvolume mount succeeds:
+    mount_options_list.append({"mountpoint": "/", "option_string": root_opts})  
     # Step 3: Mount remaining subvolumes (like /home)
     for s in btrfs_subvolumes:
         if s["mountPoint"] == "/":
@@ -306,8 +307,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         
         if libcalamares.utils.mount(device, sub_path, fstype, sub_opts) != 0:
             libcalamares.utils.warning(f"Failed to mount subvolume {s['subvolume']}")
-    # Add this after the root subvolume mount succeeds:
-    mount_options_list.append({"mountpoint": "/", "option_string": root_opts})    
+  
 def enable_swap_partition(devices):
     try:
         for d in devices:

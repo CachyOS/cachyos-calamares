@@ -279,7 +279,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
                     subprocess.check_call(["btrfs", "subvolume", "create", setup_dir + s["subvolume"]])
                     # Secure /root subvolume permissions
                     if s["mountPoint"] == "/root":
-                        os.chmod(sub_path, 0o750)
+                        os.chmod(setup_dir + s["subvolume"], 0o750)
         finally:
             # UNMOUNT 1: Close the "backdoor" so the temp directory can be cleaned up
             # We must clear this so we can remount using the '@' subvolume specifically.

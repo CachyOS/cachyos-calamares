@@ -269,32 +269,27 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     btrfs_subvolumes = get_btrfs_subvolumes(partitions)
     libcalamares.globalstorage.insert("btrfsSubvolumes", btrfs_subvolumes)
 
-    # Step 1: Create subvolumes via a private "backdoor" mount
     with tempfile.TemporaryDirectory(prefix="calam-btrfs-") as setup_dir:
+        # Mount raw partition to create subvolumes
         libcalamares.utils.mount(device, setup_dir, fstype, "defaults")
-        try:  # <--- You need this line!
+        try:
             for s in btrfs_subvolumes:
-                if s["subvolume"]:
-                    os.makedirs(setup_dir + os.path.dirname(s["subvolume"]), exist_ok=True)
-                    subprocess.check_call(["btrfs", "subvolume", "create", setup_dir + s["subvolume"]])
-                    # Secure /root subvolume permissions
+                sub_path = setup_dir + s["subvolume"]
+                if not os.path.exists(sub_path):
+                    os.makedirs(os.path.dirname(sub_path), exist_ok=True)
+                    subprocess.check_call(["btrfs", "subvolume", "create", sub_path])
                     if s["mountPoint"] == "/root":
-                        os.chmod(setup_dir + s["subvolume"], 0o750)
+                        os.chmod(sub_path, 0o750)
         finally:
-            # UNMOUNT 1: Close the "backdoor" so the temp directory can be cleaned up
-            # We must clear this so we can remount using the '@' subvolume specifically.
             subprocess.check_call(["umount", "-v", setup_dir])
-    
-    # Step 2: Prepare for the real mount
-    try:
-        # UNMOUNT 2: Remove the "flat" partition mount Calamares created earlier.
-        subprocess.call(["umount", "-l", root_mount_point])
-    except Exception:
-        pass
-        
+
+    # Find the root subvolume (usually /@)
     root_sub = next((s for s in btrfs_subvolumes if s["mountPoint"] == "/"), None)
-    if not root_sub:
-        raise Exception("No root (/) subvolume defined!")
+    
+    # Mount the specific @ subvolume to the root mount point
+    root_opts = f"subvol={root_sub['subvolume']},{mount_options_string}"
+    if libcalamares.utils.mount(device, root_mount_point, fstype, root_opts) != 0:
+        raise Exception(f"Failed to mount root subvolume")
 
     root_opts = f"subvol={root_sub['subvolume']},{mount_options_string}"
     if libcalamares.utils.mount(device, root_mount_point, fstype, root_opts) != 0:

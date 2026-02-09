@@ -231,12 +231,12 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     os.makedirs(mount_point, exist_ok=True)
     fstype = partition.get("fs", "").lower()
 
-    is_virtual = any(raw_mount_point.startswith(v) for v in ["/sys", "/proc", "/dev", "/run"])
-    if not is_virtual and fstype != "unformatted":
-        try:
-            os.chmod(mount_point, 0o755)
-        except OSError as e:
-            libcalamares.utils.warning(f"Could not chmod {mount_point}: {e}")
+    #is_virtual = any(raw_mount_point.startswith(v) for v in ["/sys", "/proc", "/dev", "/run"])
+    #if not is_virtual and fstype != "unformatted":
+        #try:
+            #os.chmod(mount_point, 0o755)
+        #except OSError as e:
+            #libcalamares.utils.warning(f"Could not chmod {mount_point}: {e}")
 
     try:
         subprocess.call(['chcon', '--reference=' + raw_mount_point, mount_point])

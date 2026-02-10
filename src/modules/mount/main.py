@@ -128,7 +128,14 @@ def get_mount_options(filesystem, mount_options, partition, efi_location = None)
 
 def get_btrfs_subvolumes(partitions):
     """
-    Gets the job-configuration for btrfs subvolumes.
+    Gets the job-configuration for btrfs subvolumes, or if there is
+    none given, returns a default configuration that matches
+    the setup (/ and /home) from before configurability was introduced.
+
+    @param partitions
+        The partitions (from the partitioning module) that will exist on disk.
+        This is used to filter out subvolumes that don't need to be created
+        because they get a dedicated partition instead.
     """
     btrfs_subvolumes = libcalamares.job.configuration.get("btrfsSubvolumes", None)
     if btrfs_subvolumes is None:

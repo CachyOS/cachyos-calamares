@@ -361,7 +361,6 @@ def run():
 
     # Get the mountOptions, if this is None, that is OK and will be handled later
     mount_options = libcalamares.job.configuration.get("mountOptions")
-    mount_options_list = []
     
     # Guard against missing keys (generally a sign that the config file is bad)
     extra_mounts = libcalamares.job.configuration.get("extraMounts") or []
@@ -373,6 +372,8 @@ def run():
         efi_location = libcalamares.globalstorage.value("efiSystemPartition")
     else:
         extra_mounts = [m for m in extra_mounts if not m.get("efi")]
+
+    mount_options_list = []
 
     # 4. Phase One: Physical (Depth Sort: / before /var)  
     physical = [p for p in partitions if "mountPoint" in p and p["mountPoint"]]

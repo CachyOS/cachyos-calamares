@@ -126,6 +126,7 @@ def get_mount_options(filesystem, mount_options, partition, efi_location = None)
     else:
         return "defaults"
 
+
 def get_btrfs_subvolumes(partitions):
     """
     Gets the job-configuration for btrfs subvolumes, or if there is

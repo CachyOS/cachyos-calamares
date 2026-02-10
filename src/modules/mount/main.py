@@ -361,13 +361,12 @@ def run():
 
     # Get the mountOptions, if this is None, that is OK and will be handled later
     mount_options = libcalamares.job.configuration.get("mountOptions")
-
+    mount_options_list = []
+    
     # Guard against missing keys (generally a sign that the config file is bad)
     extra_mounts = libcalamares.job.configuration.get("extraMounts") or []
     if not extra_mounts:
         libcalamares.utils.warning("No extra mounts defined. Does mount.conf exist?")
-
-    mount_options_list = []
 
     efi_location = None
     if libcalamares.globalstorage.value("firmwareType") == "efi":

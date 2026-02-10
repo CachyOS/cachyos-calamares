@@ -387,6 +387,10 @@ def run():
             if mount.get("efi", None) is True:
                 extra_mounts.remove(mount)
 
+    # Add extra mounts to the partitions list and sort by mount points.
+    # This way, we ensure / is mounted before the rest, and every mount point
+    # is created on the right partition (e.g. if a partition is to be mounted
+    # under /tmp, we make sure /tmp is mounted before the partition)
     # mount_options_list will be inserted into global storage for use in fstab later
     mount_options_list = []
 

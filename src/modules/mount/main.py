@@ -271,12 +271,13 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     if fstype == "unformatted":
         return
 
-    if fstype in ["fat16", "fat32", "exfat", "ntfs"]:
-        # Block non-FAT or any non-boot path
-        if fstype in ["exfat", "ntfs"] or raw_mount_point not in ["/boot", "/boot/efi"]:
+    if fstype in ["fat16", "fat32", "exfat", "ntfs", "ext2"]:
+        is_boot = raw_mount_point in ["/boot", "/boot/efi"]
+        # Block if: not a boot path, OR ntfs/ext2, OR exfat on UEFI
+        if not is_boot or fstype in ["ntfs", "ext2"] or (fstype == "exfat" and efi_location):
             libcalamares.utils.warning(f"Skipping {fstype} on {raw_mount_point}")
             return
-        fstype = "vfat"
+        fstype = "vfat" if fstype != "exfat" else "exfat"
 
     if "luksMapperName" in partition:
         device = os.path.join("/dev/mapper", partition["luksMapperName"])
@@ -315,24 +316,24 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
 
     # Find the root subvolume (usually /@)
     root_sub = next((s for s in btrfs_subvolumes if s["mountPoint"] == "/"), None)
-    
+
     # Mount the specific @ subvolume to the root mount point
     root_opts = f"subvol={root_sub['subvolume']},{mount_options_string}"
     if libcalamares.utils.mount(device, root_mount_point, fstype, root_opts) != 0:
         libcalamares.utils.warning(f"Cannot mount root subvolume {device}")
-        
+
     # Step 3: Mount remaining subvolumes (like /home)
     for s in btrfs_subvolumes:
         if s["mountPoint"] == "/":
             libcalamares.globalstorage.insert("btrfsRootSubvolume", s["subvolume"])
             continue
-            
+
         # This builds the path INSIDE your new root
         sub_path = root_mount_point + s["mountPoint"]
         os.makedirs(sub_path, exist_ok=True)
         # This tells Linux: "Put this specific subvolume here"
         sub_opts = f"subvol={s['subvolume']},{mount_options_string}"
-        
+
         if libcalamares.utils.mount(device, sub_path, fstype, sub_opts) == 0:
             mount_options_list.append({"mountpoint": s["mountPoint"], "option_string": mount_options_string})
         else:

@@ -295,7 +295,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     with tempfile.TemporaryDirectory(prefix="calam-btrfs-") as setup_dir:
         # Mount raw partition to create subvolumes
         libcalamares.utils.mount(device, setup_dir, fstype, "defaults")
-        try:
+        try: # <--- You need this line!
             for s in btrfs_subvolumes:
                 sub_path = setup_dir + s["subvolume"]
                 if not os.path.exists(sub_path):

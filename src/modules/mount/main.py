@@ -257,13 +257,13 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     # SELinux-enabled systems.
 
     os.makedirs(mount_point, exist_ok=True)
-    fstype = partition.get("fs", "").lower()
 
     try:
         subprocess.call(['chcon', '--reference=' + raw_mount_point, mount_point])
     except:
         pass
 
+    fstype = partition.get("fs", "").lower()
     if fstype == "unformatted":
         return
     if fstype in ["fat16", "fat32"]:

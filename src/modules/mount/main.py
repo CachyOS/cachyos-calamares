@@ -223,6 +223,17 @@ def mount_zfs(root_mount_point, partition):
 
 
 def mount_partition(root_mount_point, partition, partitions, mount_options, mount_options_list, efi_location):
+    """
+    Do a single mount of @p partition inside @p root_mount_point.
+
+    :param root_mount_point: A string containing the root of the install
+    :param partition: A dict containing information about the partition
+    :param partitions: The full list of partitions used to filter out btrfs subvols which have duplicate mountpoints
+    :param mount_options: The mount options from the config file
+    :param mount_options_list: A list of options for each mountpoint to be placed in global storage for future modules
+    :param efi_location: A string holding the location of the EFI partition or None
+    :return:
+    """
     raw_mount_point = partition["mountPoint"]
     if not raw_mount_point:
         return

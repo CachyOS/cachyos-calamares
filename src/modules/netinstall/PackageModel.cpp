@@ -13,6 +13,7 @@
 
 #include "compat/Variant.h"
 #include "utils/Logger.h"
+#include "utils/System.h"
 #include "utils/Variant.h"
 #include "utils/Yaml.h"
 #include "widgets/TranslationFix.h"
@@ -367,6 +368,7 @@ PackageModel::getItemPackages( PackageTreeItem* item ) const
 void
 PackageModel::setupModelData( const QVariantList& groupList, PackageTreeItem* parent )
 {
+    QString targetPlatform = Calamares::System::instance()->getTargetPlatform();
     for ( const auto& group : groupList )
     {
         QVariantMap groupMap = group.toMap();
@@ -436,17 +438,23 @@ PackageModel::setupModelData( const QVariantList& groupList, PackageTreeItem* pa
         }
         if ( item->isHidden() )
         {
-            m_hiddenItems.append( item );
-            if ( !item->isSelected() )
+            if ( item->platform() == targetPlatform || item->platform() == "any" )
             {
-                cWarning() << "Item" << ( item->parentItem() ? item->parentItem()->name() : QString() ) << '.'
-                           << item->name() << "is hidden, but not selected.";
+                m_hiddenItems.append( item );
+                if ( !item->isSelected() )
+                {
+                    cWarning() << "Item" << ( item->parentItem() ? item->parentItem()->name() : QString() ) << '.'
+                               << item->name() << "is hidden, but not selected.";
+                }
             }
         }
         else
         {
-            item->setCheckable( true );
-            parent->appendChild( item );
+            if ( item->platform() == targetPlatform || item->platform() == "any" )
+            {
+                item->setCheckable( true );
+                parent->appendChild( item );
+            }
         }
     }
 }

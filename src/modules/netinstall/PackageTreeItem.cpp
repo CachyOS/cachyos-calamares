@@ -58,6 +58,7 @@ PackageTreeItem::PackageTreeItem( const QVariantMap& groupData, PackageTag&& par
     , m_packageName( Calamares::getString( groupData, "name" ) )
     , m_selected( parentCheckState( parent.parent ) )
     , m_description( Calamares::getString( groupData, "description" ) )
+    , m_platform( Calamares::getString( groupData, "platform", "any" ) )
     , m_isGroup( false )
     , m_isCritical( parent.parent ? parent.parent->isCritical() : false )
     , m_showReadOnly( parent.parent ? parent.parent->isImmutable() : false )
@@ -70,6 +71,7 @@ PackageTreeItem::PackageTreeItem( const QVariantMap& groupData, GroupTag&& paren
     , m_name( Calamares::getString( groupData, "name" ) )
     , m_selected( parentCheckState( parent.parent ) )
     , m_description( Calamares::getString( groupData, "description" ) )
+    , m_platform( Calamares::getString( groupData, "platform", "any" ) )
     , m_preScript( Calamares::getString( groupData, "pre-install" ) )
     , m_postScript( Calamares::getString( groupData, "post-install" ) )
     , m_source( Calamares::getString( groupData, "source" ) )
@@ -302,7 +304,7 @@ PackageTreeItem::operator==( const PackageTreeItem& rhs ) const
     {
         return name() == rhs.name() && description() == rhs.description() && preScript() == rhs.preScript()
             && postScript() == rhs.postScript() && isCritical() == rhs.isCritical() && isHidden() == rhs.isHidden()
-            && m_showReadOnly == rhs.m_showReadOnly && expandOnStart() == rhs.expandOnStart();
+            && m_showReadOnly == rhs.m_showReadOnly && expandOnStart() == rhs.expandOnStart() && platform() == rhs.platform();
     }
     else
     {

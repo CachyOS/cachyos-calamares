@@ -54,6 +54,7 @@ public:
     QString packageName() const { return m_packageName; }
 
     QString description() const { return m_description; }
+    QString platform() const { return m_platform; }
     QString preScript() const { return m_preScript; }
     QString postScript() const { return m_postScript; }
     QString source() const { return m_source; }
@@ -165,6 +166,7 @@ private:
 
     // These are only useful for groups
     QString m_description;
+    QString m_platform;
     QString m_preScript;
     QString m_postScript;
     QString m_source;

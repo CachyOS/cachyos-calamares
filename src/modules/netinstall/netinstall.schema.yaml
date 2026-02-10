@@ -32,6 +32,7 @@ definitions:
             critical: { type: boolean, default: false }
             immutable: { type: boolean }
             noncheckable: { type: boolean }
+            platform: { type: string }
             expanded: { type: boolean }
             subgroups:
                 type: array

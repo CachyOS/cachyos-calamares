@@ -264,7 +264,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         fstype = "vfat"
 
     device = partition["device"]
-    
+
     if "luksMapperName" in partition:
         device = os.path.join("/dev/mapper", partition["luksMapperName"])
 

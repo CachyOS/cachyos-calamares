@@ -138,6 +138,8 @@ def get_btrfs_subvolumes(partitions):
         because they get a dedicated partition instead.
     """
     btrfs_subvolumes = libcalamares.job.configuration.get("btrfsSubvolumes", None)
+    # Warn if there's no configuration at all, and empty configurations are
+    # replaced by a simple root-only layout.
     if btrfs_subvolumes is None:
         libcalamares.utils.warning("No configuration for btrfsSubvolumes")
     if not btrfs_subvolumes:

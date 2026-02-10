@@ -252,7 +252,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         return
 
     mount_point = root_mount_point + raw_mount_point
-    
+
     # Ensure that the created directory has the correct SELinux context on
     # SELinux-enabled systems.
 

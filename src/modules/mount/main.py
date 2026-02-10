@@ -266,7 +266,8 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     fstype = partition.get("fs", "").lower()
     if fstype == "unformatted":
         return
-    if fstype in ["fat16", "fat32"]:
+
+    if fstype == "fat16" or fstype == "fat32":
         fstype = "vfat"
 
     device = partition["device"]

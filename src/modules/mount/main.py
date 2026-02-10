@@ -252,8 +252,6 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         return
 
     mount_point = root_mount_point + raw_mount_point
-
-    device = partition["device"]
     
     # Ensure that the created directory has the correct SELinux context on
     # SELinux-enabled systems.
@@ -272,6 +270,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     if fstype == "unformatted":
         return
 
+    device = partition["device"]
     if fstype in ["fat16", "fat32", "exfat", "ntfs", "ext2"]:
         is_boot = raw_mount_point in ["/boot", "/boot/efi"]
         # Block if: not a boot path, OR ntfs/ext2, OR exfat on UEFI

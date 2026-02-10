@@ -245,6 +245,8 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     :param efi_location: A string holding the location of the EFI partition or None
     :return:
     """
+    # Create mount point with `+` rather than `os.path.join()` because
+    # `partition["mountPoint"]` starts with a '/'.
     raw_mount_point = partition["mountPoint"]
     if not raw_mount_point:
         return

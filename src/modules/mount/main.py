@@ -376,6 +376,7 @@ def run():
     else:
         extra_mounts = [m for m in extra_mounts if not m.get("efi")]
 
+    # mount_options_list will be inserted into global storage for use in fstab later
     mount_options_list = []
 
     # 4. Phase One: Physical (Depth Sort: / before /var)  

@@ -329,6 +329,11 @@ def enable_swap_partition(devices):
 
 
 def run():
+    """
+    Mount all the partitions from GlobalStorage and from the job configuration.
+    Partitions are mounted in-lexical-order of their mountPoint.
+    """
+
     partitions = libcalamares.globalstorage.value("partitions")
     if not partitions:
         libcalamares.utils.warning("partitions is empty")

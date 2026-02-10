@@ -357,9 +357,12 @@ def run():
                     "/dev/mapper/" + p["luksMapperName"] for p in claimed_swap]
     enable_swap_partition(swap_devices)
 
-    # 2. Setup Environment
     root_mount_point = tempfile.mkdtemp(prefix="calamares-root-")
+
+    # Get the mountOptions, if this is None, that is OK and will be handled later
     mount_options = libcalamares.job.configuration.get("mountOptions")
+
+    # Guard against missing keys (generally a sign that the config file is bad)
     extra_mounts = libcalamares.job.configuration.get("extraMounts") or []
     if not extra_mounts:
         libcalamares.utils.warning("No extra mounts defined. Does mount.conf exist?")

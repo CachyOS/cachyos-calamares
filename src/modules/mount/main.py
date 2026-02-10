@@ -394,7 +394,8 @@ def run():
     if not mount_options_list:
         libcalamares.utils.warning("No mount options defined, {!s} partitions, {!s} mountable".format(len(partitions), len(mountable_partitions)))
 
-    # 6. Global Storage Persistence
     libcalamares.globalstorage.insert("rootMountPoint", root_mount_point)
     libcalamares.globalstorage.insert("mountOptionsList", mount_options_list)
+
+    # Remember the extra mounts for the unpackfs module
     libcalamares.globalstorage.insert("extraMounts", extra_mounts)

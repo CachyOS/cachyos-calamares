@@ -252,13 +252,13 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         return
 
     mount_point = root_mount_point + raw_mount_point
+
     device = partition["device"]
     
     # Ensure that the created directory has the correct SELinux context on
     # SELinux-enabled systems.
 
     os.makedirs(mount_point, exist_ok=True)
-    fstype = partition.get("fs", "").lower()
 
     try:
         subprocess.call(['chcon', '--reference=' + raw_mount_point, mount_point])
@@ -268,6 +268,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         libcalamares.utils.error("Cannot run 'chcon' normally.")
         raise
 
+    fstype = partition.get("fs", "").lower()
     if fstype == "unformatted":
         return
 

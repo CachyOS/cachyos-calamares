@@ -316,7 +316,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     # Mount the specific @ subvolume to the root mount point
     root_opts = f"subvol={root_sub['subvolume']},{mount_options_string}"
     if libcalamares.utils.mount(device, root_mount_point, fstype, root_opts) != 0:
-        raise Exception(f"Failed to mount root subvolume")
+        libcalamares.utils.warning(f"Cannot mount root subvolume {device}")
         
     # Step 3: Mount remaining subvolumes (like /home)
     for s in btrfs_subvolumes:

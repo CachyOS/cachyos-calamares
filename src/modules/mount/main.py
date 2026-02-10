@@ -260,8 +260,11 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
 
     try:
         subprocess.call(['chcon', '--reference=' + raw_mount_point, mount_point])
-    except:
-        pass
+    except FileNotFoundError as e:
+        libcalamares.utils.warning(str(e))
+    except OSError:
+        libcalamares.utils.error("Cannot run 'chcon' normally.")
+        raise
 
     fstype = partition.get("fs", "").lower()
     if fstype == "unformatted":

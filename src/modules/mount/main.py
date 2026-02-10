@@ -383,7 +383,7 @@ def run():
     # mount_options_list will be inserted into global storage for use in fstab later
     mount_options_list = []
 
-    # 4. Phase One: Physical (Depth Sort: / before /var)  
+    # 4. Phase One: Physical (Lexical Depth Sort: / before /var)  
     physical = [p for p in partitions if "mountPoint" in p and p["mountPoint"]]
     physical.sort(key=lambda x: x["mountPoint"])
 

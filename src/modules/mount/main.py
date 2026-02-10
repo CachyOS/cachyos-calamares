@@ -252,19 +252,13 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         return
 
     mount_point = root_mount_point + raw_mount_point
-
+    device = partition["device"]
+    
     # Ensure that the created directory has the correct SELinux context on
     # SELinux-enabled systems.
 
     os.makedirs(mount_point, exist_ok=True)
     fstype = partition.get("fs", "").lower()
-
-    is_virtual = any(raw_mount_point.startswith(v) for v in ["/sys", "/proc", "/dev", "/run"])
-    if not is_virtual and fstype != "unformatted":
-        try:
-            os.chmod(mount_point, 0o755)
-        except OSError as e:
-            libcalamares.utils.warning(f"Could not chmod {mount_point}: {e}")
 
     try:
         subprocess.call(['chcon', '--reference=' + raw_mount_point, mount_point])
@@ -277,10 +271,12 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     if fstype == "unformatted":
         return
 
-    if fstype == "fat16" or fstype == "fat32":
+    if fstype in ["fat16", "fat32", "exfat", "ntfs"]:
+        # Block non-FAT or any non-boot path
+        if fstype in ["exfat", "ntfs"] or raw_mount_point not in ["/boot", "/boot/efi"]:
+            libcalamares.utils.warning(f"Skipping {fstype} on {raw_mount_point}")
+            return
         fstype = "vfat"
-
-    device = partition["device"]
 
     if "luksMapperName" in partition:
         device = os.path.join("/dev/mapper", partition["luksMapperName"])
@@ -341,7 +337,8 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             mount_options_list.append({"mountpoint": s["mountPoint"], "option_string": mount_options_string})
         else:
             libcalamares.utils.warning(f"Failed to mount subvolume {s['subvolume']}")
-            
+
+
 def enable_swap_partition(devices):
     try:
         for d in devices:

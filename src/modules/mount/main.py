@@ -378,7 +378,9 @@ def run():
     if libcalamares.globalstorage.value("firmwareType") == "efi":
         efi_location = libcalamares.globalstorage.value("efiSystemPartition")
     else:
-        extra_mounts = [m for m in extra_mounts if not m.get("efi")]
+        for mount in extra_mounts:
+            if mount.get("efi", None) is True:
+                extra_mounts.remove(mount)
 
     # mount_options_list will be inserted into global storage for use in fstab later
     mount_options_list = []

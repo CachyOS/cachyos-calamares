@@ -166,7 +166,8 @@ def get_btrfs_subvolumes(partitions):
         libcalamares.globalstorage.insert("btrfsSwapSubvol", swap_subvol)
 
     return btrfs_subvolumes
-    
+
+
 def mount_zfs(root_mount_point, partition):
     """ Mounts a zfs partition at @p root_mount_point
 

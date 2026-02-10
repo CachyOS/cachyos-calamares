@@ -361,6 +361,9 @@ def run():
     root_mount_point = tempfile.mkdtemp(prefix="calamares-root-")
     mount_options = libcalamares.job.configuration.get("mountOptions")
     extra_mounts = libcalamares.job.configuration.get("extraMounts") or []
+    if not extra_mounts:
+        libcalamares.utils.warning("No extra mounts defined. Does mount.conf exist?")
+
     mount_options_list = []
 
     # 3. EFI Logic (Filtered properly)

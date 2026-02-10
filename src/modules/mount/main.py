@@ -369,7 +369,6 @@ def run():
 
     mount_options_list = []
 
-    # 3. EFI Logic (Filtered properly)
     efi_location = None
     if libcalamares.globalstorage.value("firmwareType") == "efi":
         efi_location = libcalamares.globalstorage.value("efiSystemPartition")

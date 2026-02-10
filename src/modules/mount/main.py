@@ -346,6 +346,7 @@ def run():
     """
 
     partitions = libcalamares.globalstorage.value("partitions")
+
     if not partitions:
         libcalamares.utils.warning("partitions is empty")
         return (_("Configuration Error"), _("No partitions defined."))

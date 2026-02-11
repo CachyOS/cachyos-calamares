@@ -75,6 +75,7 @@
       - name: "firewall"
         description: "Firewall support"
         selected: true
+        platform: "desktop"
         packages:
           - ufw
           - ufw-extras

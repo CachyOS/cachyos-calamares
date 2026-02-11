@@ -15,6 +15,7 @@
 
 #include "Job.h"
 
+#include <QFile>
 #include <QObject>
 #include <QPair>
 #include <QString>
@@ -353,6 +354,8 @@ public:
     DLLEXPORT quint64 getTotalDiskB() const;
 
     DLLEXPORT bool doChroot() const;
+
+    DLLEXPORT QString getTargetPlatform() const;
 
 private:
     static System* s_instance;

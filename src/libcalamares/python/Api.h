@@ -43,6 +43,7 @@ namespace Python __attribute__( ( visibility( "hidden" ) ) )
             const std::string& options = std::string() );
 
     Object show_warning( const std::string& title, const std::string& description );
+    Object get_target_platform();
 }
 }
 

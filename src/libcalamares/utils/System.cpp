@@ -47,6 +47,7 @@ System::System( bool doChroot, QObject* parent )
     {
         Calamares::JobQueue::instance()->globalStorage()->insert( "rootMountPoint", "/" );
     }
+
 }
 
 System::~System() {}
@@ -285,6 +286,21 @@ bool
 System::doChroot() const
 {
     return m_doChroot;
+}
+
+QString
+System::getTargetPlatform() const
+{
+    QFile tag("/etc/edition-tag");
+    QString platform;
+
+    if (tag.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QByteArray edition = tag.readLine().trimmed();
+        platform = QString(edition);
+    }
+
+    return platform.simplified();
 }
 
 Calamares::JobResult

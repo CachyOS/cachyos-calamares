@@ -187,6 +187,10 @@ BOOST_PYTHON_MODULE( libcalamares )
              "Applying the function to a string obscured by this function will result "
              "in the original string." );
 
+    bp::def( "get_target_platform",
+             &Calamares::Python::get_target_platform,
+             "Get target platform name" );
+
     // .. Translation functions
     bp::def( "gettext_languages",
              &Calamares::Python::gettext_languages,

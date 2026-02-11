@@ -149,6 +149,8 @@ populate_utils( py::module_& m )
            "Displays warning to user",
            py::arg( "title" ),
            py::arg( "description" ));
+
+    m.def( "get_target_platform", &Calamares::Python::get_target_platform, "Get target platform name" );
 }
 
 void

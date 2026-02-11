@@ -15,6 +15,7 @@
 #include "JobQueue.h"
 #include "locale/Global.h"
 #include "partition/Mount.h"
+#include "utils/System.h"
 #include "utils/Logger.h"
 #include "utils/RAII.h"
 #include "utils/String.h"
@@ -213,6 +214,13 @@ show_warning( const std::string& title, const std::string& description )
                          QString::fromStdString( description ),
                          QMessageBox::Ok );
     return Python::None();
+}
+
+Python::Object
+get_target_platform()
+{
+    QString platform = Calamares::System::instance()->getTargetPlatform();
+    return String( platform.toStdString() );
 }
 
 }

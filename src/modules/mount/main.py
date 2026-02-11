@@ -289,7 +289,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     mount_options_string = get_mount_options(fstype, mount_options, partition, efi_location)
     mount_options_list.append({"mountpoint": raw_mount_point, "option_string": mount_options_string})
     
-    # Standard mount for everything EXCEPT Btrfs root
+    # Standard mount for everything EXCEPT Btrfs root (this catches other btrfs partitions)
     if not (fstype == "btrfs" and raw_mount_point == '/'):
         if libcalamares.utils.mount(device, mount_point, fstype, mount_options_string) != 0:
             libcalamares.utils.warning(f"Cannot mount {device}")
@@ -316,11 +316,19 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
 
     # Find the root subvolume (usually /@)
     root_sub = next((s for s in btrfs_subvolumes if s["mountPoint"] == "/"), None)
-
+    if not root_sub:
+        raise Exception("Btrfs root subvolume (/) not found!")
     # Mount the specific @ subvolume to the root mount point
     root_opts = f"subvol={root_sub['subvolume']},{mount_options_string}"
     if libcalamares.utils.mount(device, root_mount_point, fstype, root_opts) != 0:
+        libcalamares.utils.warning(f"Failed to mount root subvolume {device}")
         raise Exception(f"Failed to mount root subvolume {device}")
+
+    # 1. Identify swap subvolume
+    swap_subvol = libcalamares.job.configuration.get("btrfsSwapSubvol", "/@swap")    
+    # 2. Only fetch swap options if the subvolume actually exists in the list
+    has_swap = any(s["subvolume"] == swap_subvol for s in btrfs_subvolumes)
+    swap_options = get_mount_options("btrfs_swap", mount_options, partition) if has_swap else None
 
     # Step 3: Mount remaining subvolumes (like /home)
     for s in btrfs_subvolumes:
@@ -328,14 +336,22 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             libcalamares.globalstorage.insert("btrfsRootSubvolume", s["subvolume"])
             continue
 
+        # Swap-specific options vs. regular Btrfs subvolume flags
+        chosen_options = swap_options if (has_swap and s['subvolume'] == swap_subvol) else mount_options_string
+        # Handle "breadcrumb" logic for empty subvolume names
+        if s['subvolume']:
+            # This tells Linux: "Put this specific subvolume here"
+            sub_opts = f"subvol={s['subvolume']},{chosen_options}"
+        else:
+            # Mounting the entire filesystem (if subvol is missing in config?)
+            sub_opts = chosen_options
+
         # This builds the path INSIDE your new root
         sub_path = root_mount_point + s["mountPoint"]
         os.makedirs(sub_path, exist_ok=True)
-        # This tells Linux: "Put this specific subvolume here"
-        sub_opts = f"subvol={s['subvolume']},{mount_options_string}"
 
         if libcalamares.utils.mount(device, sub_path, fstype, sub_opts) == 0:
-            mount_options_list.append({"mountpoint": s["mountPoint"], "option_string": mount_options_string})
+            mount_options_list.append({"mountpoint": s["mountPoint"], "option_string": chosen_options})
         else:
             libcalamares.utils.warning(f"Failed to mount subvolume {s['subvolume']}")
 
@@ -413,7 +429,7 @@ def run():
         return _("zfs mounting error"), ze.message
 
     if not mount_options_list:
-        libcalamares.utils.warning("No mount options defined, {!s} partitions, {!s} mountable".format(len(partitions), len(mountable_partitions)))
+        libcalamares.utils.warning("No mount options defined, {!s} partitions, {!s} mountable, {!s} extraMounts".format(len(partitions), len(physical), len(extra)))
 
     libcalamares.globalstorage.insert("rootMountPoint", root_mount_point)
     libcalamares.globalstorage.insert("mountOptionsList", mount_options_list)

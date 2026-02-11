@@ -26,6 +26,7 @@
 #include "packages/Globals.h"
 #include "utils/Logger.h"
 #include "utils/Variant.h"
+#include "utils/System.h"
 
 /** @brief This removes any values from @p groups that match @p source
  *
@@ -273,6 +274,8 @@ fillModel( PackageListModel* model, const QVariantList& items )
     bool poolOk = false;
 #endif
 
+    QString targetPlatform = Calamares::System::instance()->getTargetPlatform();
+
     cDebug() << "Loading PackageChooser model items from config";
     int item_index = 0;
     for ( const auto& item_it : items )
@@ -288,6 +291,13 @@ fillModel( PackageListModel* model, const QVariantList& items )
         if (item_map.contains("efiOnly") && !QDir( "/sys/firmware/efi/efivars" ).exists())
         {
             cWarning() << "PackageChooser entry" << item_index << "is only for EFI systems.";
+            continue;
+        }
+
+        QString platform = item_map.value("platform").toString();
+        if ( !platform.isEmpty() && platform != targetPlatform )
+        {
+            cWarning() << "PackageChooser entry" << item_index << "is only for" << platform << "systems.";
             continue;
         }
 

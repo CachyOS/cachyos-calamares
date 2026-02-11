@@ -91,6 +91,12 @@ def run():
     else:
         return "No configuration found", "Aborting due to missing configuration"
 
+    if libcalamares.utils.get_target_platform() == "handheld":
+        base_packages += ["linux-cachyos-deckify", "linux-cachyos-deckify-headers"]
+    else:
+        base_packages += ["linux-cachyos", "linux-cachyos-headers",
+                         "linux-cachyos-lts", "linux-cachyos-lts-headers"]
+
 
     bootloader = libcalamares.globalstorage.value("packagechooser_bootloader")
 
@@ -129,7 +135,11 @@ def run():
         libcalamares.utils.warning("Failed to detect CPU vendor for microcode: {!s}".format(e))
 
     if (is_root_on_zfs):
-        base_packages += ["zfs-utils", "linux-cachyos-zfs", "linux-cachyos-lts-zfs"]
+        base_packages += ["zfs-utils"]
+        if libcalamares.utils.get_target_platform() == "handheld":
+            base_packages += ["linux-cachyos-deckify-zfs"]
+        else:
+            base_packages += ["linux-cachyos-zfs", "linux-cachyos-lts-zfs"]
     elif is_root_on_btrfs:
         libcalamares.utils.debug("Root on BTRFS")
         if bootloader == "limine":

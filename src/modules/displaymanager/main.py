@@ -1026,6 +1026,12 @@ def run():
     If a displaymanager is in the list but not installed, a debugging message
     is printed and the entry ignored.
     """
+    if libcalamares.utils.get_target_platform() == "handheld":
+        libcalamares.utils.warning(
+            "Skipping, due to installation on handheld system"
+        )
+        return None
+
     # Get configuration settings for display managers
     displaymanagers = None
     if "displaymanagers" in libcalamares.job.configuration:

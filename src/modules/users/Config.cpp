@@ -22,6 +22,7 @@
 #include "utils/Permissions.h"
 #include "utils/String.h"
 #include "utils/StringExpander.h"
+#include "utils/System.h"
 #include "utils/Variant.h"
 
 #include <QCoreApplication>
@@ -1050,8 +1051,20 @@ Config::setConfigurationMap( const QVariantMap& configurationMap )
     updateGSAutoLogin( doAutoLogin(), loginName() );
     checkReady();
 
-    ApplyPresets( *this, configurationMap ) << "fullName"
-                                            << "loginName";
+    bool ok = false;
+    auto platformOverrides = Calamares::getSubMap( configurationMap, "platform", ok );
+
+    if ( ok )
+    {
+        QString targetPlatform = Calamares::System::instance()->getTargetPlatform();
+        auto preset = Calamares::getSubMap( platformOverrides, targetPlatform, ok );
+
+        if ( ok )
+        {
+            ApplyPresets( *this, preset ) << "fullName"
+                                          << "loginName";
+        }
+    }
 }
 
 void

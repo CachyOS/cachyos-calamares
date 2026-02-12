@@ -345,7 +345,6 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             libcalamares.globalstorage.insert("btrfsRootSubvolume", s["subvolume"])
             continue
 
-        # Handle "breadcrumb" logic for empty subvolume names
         if s['subvolume']:
             # This tells Linux: "Put this specific subvolume here"
             sub_opts = f"subvol={s['subvolume']},{mount_options_string}"

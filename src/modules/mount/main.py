@@ -317,6 +317,9 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         finally:
             if os.path.ismount(setup_dir):
                 subprocess.check_call(["umount", "-v", setup_dir])
+            else:
+                libcalamares.utils.warning(f"Critical error: {setup_dir} is unexpectedly not mounted.")
+                raise Exception(f"Critical error: {setup_dir} is unexpectedly not mounted.")
 
     # Find the root subvolume (usually /@)
     root_sub = next((s for s in btrfs_subvolumes if s["mountPoint"] == "/"), None)

@@ -275,7 +275,8 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         is_boot = raw_mount_point in ["/boot", "/boot/efi"]
         # Block if: not a boot path, OR ntfs/ext2, OR exfat on UEFI
         if not is_boot or fstype in ["ntfs", "ext2"] or (fstype == "exfat" and efi_location):
-            libcalamares.utils.warning(f"Skipping {fstype} on {raw_mount_point}")
+            libcalamares.utils.warning(f"Unsupported partition with {fstype} on {raw_mount_point}")
+            raise Exception(f"Unsupported partition with {fstype} on {raw_mount_point}")
             return
         fstype = "vfat" if fstype != "exfat" else "exfat"
 

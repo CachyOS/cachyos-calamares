@@ -312,7 +312,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         try: # <--- You need this line!
             for s in btrfs_subvolumes:
                 if not s["subvolume"]:
-                    continue
+                    continue # better not crash here
                 sub_path = setup_dir + s["subvolume"]
                 if not os.path.exists(sub_path):
                     os.makedirs(os.path.dirname(sub_path), exist_ok=True)

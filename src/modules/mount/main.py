@@ -294,6 +294,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     if not (fstype == "btrfs" and raw_mount_point == '/'):
         if libcalamares.utils.mount(device, mount_point, fstype, mount_options_string) != 0:
             libcalamares.utils.warning(f"Cannot mount {device}")
+            raise Exception(f"Cannot mount {device}")
 
         return
 

@@ -278,7 +278,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     device = partition["device"]
     if fstype in ["fat16", "fat32", "exfat", "ntfs", "ext2"]:
         is_boot = raw_mount_point in ["/boot", "/boot/efi"]
-        # Block if: not a boot path, OR ntfs/ext2, OR exfat on UEFI
+        # Block if: not a boot path, OR ntfs/ext2/exfat
         if not is_boot or fstype in ["ntfs", "ext2", "exfat"]:
             err(f"Unsupported partition with {fstype} on {raw_mount_point}",am)
         fstype = "vfat" if fstype != "exfat" else "exfat"

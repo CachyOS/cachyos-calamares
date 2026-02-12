@@ -326,7 +326,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     root_sub = next((s for s in btrfs_subvolumes if s["mountPoint"] == "/"), None)
     if not root_sub:
         libcalamares.utils.warning(f"Btrfs root subvolume (/) not found")
-        raise Exception("Btrfs root subvolume (/) not found!")
+        raise Exception(f"Btrfs root subvolume (/) not found!")
 
     # Mount the specific @ subvolume to the root mount point
     if root_sub['subvolume']:

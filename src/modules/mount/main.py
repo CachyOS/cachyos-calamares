@@ -409,9 +409,7 @@ def run():
     if libcalamares.globalstorage.value("firmwareType") == "efi":
         efi_location = libcalamares.globalstorage.value("efiSystemPartition")
     else:
-        for mount in extra_mounts:
-            if mount.get("efi", None) is True:
-                extra_mounts.remove(mount)
+        extra_mounts = [m for m in extra_mounts if not m.get("efi")]
 
     # Add extra mounts to the partitions list and sort by mount points.
     # This way, we ensure / is mounted before the rest, and every mount point

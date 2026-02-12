@@ -277,7 +277,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         if not is_boot or fstype in ["ntfs", "ext2"] or (fstype == "exfat" and efi_location):
             libcalamares.utils.warning(f"Unsupported partition with {fstype} on {raw_mount_point}")
             raise Exception(f"Unsupported partition with {fstype} on {raw_mount_point}")
-            return
+            # return (fstab still sees the partition)
         fstype = "vfat" if fstype != "exfat" else "exfat"
 
     if "luksMapperName" in partition:

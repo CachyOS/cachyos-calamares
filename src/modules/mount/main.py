@@ -313,7 +313,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             for s in btrfs_subvolumes:
                 if not s["subvolume"]:
                     err(f"Btrfs subvolume not defined {device}",am) # hard relying on the config 
-                    # continue # not throwing exception, ignoring invalid config
+                    ### continue ### not throwing exception, ignoring invalid config
                 sub_path = setup_dir + s["subvolume"]
                 if not os.path.exists(sub_path):
                     os.makedirs(os.path.dirname(sub_path), exist_ok=True)

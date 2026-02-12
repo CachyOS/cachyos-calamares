@@ -272,7 +272,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         pass
 
     fstype = partition.get("fs", "").lower()
-    if fstype == "unformatted":
+    if fstype == "unformatted": # why is this here
         return
 
     device = partition["device"]

@@ -260,11 +260,8 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
 
     try:
         subprocess.call(['chcon', '--reference=' + raw_mount_point, mount_point])
-    except FileNotFoundError as e:
-        libcalamares.utils.warning(str(e))
-    except OSError:
-        libcalamares.utils.error("Cannot run 'chcon' normally.")
-        raise
+    except:
+        pass
 
     fstype = partition.get("fs", "").lower()
     if fstype == "unformatted":
@@ -275,7 +272,6 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         is_boot = raw_mount_point in ["/boot", "/boot/efi"]
         # Block if: not a boot path, OR ntfs/ext2, OR exfat on UEFI
         if not is_boot or fstype in ["ntfs", "ext2"] or (fstype == "exfat" and efi_location):
-            libcalamares.utils.warning(f"Unsupported partition with {fstype} on {raw_mount_point}")
             raise Exception(f"Unsupported partition with {fstype} on {raw_mount_point}")
             # return (fstab still sees the partition)
         fstype = "vfat" if fstype != "exfat" else "exfat"
@@ -293,7 +289,6 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     # Standard mount for everything EXCEPT Btrfs root (this catches other btrfs partitions)
     if not (fstype == "btrfs" and raw_mount_point == '/'):
         if libcalamares.utils.mount(device, mount_point, fstype, mount_options_string) != 0:
-            libcalamares.utils.warning(f"Cannot mount {device}")
             raise Exception(f"Cannot mount {device}")
 
         return
@@ -305,7 +300,6 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     with tempfile.TemporaryDirectory(prefix="calam-btrfs-") as setup_dir:
         # Mount raw partition to create subvolumes
         if libcalamares.utils.mount(device, setup_dir, fstype, "defaults") != 0:
-            libcalamares.utils.warning(f"Cannot mount btrfs for subvolume creation {device}")
             raise Exception(f"Cannot mount btrfs for subvolume creation {device}")
         try: # <--- You need this line!
             for s in btrfs_subvolumes:
@@ -319,24 +313,20 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             if os.path.ismount(setup_dir):
                 subprocess.check_call(["umount", "-v", setup_dir])
             else:
-                libcalamares.utils.warning(f"Critical error: {setup_dir} is unexpectedly not mounted.")
                 raise Exception(f"Critical error: {setup_dir} is unexpectedly not mounted.")
 
     # Find the root subvolume (usually /@)
     root_sub = next((s for s in btrfs_subvolumes if s["mountPoint"] == "/"), None)
     if not root_sub:
-        libcalamares.utils.warning(f"Btrfs root subvolume (/) not found")
         raise Exception(f"Btrfs root subvolume (/) not found!")
 
     # Mount the specific @ subvolume to the root mount point
     if root_sub['subvolume']:
         root_opts = f"subvol={root_sub['subvolume']},{mount_options_string}"
     else:
-        libcalamares.utils.warning(f"Configuration error: root subvolume not defined")
         raise Exception(f"Configuration error: root subvolume not defined")
 
     if libcalamares.utils.mount(device, root_mount_point, fstype, root_opts) != 0:
-        libcalamares.utils.warning(f"Failed to mount root subvolume {device}")
         raise Exception(f"Failed to mount root subvolume {device}")
 
     # Step 3: Mount remaining subvolumes (like /home)
@@ -349,7 +339,6 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             # This tells Linux: "Put this specific subvolume here"
             sub_opts = f"subvol={s['subvolume']},{mount_options_string}"
         else:
-            libcalamares.utils.warning("Configuration error: subvolume not defined")
             raise Exception("Configuration error: subvolume not defined")
 
         # This builds the path INSIDE your new root
@@ -359,7 +348,6 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         if libcalamares.utils.mount(device, sub_path, fstype, sub_opts) == 0:
             mount_options_list.append({"mountpoint": s["mountPoint"], "option_string": mount_options_string})
         else:
-            libcalamares.utils.warning(f"Failed to mount subvolume {s['subvolume']}")
             raise Exception(f"Failed to mount subvolume {s['subvolume']}")
 
 

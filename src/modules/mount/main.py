@@ -369,6 +369,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             mount_options_list.append({"mountpoint": s["mountPoint"], "option_string": chosen_options})
         else:
             libcalamares.utils.warning(f"Failed to mount subvolume {s['subvolume']}")
+            raise Exception(f"Failed to mount subvolume {s['subvolume']}")
 
 
 def enable_swap_partition(devices):

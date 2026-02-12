@@ -333,7 +333,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     if root_sub['subvolume']:
         root_opts = f"subvol={root_sub['subvolume']},{mount_options_string}"
     else:
-        root_opts = mount_options_string
+        raise Exception(f"Configuration error: root subvolume not defined")
 
     if libcalamares.utils.mount(device, root_mount_point, fstype, root_opts) != 0:
         libcalamares.utils.warning(f"Failed to mount root subvolume {device}")

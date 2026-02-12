@@ -315,7 +315,8 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
                     if s["mountPoint"] == "/root":
                         os.chmod(sub_path, 0o750)
         finally:
-            subprocess.check_call(["umount", "-v", setup_dir])
+            if os.path.ismount(setup_dir):
+                subprocess.check_call(["umount", "-v", setup_dir])
 
     # Find the root subvolume (usually /@)
     root_sub = next((s for s in btrfs_subvolumes if s["mountPoint"] == "/"), None)

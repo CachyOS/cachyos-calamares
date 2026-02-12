@@ -232,8 +232,14 @@ def mount_zfs(root_mount_point, partition):
         except subprocess.CalledProcessError:
             raise ZfsException(_("Failed to set zfs mountpoint"))
 
+def err(error_message, active_mounts):
+    for tmp_dir in sorted(active_mounts, reverse=True):
+        if os.path.ismount(tmp_dir):
+            if subprocess.call(["umount", "-v", tmp_dir]) != 0:
+                subprocess.call(["umount", "-v", "-l", tmp_dir])
+    raise Exception(error_message)
 
-def mount_partition(root_mount_point, partition, partitions, mount_options, mount_options_list, efi_location):
+def mount_partition(root_mount_point, partition, partitions, mount_options, mount_options_list, efi_location, active_mounts):
     """
     Do a single mount of @p partition inside @p root_mount_point.
 
@@ -243,6 +249,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     :param mount_options: The mount options from the config file
     :param mount_options_list: A list of options for each mountpoint to be placed in global storage for future modules
     :param efi_location: A string holding the location of the EFI partition or None
+    :param active_mounts A list of strings
     :return:
     """
     # Create mount point with `+` rather than `os.path.join()` because
@@ -252,7 +259,8 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         return
 
     mount_point = root_mount_point + raw_mount_point
-
+    am = active_mounts
+    am.append(mount_point)
     # Ensure that the created directory has the correct SELinux context on
     # SELinux-enabled systems.
 
@@ -272,7 +280,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         is_boot = raw_mount_point in ["/boot", "/boot/efi"]
         # Block if: not a boot path, OR ntfs/ext2, OR exfat on UEFI
         if not is_boot or fstype in ["ntfs", "ext2"] or (fstype == "exfat" and efi_location):
-            raise Exception(f"Unsupported partition with {fstype} on {raw_mount_point}")
+            err(f"Unsupported partition with {fstype} on {raw_mount_point}",am)
             # return (fstab still sees the partition)
         fstype = "vfat" if fstype != "exfat" else "exfat"
 
@@ -289,7 +297,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     # Standard mount for everything EXCEPT Btrfs root (this catches other btrfs partitions)
     if not (fstype == "btrfs" and raw_mount_point == '/'):
         if libcalamares.utils.mount(device, mount_point, fstype, mount_options_string) != 0:
-            raise Exception(f"Cannot mount {device}")
+            err(f"Cannot mount {device}",am)
 
         return
 
@@ -299,8 +307,9 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
 
     with tempfile.TemporaryDirectory(prefix="calam-btrfs-") as setup_dir:
         # Mount raw partition to create subvolumes
+        am.append(setup_dir)
         if libcalamares.utils.mount(device, setup_dir, fstype, "defaults") != 0:
-            raise Exception(f"Cannot mount btrfs for subvolume creation {device}")
+            err(f"Cannot mount btrfs for subvolume creation {device}",am)
         try: # <--- You need this line!
             for s in btrfs_subvolumes:
                 sub_path = setup_dir + s["subvolume"]
@@ -312,22 +321,22 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         finally:
             if os.path.ismount(setup_dir):
                 subprocess.check_call(["umount", "-v", setup_dir])
-            else:
-                raise Exception(f"Critical error: {setup_dir} is unexpectedly not mounted.")
+            if setup_dir in am:
+                am.remove(setup_dir)
 
     # Find the root subvolume (usually /@)
     root_sub = next((s for s in btrfs_subvolumes if s["mountPoint"] == "/"), None)
     if not root_sub:
-        raise Exception(f"Btrfs root subvolume (/) not found!")
+        err(f"Btrfs root subvolume (/) not found!",am)
 
     # Mount the specific @ subvolume to the root mount point
     if root_sub['subvolume']:
         root_opts = f"subvol={root_sub['subvolume']},{mount_options_string}"
     else:
-        raise Exception(f"Configuration error: root subvolume not defined")
+        err(f"root subvolume not defined",am)
 
     if libcalamares.utils.mount(device, root_mount_point, fstype, root_opts) != 0:
-        raise Exception(f"Failed to mount root subvolume {device}")
+        err(f"Failed to mount root subvolume {device}",am)
 
     # Step 3: Mount remaining subvolumes (like /home)
     for s in btrfs_subvolumes:
@@ -339,7 +348,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             # This tells Linux: "Put this specific subvolume here"
             sub_opts = f"subvol={s['subvolume']},{mount_options_string}"
         else:
-            raise Exception("Configuration error: subvolume not defined")
+            err("subvolume not defined",am)
 
         # This builds the path INSIDE your new root
         sub_path = root_mount_point + s["mountPoint"]
@@ -348,7 +357,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         if libcalamares.utils.mount(device, sub_path, fstype, sub_opts) == 0:
             mount_options_list.append({"mountpoint": s["mountPoint"], "option_string": mount_options_string})
         else:
-            raise Exception(f"Failed to mount subvolume {s['subvolume']}")
+            err(f"Failed to mount subvolume {s['subvolume']}",am)
 
 
 def enable_swap_partition(devices):
@@ -402,24 +411,24 @@ def run():
     # under /tmp, we make sure /tmp is mounted before the partition)
     # mount_options_list will be inserted into global storage for use in fstab later
     mount_options_list = []
-
+    active_mounts = []
     # 4. Phase One: Physical (Lexical Depth Sort: / before /var)  
     physical = [p for p in partitions if "mountPoint" in p and p["mountPoint"]]
     physical.sort(key=lambda x: x["mountPoint"])
 
     try:
         for p in physical:
-            mount_partition(root_mount_point, p, partitions, mount_options, mount_options_list, efi_location)
+            mount_partition(root_mount_point, p, partitions, mount_options, mount_options_list, efi_location, active_mounts)
          
         # 5. Phase Two: Bind/Virtual (After Btrfs subvolumes exist)
         extra = [p for p in extra_mounts if "mountPoint" in p and p["mountPoint"]]
         extra.sort(key=lambda x: x["mountPoint"])
 
         for p in extra:
-            mount_partition(root_mount_point, p, partitions, mount_options, mount_options_list, efi_location)
+            mount_partition(root_mount_point, p, partitions, mount_options, mount_options_list, efi_location, active_mounts)
 
-    except ZfsException as ze:
-        return _("zfs mounting error"), ze.message
+    except Exception as e:
+        err(str(e), active_mounts)
 
     libcalamares.globalstorage.insert("rootMountPoint", root_mount_point)
     libcalamares.globalstorage.insert("mountOptionsList", mount_options_list)

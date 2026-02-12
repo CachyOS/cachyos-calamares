@@ -329,7 +329,6 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         raise Exception("Btrfs root subvolume (/) not found!")
 
     # Mount the specific @ subvolume to the root mount point
-    # Handle empty subvolume name for the root mount
     if root_sub['subvolume']:
         root_opts = f"subvol={root_sub['subvolume']},{mount_options_string}"
     else:

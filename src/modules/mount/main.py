@@ -227,10 +227,11 @@ def mount_zfs(root_mount_point, partition):
             except subprocess.CalledProcessError:
                 raise ZfsException(_("Failed to set zfs mountpoint"))
     else:
-        try:
-            libcalamares.utils.host_env_process_output(["zfs", "mount", pool_name + '/' + ds_name])
-        except subprocess.CalledProcessError:
-            raise ZfsException(_("Failed to set zfs mountpoint"))
+        #try:
+            #libcalamares.utils.host_env_process_output(["zfs", "mount", pool_name + '/' + ds_name])
+        #except subprocess.CalledProcessError:
+            #raise ZfsException(_("Failed to set zfs mountpoint"))
+        err("ZFS is only supported on root (/).",am)
 
 def err(error_message, active_mounts):
     for tmp_dir in sorted(active_mounts, reverse=True):

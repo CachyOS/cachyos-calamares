@@ -174,12 +174,9 @@ def mount_zfs(root_mount_point, partition, am):
 
     :param root_mount_point: The absolute path to the root of the install
     :param partition: The partition map from global storage for this partition
-    :param am A list of strings
+    :param am: crash helper
     :return:
     """
-    # Move this to the top of mount_zfs
-    if not libcalamares.globalstorage.value("zfsDatasets"):
-        err("Manual ZFS unsupported. Use 'Erase Disk'.", am)
     # Get the list of zpools from global storage
     zfs_pool_list = libcalamares.globalstorage.value("zfsPoolInfo")
     if not zfs_pool_list:
@@ -231,6 +228,7 @@ def mount_zfs(root_mount_point, partition, am):
             except subprocess.CalledProcessError:
                 raise ZfsException(_("Failed to set zfs mountpoint"))
     else:
+        err("Manual ZFS unsupported. Use 'Erase Disk'.", am)
         try:
             libcalamares.utils.host_env_process_output(["zfs", "mount", pool_name + '/' + ds_name])
         except subprocess.CalledProcessError:

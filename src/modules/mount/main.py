@@ -228,7 +228,7 @@ def mount_zfs(root_mount_point, partition, am):
             except subprocess.CalledProcessError:
                 raise ZfsException(_("Failed to set zfs mountpoint"))
     else:
-        err("Manual ZFS unsupported. Use 'Erase Disk'.", am)
+        err("Manual ZFS unsupported. Use 'Erase Disk'.", am) # this doesnt install correctly
         try:
             libcalamares.utils.host_env_process_output(["zfs", "mount", pool_name + '/' + ds_name])
         except subprocess.CalledProcessError:

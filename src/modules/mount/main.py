@@ -322,7 +322,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
                 if not s["subvolume"]:
                     err(f"Btrfs subvolume not defined {device}",am) # instead of continue
                 sub_path = setup_dir + s["subvolume"]
-                if not os.path.exists(sub_path):
+                if not os.path.exists(sub_path): # if this exists user is at fault
                     os.makedirs(os.path.dirname(sub_path), exist_ok=True)
                     subprocess.check_call(["btrfs", "subvolume", "create", sub_path])
                     if s["mountPoint"] == "/root":

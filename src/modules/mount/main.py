@@ -357,7 +357,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             # This tells Linux: "Put this specific subvolume here"
             sub_opts = f"subvol={s['subvolume']},{mount_options_string}"
         else:
-            err("subvolume not defined",am) # not allowing this here
+            err("subvolume not defined",am) # instead of mounting entire filesystem
 
         # This builds the path INSIDE your new root
         sub_path = root_mount_point + s["mountPoint"]

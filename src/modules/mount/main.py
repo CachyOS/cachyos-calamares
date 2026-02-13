@@ -169,13 +169,17 @@ def get_btrfs_subvolumes(partitions):
     return btrfs_subvolumes
 
 
-def mount_zfs(root_mount_point, partition):
+def mount_zfs(root_mount_point, partition, am):
     """ Mounts a zfs partition at @p root_mount_point
 
     :param root_mount_point: The absolute path to the root of the install
     :param partition: The partition map from global storage for this partition
+    :param am A list of strings
     :return:
     """
+    # Move this to the top of mount_zfs
+    if not libcalamares.globalstorage.value("zfsDatasets"):
+        err("Manual ZFS unsupported. Use 'Erase Disk'.", am)
     # Get the list of zpools from global storage
     zfs_pool_list = libcalamares.globalstorage.value("zfsPoolInfo")
     if not zfs_pool_list:
@@ -227,11 +231,10 @@ def mount_zfs(root_mount_point, partition):
             except subprocess.CalledProcessError:
                 raise ZfsException(_("Failed to set zfs mountpoint"))
     else:
-        #try:
-            #libcalamares.utils.host_env_process_output(["zfs", "mount", pool_name + '/' + ds_name])
-        #except subprocess.CalledProcessError:
-            #raise ZfsException(_("Failed to set zfs mountpoint"))
-        err("ZFS is only supported on root (/).",am)
+        try:
+            libcalamares.utils.host_env_process_output(["zfs", "mount", pool_name + '/' + ds_name])
+        except subprocess.CalledProcessError:
+            raise ZfsException(_("Failed to set zfs mountpoint"))
 
 def err(error_message, active_mounts):
     for tmp_dir in sorted(active_mounts, reverse=True):
@@ -292,7 +295,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         device = os.path.join("/dev/mapper", partition["luksMapperName"])
 
     if fstype == "zfs":
-        mount_zfs(root_mount_point, partition)
+        mount_zfs(root_mount_point, partition, am)
         return
 
     mount_options_string = get_mount_options(fstype, mount_options, partition, efi_location)

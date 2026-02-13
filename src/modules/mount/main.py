@@ -279,6 +279,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     if fstype == "unformatted":
         return
 
+
     device = partition["device"]
     if fstype in ["fat16", "fat32", "exfat", "ntfs", "ext2"]:
         is_boot = raw_mount_point in ["/boot", "/boot/efi"]

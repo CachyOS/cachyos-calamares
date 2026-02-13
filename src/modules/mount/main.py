@@ -418,6 +418,7 @@ def run():
     # This way, we ensure / is mounted before the rest, and every mount point
     # is created on the right partition (e.g. if a partition is to be mounted
     # under /tmp, we make sure /tmp is mounted before the partition)
+
     # mount_options_list will be inserted into global storage for use in fstab later
     mount_options_list = []
     active_mounts = []

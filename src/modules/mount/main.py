@@ -319,7 +319,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
 
         return
 
-    # Btrfs Root "Magic Trick" Logic
+    # Btrfs Root
     btrfs_subvolumes = get_btrfs_subvolumes(partitions)
     libcalamares.globalstorage.insert("btrfsSubvolumes", btrfs_subvolumes)
 
@@ -328,7 +328,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         am.append(setup_dir)
         if libcalamares.utils.mount(device, setup_dir, fstype, "defaults") != 0:
             err(f"Cannot mount btrfs for subvolume creation {device}", am)
-        try: # <--- You need this line!
+        try:
             for s in btrfs_subvolumes: # Pre-validation
                 if not s["subvolume"]:
                     err(f"Btrfs subvolume not defined {device}", am) # instead of continue

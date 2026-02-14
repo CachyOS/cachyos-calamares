@@ -314,7 +314,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
                 ]
             contents = [f for f in os.listdir(mount_point) if f not in ignored_metadata]
             if contents:
-                err(f"Partition {device} has data. Please format.", am)
+                err(f"Partition {device} has data. Please format or use /home or /srv.", am)
 
         return
 

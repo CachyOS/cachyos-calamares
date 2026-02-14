@@ -319,7 +319,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
 
         return
 
-    # Btrfs Root
+    # Btrfs Setup
     btrfs_subvolumes = get_btrfs_subvolumes(partitions)
     libcalamares.globalstorage.insert("btrfsSubvolumes", btrfs_subvolumes)
 

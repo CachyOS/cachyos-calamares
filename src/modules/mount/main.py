@@ -343,7 +343,8 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
                     os.chmod(sub_path, 0o750)
         finally:
             if os.path.ismount(setup_dir):
-                subprocess.check_call(["umount", "-v", setup_dir])
+                # Use call to avoid raising a new error during cleanup
+                subprocess.call(["umount", "-v", setup_dir])
             if setup_dir in am:
                 am.remove(setup_dir)
 

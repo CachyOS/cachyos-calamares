@@ -307,10 +307,10 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         if libcalamares.utils.mount(device, mount_point, fstype, mount_options_string) != 0:
             err(f"Cannot mount {device}", am)
         # 2. Check for "ghost" data immediately after
-        if raw_mount_point not in ["/home", "/srv", "/boot", "/boot/efi"]:
-            contents = [f for f in os.listdir(mount_point) if f != "lost+found"]
-            if contents:
-                err(f"Partition {device} has data. Please format.", am)
+        #if raw_mount_point not in ["/home", "/srv", "/boot", "/boot/efi"]:
+            #contents = [f for f in os.listdir(mount_point) if f != "lost+found"]
+            #if contents:
+                #err(f"Partition {device} has data. Please format.", am)
 
         return
 

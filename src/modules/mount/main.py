@@ -307,7 +307,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             err(f"Cannot mount {device}", am)
         # check only relevant partitions for ghost data
         if not is_virtual and raw_mount_point not in ["/home", "/srv", "/boot", "/boot/efi"]:
-            contents = [f for f in os.listdir(mount_point) if f != "lost+found"]
+            contents = [f for f in os.listdir(mount_point) if f not in ["lost+found", ".Trash-1000", "System Volume Information"]]
             if contents:
                 err(f"Partition {device} has data. Please format.", am)
 

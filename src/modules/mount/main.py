@@ -295,7 +295,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         if raw_mount_point != '/':
             # Manual sub-partitions fail because mkinitcpio hooks aren't
             # properly configured outside of the 'Erase Disk' workflow,
-            # leading to pactsrap failures (missing zfs-utils/hooks).
+            # leading to pacstrap failures (missing zfs-utils/hooks).
             err("Manual ZFS unsupported. Use 'Erase Disk'.", am)
         mount_zfs(root_mount_point, partition)
         return

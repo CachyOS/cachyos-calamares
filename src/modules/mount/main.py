@@ -323,7 +323,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
                     err(f"Btrfs subvolume not defined {device}",am) # instead of continue
                 sub_path = setup_dir + s["subvolume"]
                 if os.path.exists(sub_path): # if this exists user is at fault
-                    err(f"Subvolume {s['subvolume']} already exists. Please format the partition to avoid a messy installation.", am)
+                    err(f"Subvolume {s['subvolume']} already exists on {device}. Please format the partition to avoid a messy installation.", am)
             for s in btrfs_subvolumes: # 2. Execution: All checks passed ("Luft ist rein")
                 sub_path = setup_dir + s["subvolume"]
                 os.makedirs(os.path.dirname(sub_path), exist_ok=True)

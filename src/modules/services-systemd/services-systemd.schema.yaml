@@ -13,6 +13,7 @@ definitions:
             name: { type: string }
             action: { type: string, default: "enable" }
             mandatory: { type: boolean, default: false }
+            user: { type: boolean, default: false }
         required: [ name ]
 
 additionalProperties: false

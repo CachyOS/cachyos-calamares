@@ -49,9 +49,14 @@ def systemctl(units):
             action = unit.get("action", "enable")
             mandatory = unit.get("mandatory", False)
 
-        exit_code = libcalamares.utils.target_env_call(
-            ['systemctl', action, name]
-        )
+        user_service = unit.get("user", False) if isinstance(unit, dict) else False
+
+        if user_service:
+            cmd = ['systemctl', '--global', action, name]
+        else:
+            cmd = ['systemctl', action, name]
+
+        exit_code = libcalamares.utils.target_env_call(cmd)
 
         if exit_code != 0:
             libcalamares.utils.warning(

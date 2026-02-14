@@ -285,7 +285,6 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         is_boot = raw_mount_point in ["/boot", "/boot/efi"]
         # Block if: not a boot path, OR ntfs/ext2/exfat
         if not is_boot or fstype in ["ntfs", "ext2", "exfat"]:
-            # instead of returning we avoid the fstab problem
             err(f"Unsupported partition with {fstype} on {raw_mount_point}",am)
         fstype = "vfat"
 
@@ -328,13 +327,13 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         if libcalamares.utils.mount(device, setup_dir, fstype, "defaults") != 0:
             err(f"Cannot mount btrfs for subvolume creation {device}", am)
         try: # <--- You need this line!
-            for s in btrfs_subvolumes: # 1. Pre-validation: Is the coast clear?
+            for s in btrfs_subvolumes: # 1. Pre-validation
                 if not s["subvolume"]:
                     err(f"Btrfs subvolume not defined {device}", am) # instead of continue
                 sub_path = setup_dir + s["subvolume"]
-                if os.path.exists(sub_path): # if this exists user is at fault
+                if os.path.exists(sub_path):
                     err(f"Subvolume {s['subvolume']} already exists on {device}. Please format.", am)
-            for s in btrfs_subvolumes: # 2. Execution: All checks passed ("Luft ist rein")
+            for s in btrfs_subvolumes: # 2. Execution
                 sub_path = setup_dir + s["subvolume"]
                 os.makedirs(os.path.dirname(sub_path), exist_ok=True)
                 subprocess.check_call(["btrfs", "subvolume", "create", sub_path])
@@ -370,7 +369,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             # This tells Linux: "Put this specific subvolume here"
             sub_opts = f"subvol={s['subvolume']},{mount_options_string}"
         else:
-            err("subvolume not defined", am) # instead of mounting entire filesystem
+            err("subvolume not defined", am) # not mounting entire filesystem
 
         # This builds the path INSIDE your new root
         sub_path = root_mount_point + s["mountPoint"]

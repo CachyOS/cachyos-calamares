@@ -307,7 +307,12 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             err(f"Cannot mount {device}", am)
         # check only relevant partitions for ghost data
         if not is_virtual and raw_mount_point not in ["/home", "/srv", "/boot", "/boot/efi"]:
-            contents = [f for f in os.listdir(mount_point) if f not in ["lost+found", ".Trash-1000", "System Volume Information"]]
+            ignored_metadata = [
+                "lost+found", ".Trash-1000", "$RECYCLE.BIN", 
+                "System Volume Information", ".fseventsd", 
+                ".Spotlight-V100"
+                ]
+            contents = [f for f in os.listdir(mount_point) if f not in ignored_metadata]
             if contents:
                 err(f"Partition {device} has data. Please format.", am)
 

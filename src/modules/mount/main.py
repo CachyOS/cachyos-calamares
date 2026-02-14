@@ -327,13 +327,13 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         if libcalamares.utils.mount(device, setup_dir, fstype, "defaults") != 0:
             err(f"Cannot mount btrfs for subvolume creation {device}", am)
         try: # <--- You need this line!
-            for s in btrfs_subvolumes: # 1. Pre-validation
+            for s in btrfs_subvolumes: # Pre-validation
                 if not s["subvolume"]:
                     err(f"Btrfs subvolume not defined {device}", am) # instead of continue
                 sub_path = setup_dir + s["subvolume"]
                 if os.path.exists(sub_path):
                     err(f"Subvolume {s['subvolume']} already exists on {device}. Please format.", am)
-            for s in btrfs_subvolumes: # 2. Execution
+            for s in btrfs_subvolumes:
                 sub_path = setup_dir + s["subvolume"]
                 os.makedirs(os.path.dirname(sub_path), exist_ok=True)
                 subprocess.check_call(["btrfs", "subvolume", "create", sub_path])

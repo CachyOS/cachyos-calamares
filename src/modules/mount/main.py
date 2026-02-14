@@ -300,17 +300,16 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
 
     mount_options_string = get_mount_options(fstype, mount_options, partition, efi_location)
     mount_options_list.append({"mountpoint": raw_mount_point, "option_string": mount_options_string})
-    
+    is_virtual = any(raw_mount_point.startswith(v) for v in ["/sys", "/proc", "/dev", "/run"])
     # Standard mount for everything EXCEPT Btrfs root (this catches other btrfs partitions)
     if not (fstype == "btrfs" and raw_mount_point == '/'):
-        # 1. Perform the mount
         if libcalamares.utils.mount(device, mount_point, fstype, mount_options_string) != 0:
             err(f"Cannot mount {device}", am)
-        # 2. Check for "ghost" data immediately after
-        #if raw_mount_point not in ["/home", "/srv", "/boot", "/boot/efi"]:
-            #contents = [f for f in os.listdir(mount_point) if f != "lost+found"]
-            #if contents:
-                #err(f"Partition {device} has data. Please format.", am)
+        # check only relevant partitions for ghost data
+        if not is_virtual and raw_mount_point not in ["/home", "/srv", "/boot", "/boot/efi"]:
+            contents = [f for f in os.listdir(mount_point) if f != "lost+found"]
+            if contents:
+                err(f"Partition {device} has data. Please format.", am)
 
         return
 

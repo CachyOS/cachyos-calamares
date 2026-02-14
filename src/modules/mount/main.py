@@ -301,6 +301,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     mount_options_string = get_mount_options(fstype, mount_options, partition, efi_location)
     mount_options_list.append({"mountpoint": raw_mount_point, "option_string": mount_options_string})
     is_virtual = any(raw_mount_point.startswith(v) for v in ["/sys", "/proc", "/dev", "/run"])
+
     # Standard mount for everything EXCEPT Btrfs root (this catches other btrfs partitions)
     if not (fstype == "btrfs" and raw_mount_point == '/'):
         if libcalamares.utils.mount(device, mount_point, fstype, mount_options_string) != 0:

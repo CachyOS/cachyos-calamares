@@ -303,8 +303,14 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     
     # Standard mount for everything EXCEPT Btrfs root (this catches other btrfs partitions)
     if not (fstype == "btrfs" and raw_mount_point == '/'):
+        # 1. Perform the mount
         if libcalamares.utils.mount(device, mount_point, fstype, mount_options_string) != 0:
-            err(f"Cannot mount {device}",am)
+            err(f"Cannot mount {device}", am)
+        # 2. Check for "ghost" data immediately after
+        if raw_mount_point not in ["/home", "/srv", "/boot", "/boot/efi"]:
+            contents = [f for f in os.listdir(mount_point) if f != "lost+found"]
+            if contents:
+                err(f"Partition {device} has data. Please format!", am)
 
         return
 
@@ -316,11 +322,11 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         # Mount raw partition to create subvolumes
         am.append(setup_dir)
         if libcalamares.utils.mount(device, setup_dir, fstype, "defaults") != 0:
-            err(f"Cannot mount btrfs for subvolume creation {device}",am)
+            err(f"Cannot mount btrfs for subvolume creation {device}", am)
         try: # <--- You need this line!
             for s in btrfs_subvolumes: # 1. Pre-validation: Is the coast clear?
                 if not s["subvolume"]:
-                    err(f"Btrfs subvolume not defined {device}",am) # instead of continue
+                    err(f"Btrfs subvolume not defined {device}", am) # instead of continue
                 sub_path = setup_dir + s["subvolume"]
                 if os.path.exists(sub_path): # if this exists user is at fault
                     err(f"Subvolume {s['subvolume']} already exists on {device}. Please format the partition to avoid a messy installation.", am)
@@ -339,16 +345,16 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     # Find the root subvolume (usually /@)
     root_sub = next((s for s in btrfs_subvolumes if s["mountPoint"] == "/"), None)
     if not root_sub:
-        err(f"Btrfs root subvolume (/) not found!",am)
+        err(f"Btrfs root subvolume (/) not found!", am)
 
     # Mount the specific @ subvolume to the root mount point
     if root_sub['subvolume']:
         root_opts = f"subvol={root_sub['subvolume']},{mount_options_string}"
     else:
-        err(f"root subvolume not defined",am)
+        err(f"root subvolume not defined", am)
 
     if libcalamares.utils.mount(device, root_mount_point, fstype, root_opts) != 0:
-        err(f"Failed to mount root subvolume {device}",am)
+        err(f"Failed to mount root subvolume {device}", am)
 
     # Step 3: Mount remaining subvolumes (like /home)
     for s in btrfs_subvolumes:
@@ -360,7 +366,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             # This tells Linux: "Put this specific subvolume here"
             sub_opts = f"subvol={s['subvolume']},{mount_options_string}"
         else:
-            err("subvolume not defined",am) # instead of mounting entire filesystem
+            err("subvolume not defined", am) # instead of mounting entire filesystem
 
         # This builds the path INSIDE your new root
         sub_path = root_mount_point + s["mountPoint"]
@@ -369,7 +375,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         if libcalamares.utils.mount(device, sub_path, fstype, sub_opts) == 0:
             mount_options_list.append({"mountpoint": s["mountPoint"], "option_string": mount_options_string})
         else:
-            err(f"Failed to mount subvolume {s['subvolume']}",am)
+            err(f"Failed to mount subvolume {s['subvolume']}", am)
 
 
 def enable_swap_partition(devices):

@@ -281,7 +281,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     am.append(mount_point)
     device = partition["device"]
 
-    if fstype in ["fat16", "fat32", "exfat", "ntfs", "ext2"]:
+    if fstype in ["fat16", "fat32", "ntfs", "ext2", "exfat"]:
         is_boot = raw_mount_point in ["/boot", "/boot/efi"]
         # Block if: not a boot path, OR ntfs/ext2/exfat
         if not is_boot or fstype in ["ntfs", "ext2", "exfat"]:

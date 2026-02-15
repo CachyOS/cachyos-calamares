@@ -283,8 +283,8 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
 
     if fstype in ["fat16", "fat32", "ntfs", "ext2", "exfat"]:
         is_boot = raw_mount_point in ["/boot", "/boot/efi"]
-        # Block if: not a boot path, OR ntfs/ext2/exfat
-        if not is_boot or fstype in ["ntfs", "ext2", "exfat"]:
+        # Block if: not a boot path, OR fat16/ntfs/ext2/exfat
+        if not is_boot or fstype in ["fat16", "ntfs", "ext2", "exfat"]:
             err(f"Unsupported partition with {fstype} on {raw_mount_point}",am)
         fstype = "vfat"
 

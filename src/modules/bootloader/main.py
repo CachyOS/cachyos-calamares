@@ -26,6 +26,7 @@ import os
 import re
 import shutil
 import subprocess
+import json
 
 import libcalamares
 
@@ -751,6 +752,24 @@ def add_additional_entries_limine(efi_directory, installation_root_path, fw_type
                     config_file.write(f"\tdrive: {diskseq}\n")
                 config_file.write(f"\tpartition: {partition_number}\n")
 
+
+def get_device_rotation():
+    drm_info = subprocess.check_output(['drm_info', '-j'], stderr=subprocess.DEVNULL)
+    data = json.loads(drm_info)
+
+    for _, card in data.items():
+        connectors = card.get("connectors")
+
+        if not connectors:
+            continue
+
+        properties = connectors[0].get("properties", {})
+
+        if "panel orientation" in properties:
+            return properties["panel orientation"].get("value", 0)
+
+    return 0
+
 def update_limine_config(efi_directory, installation_root_path, fw_type):
     """
     :param efi_directory: The path to the efi directory relative to the root
@@ -765,8 +784,19 @@ def update_limine_config(efi_directory, installation_root_path, fw_type):
     with open(config_path, 'w') as config_file:
         config_file.write("timeout: 5\n")
         config_file.write("default_entry: 2\n")
+
         if fw_type == "efi":
             config_file.write("remember_last_entry: yes\n")
+
+        if libcalamares.utils.get_target_platform() == "handheld":
+            rotation = get_device_rotation()
+            if rotation == 1:
+                config_file.write("interface_rotation: 180\n")
+            elif rotation == 2:
+                config_file.write("interface_rotation: 270\n")
+            elif rotation == 3:
+                config_file.write("interface_rotation: 90\n")
+
         config_file.write("\n")
 
         # Copy splash logo

@@ -277,7 +277,6 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     if fstype == "unformatted":
         return
 
-
     am = active_mounts
     am.append(mount_point)
     device = partition["device"]

@@ -277,6 +277,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     if fstype == "unformatted":
         return
 
+
     am = active_mounts
     am.append(mount_point)
     device = partition["device"]
@@ -318,6 +319,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
                 err(f"Device {device} at {raw_mount_point} not empty. Please backup and format or use /home or /srv for this partition.", am)
 
         return
+
 
     # Btrfs Setup
     btrfs_subvolumes = get_btrfs_subvolumes(partitions)

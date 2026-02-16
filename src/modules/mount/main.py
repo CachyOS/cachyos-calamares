@@ -363,7 +363,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     if libcalamares.utils.mount(device, root_mount_point, fstype, root_opts) != 0:
         err(f"Failed to mount root subvolume {device}", am)
 
-    # Step 3: Mount remaining subvolumes (like /home)
+    # Mount remaining subvolumes
     for s in btrfs_subvolumes:
         if s["mountPoint"] == "/":
             libcalamares.globalstorage.insert("btrfsRootSubvolume", s["subvolume"])

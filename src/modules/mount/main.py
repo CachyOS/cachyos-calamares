@@ -329,7 +329,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         if not s.get("mountPoint") or not s.get("subvolume"):
             err(f"Btrfs config error: entry missing mountPoint or subvolume name", am)
 
-    # Ensure root subolume with mountpoint / exists 
+    # Ensure root subvolume with mountpoint / exists 
     root_sub = next((s for s in btrfs_subvolumes if s["mountPoint"] == "/"), None)
     if not root_sub:
         err("Btrfs config error: root subvolume not found", am)

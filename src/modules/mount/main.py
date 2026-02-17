@@ -354,7 +354,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     # Find the root subvolume (usually /@)
     root_sub = next((s for s in btrfs_subvolumes if s["mountPoint"] == "/"), None)
     if not root_sub:
-        err(f"Btrfs root subvolume (/) not found!", am)
+        err(f"Btrfs root subvolume not found!", am)
 
     # Mount the specific @ subvolume to the root mount point
     if root_sub['subvolume']:

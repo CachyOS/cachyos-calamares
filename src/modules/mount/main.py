@@ -308,6 +308,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     if not (fstype == "btrfs" and raw_mount_point == '/'):
         if libcalamares.utils.mount(device, mount_point, fstype, mount_options_string) != 0:
             err(f"Cannot mount {device}", am)
+
         # Verify that the install target is empty
         if not is_virtual and raw_mount_point not in ["/home", "/srv", "/boot", "/boot/efi"]:
             ignored_metadata = [

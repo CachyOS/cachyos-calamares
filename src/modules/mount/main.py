@@ -282,7 +282,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     am.append(mount_point)
     device = partition["device"]
 
-    # Only allow fat32 on boot path, block incompatible
+    # Only allow fat32 on boot path and block incompatible
     if fstype in ["fat16", "fat32", "ntfs", "ext2", "exfat"]:
         is_boot = raw_mount_point in ["/boot", "/boot/efi"]
         if not (is_boot and fstype == "fat32"):
@@ -294,7 +294,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
 
     if fstype == "zfs":
         if raw_mount_point != '/':
-            # pacstrap failure mkinitcpio hook missing
+            # Pacstrap failure mkinitcpio hook missing
             err("Manual ZFS unsupported. Use 'Erase Disk'.", am)
         mount_zfs(root_mount_point, partition)
         return
@@ -338,7 +338,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
 
     # Store created list in global storage so it can be used in the fstab module
     libcalamares.globalstorage.insert("btrfsSubvolumes", btrfs_subvolumes)
-    # insert the root subvolume into global storage
+    # Insert the root subvolume into global storage
     libcalamares.globalstorage.insert("btrfsRootSubvolume", root_sub['subvolume'])
 
     # Mount raw partition to create subvolumes
@@ -441,7 +441,8 @@ def run():
     # mount_options_list will be inserted into global storage for use in fstab later
     mount_options_list = []
     active_mounts = []
-    # 4. Phase One: Physical (Lexical Depth Sort: / before /var)  
+
+    # Lexical Depth Sort: mount before sub-paths  
     physical = [p for p in partitions if "mountPoint" in p and p["mountPoint"]]
     physical.sort(key=lambda x: x["mountPoint"])
 
@@ -449,7 +450,7 @@ def run():
         for p in physical:
             mount_partition(root_mount_point, p, partitions, mount_options, mount_options_list, efi_location, active_mounts)
          
-        # 5. Phase Two: Bind/Virtual (After Btrfs subvolumes exist)
+        # Bind/Virtual: After creating Btrfs subvolumes
         extra = [p for p in extra_mounts if "mountPoint" in p and p["mountPoint"]]
         extra.sort(key=lambda x: x["mountPoint"])
 

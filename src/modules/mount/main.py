@@ -351,7 +351,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
                 sub_path = setup_dir + s["subvolume"]
                 if os.path.exists(sub_path):
                     err((
-                        f"Subvolume {s['subvolume']} exists on {device}. "
+                        f"Subvolume {s['subvolume']} already exists on {device}. "
                         "Only /home or /srv allowed."), am)
             for s in btrfs_subvolumes:
                 sub_path = setup_dir + s["subvolume"]

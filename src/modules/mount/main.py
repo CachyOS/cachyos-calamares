@@ -282,7 +282,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     am.append(mount_point)
     device = partition["device"]
 
-    # Only allow fat32 on boot path
+    # Only allow fat32 on boot path, block incompatible
     if fstype in ["fat16", "fat32", "ntfs", "ext2", "exfat"]:
         is_boot = raw_mount_point in ["/boot", "/boot/efi"]
         if not (is_boot and fstype == "fat32"):

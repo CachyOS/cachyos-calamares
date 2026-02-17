@@ -442,7 +442,7 @@ def run():
     mount_options_list = []
     active_mounts = []
 
-    # Lexical Depth Sort: mount before sub-paths  
+    # Lexical Sort: mount / before sub-paths  
     physical = [p for p in partitions if "mountPoint" in p and p["mountPoint"]]
     physical.sort(key=lambda x: x["mountPoint"])
 

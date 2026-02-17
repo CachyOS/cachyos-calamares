@@ -368,7 +368,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     # insert the root subvolume into global storage
     libcalamares.globalstorage.insert("btrfsRootSubvolume", root_sub['subvolume'])
 
-    # Mount subvolumes
+    # Mount remaining subvolumes
     for s in btrfs_subvolumes:
         if s["mountPoint"] == "/":
             continue

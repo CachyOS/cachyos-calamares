@@ -373,10 +373,8 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         if s["mountPoint"] == "/":
             continue
 
-        # This tells Linux: "Put this specific subvolume here"
-        sub_opts = f"subvol={s['subvolume']},{mount_options_string}"
-
-        # This builds the path INSIDE your new root
+        # Prepare subvolume mount options and target mount point
+        sub_opts = f"subvol={s['subvolume']},{mount_options_string}" 
         sub_path = root_mount_point + s["mountPoint"]
         os.makedirs(sub_path, exist_ok=True)
 

@@ -339,8 +339,8 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     # insert the root subvolume into global storage
     libcalamares.globalstorage.insert("btrfsRootSubvolume", root_sub['subvolume'])
 
+    # Mount raw partition to create subvolumes
     with tempfile.TemporaryDirectory(prefix="calam-btrfs-") as setup_dir:
-        # Mount raw partition to create subvolumes
         am.append(setup_dir)
         if libcalamares.utils.mount(device, setup_dir, fstype, "defaults") != 0:
             err(f"Cannot mount btrfs for subvolume creation {device}", am)

@@ -286,7 +286,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     if fstype in ["fat16", "fat32", "ntfs", "ext2", "exfat"]:
         is_boot = raw_mount_point in ["/boot", "/boot/efi"]
         if not (is_boot and fstype == "fat32"):
-            err(f"Unsupported {fstype} on {raw_mount_point}", am)
+            err(f"Unsupported {fstype} partition on {raw_mount_point}", am)
         fstype = "vfat"
 
     if "luksMapperName" in partition:

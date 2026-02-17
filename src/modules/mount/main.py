@@ -299,6 +299,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         mount_zfs(root_mount_point, partition)
         return
 
+
     mount_options_string = get_mount_options(fstype, mount_options, partition, efi_location)
     mount_options_list.append({"mountpoint": raw_mount_point, "option_string": mount_options_string})
     is_virtual = any(raw_mount_point.startswith(v) for v in ["/sys", "/proc", "/dev", "/run"])

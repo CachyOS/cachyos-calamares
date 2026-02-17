@@ -323,6 +323,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
 
     # Btrfs Setup
     btrfs_subvolumes = get_btrfs_subvolumes(partitions)
+    # Store created list in global storage so it can be used in the fstab module
     libcalamares.globalstorage.insert("btrfsSubvolumes", btrfs_subvolumes)
 
     with tempfile.TemporaryDirectory(prefix="calam-btrfs-") as setup_dir:
@@ -341,6 +342,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
                 sub_path = setup_dir + s["subvolume"]
                 os.makedirs(os.path.dirname(sub_path), exist_ok=True)
                 subprocess.check_call(["btrfs", "subvolume", "create", sub_path])
+                # Set secure permissions for /root subvolume (750 instead of default 755)
                 if s["mountPoint"] == "/root":
                     os.chmod(sub_path, 0o750)
         finally:
@@ -366,6 +368,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     # Mount remaining subvolumes
     for s in btrfs_subvolumes:
         if s["mountPoint"] == "/":
+            # insert the root subvolume into global storage
             libcalamares.globalstorage.insert("btrfsRootSubvolume", s["subvolume"])
             continue
 

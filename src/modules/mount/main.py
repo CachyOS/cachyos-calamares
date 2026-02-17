@@ -324,8 +324,20 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
 
     # Btrfs Setup
     btrfs_subvolumes = get_btrfs_subvolumes(partitions)
+    # Ensure every entry has a subvolume name
+    for s in btrfs_subvolumes:
+        if not s.get("mountPoint") or not s.get("subvolume"):
+            err(f"Btrfs config error: entry missing mountPoint or subvolume name", am)
+
+    # Ensure root subolume with mountpoint / exists 
+    root_sub = next((s for s in btrfs_subvolumes if s["mountPoint"] == "/"), None)
+    if not root_sub:
+        err("Btrfs config error: root subvolume not found", am)
+
     # Store created list in global storage so it can be used in the fstab module
     libcalamares.globalstorage.insert("btrfsSubvolumes", btrfs_subvolumes)
+    # insert the root subvolume into global storage
+    libcalamares.globalstorage.insert("btrfsRootSubvolume", root_sub['subvolume'])
 
     with tempfile.TemporaryDirectory(prefix="calam-btrfs-") as setup_dir:
         # Mount raw partition to create subvolumes
@@ -333,9 +345,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         if libcalamares.utils.mount(device, setup_dir, fstype, "defaults") != 0:
             err(f"Cannot mount btrfs for subvolume creation {device}", am)
         try:
-            for s in btrfs_subvolumes: # Pre-validation
-                if not s["subvolume"]:
-                    err(f"Btrfs subvolume not defined {device}", am) # instead of continue
+            for s in btrfs_subvolumes:
                 sub_path = setup_dir + s["subvolume"]
                 if os.path.exists(sub_path):
                     err(f"Subvolume {s['subvolume']} already exists on {device}. Please backup and format or use /home or /srv for this partition.", am)
@@ -352,33 +362,19 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             if setup_dir in am:
                 am.remove(setup_dir)
 
-    # Find the root subvolume (usually /@)
-    root_sub = next((s for s in btrfs_subvolumes if s["mountPoint"] == "/"), None)
-    if not root_sub:
-        err(f"Btrfs root subvolume not found!", am)
-
-    # Mount the specific @ subvolume to the root mount point
-    if root_sub['subvolume']:
-        root_opts = f"subvol={root_sub['subvolume']},{mount_options_string}"
-    else:
-        err(f"Root subvolume not defined", am)
+    # Mount the specific @ root subvolume
+    root_opts = f"subvol={root_sub['subvolume']},{mount_options_string}"
 
     if libcalamares.utils.mount(device, root_mount_point, fstype, root_opts) != 0:
         err(f"Failed to mount root subvolume {device}", am)
-
-    # insert the root subvolume into global storage
-    libcalamares.globalstorage.insert("btrfsRootSubvolume", root_sub['subvolume'])
 
     # Mount remaining subvolumes
     for s in btrfs_subvolumes:
         if s["mountPoint"] == "/":
             continue
 
-        if s['subvolume']:
-            # This tells Linux: "Put this specific subvolume here"
-            sub_opts = f"subvol={s['subvolume']},{mount_options_string}"
-        else:
-            err("subvolume not defined", am) # not mounting entire filesystem
+        # This tells Linux: "Put this specific subvolume here"
+        sub_opts = f"subvol={s['subvolume']},{mount_options_string}"
 
         # This builds the path INSIDE your new root
         sub_path = root_mount_point + s["mountPoint"]

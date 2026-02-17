@@ -317,7 +317,9 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
                 ]
             contents = [f for f in os.listdir(mount_point) if f not in ignored_metadata]
             if contents:
-                err(f"Device {device} at {raw_mount_point} not empty. Please backup and format or use /home or /srv for this partition.", am)
+                err((
+                    f"Device {device} at {raw_mount_point} not empty. "
+                    "Only /home or /srv allowed."), am)
 
         return
 
@@ -348,7 +350,9 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             for s in btrfs_subvolumes:
                 sub_path = setup_dir + s["subvolume"]
                 if os.path.exists(sub_path):
-                    err(f"Subvolume {s['subvolume']} already exists on {device}. Please backup and format or use /home or /srv for this partition.", am)
+                    err((
+                        f"Subvolume {s['subvolume']} exists on {device}. "
+                        "Only /home or /srv allowed."), am)
             for s in btrfs_subvolumes:
                 sub_path = setup_dir + s["subvolume"]
                 os.makedirs(os.path.dirname(sub_path), exist_ok=True)

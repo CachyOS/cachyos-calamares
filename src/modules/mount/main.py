@@ -327,6 +327,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
 
     # Btrfs Setup
     btrfs_subvolumes = get_btrfs_subvolumes(partitions)
+
     # Ensure every entry has a subvolume name
     for s in btrfs_subvolumes:
         if not s.get("mountPoint") or not s.get("subvolume"):

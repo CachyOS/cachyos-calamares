@@ -41,15 +41,15 @@ def systemctl(units):
             name = unit
             action = "enable"
             mandatory = False
+            user_service = False
         else:
             if "name" not in unit:
                 libcalamares.utils.error("The key 'name' is missing from the mapping {_unit!s}. Continuing to the next unit.".format(_unit=str(unit)))
-                continue 
+                continue
             name = unit["name"]
             action = unit.get("action", "enable")
             mandatory = unit.get("mandatory", False)
-
-        user_service = unit.get("user", False) if isinstance(unit, dict) else False
+            user_service = unit.get("user", False)
 
         if user_service:
             cmd = ['systemctl', '--global', action, name]

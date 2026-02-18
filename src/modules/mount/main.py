@@ -293,9 +293,6 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
         device = os.path.join("/dev/mapper", partition["luksMapperName"])
 
     if fstype == "zfs":
-        if raw_mount_point != '/':
-            # Pacstrap failure mkinitcpio hook missing
-            err("Manual ZFS unsupported. Use 'Erase Disk'.", am)
         mount_zfs(root_mount_point, partition)
         return
 

@@ -1252,8 +1252,9 @@ ChoicePage::setupEfiSystemPartitionSelector()
 
         if ( !PartUtils::isEfiFilesystemRecommendedSize( efiPartition ) )
         {
+            qint64 requiredMiB = Calamares::BytesToMiB( PartUtils::efiFilesystemRecommendedSize() );
             text += QStringLiteral( "<br/><font color=\"red\">" )
-                    + tr( "The EFI system partition is too small, please use manual partition." )
+                    + tr( "The EFI system partition is too small (recommended %1 MiB), please use manual partition." ).arg( requiredMiB )
                     + QStringLiteral( "</font>" );
         }
         m_efiLabel->setText( text );
@@ -1270,8 +1271,9 @@ ChoicePage::setupEfiSystemPartitionSelector()
                 QString text = tr( "EFI system partition:", "@label" );
                 if ( !PartUtils::isEfiFilesystemRecommendedSize( efiPartition ) )
                 {
+                    qint64 requiredMiB = Calamares::BytesToMiB( PartUtils::efiFilesystemRecommendedSize() );
                     text += QStringLiteral( "<br/><font color=\"red\">" )
-                            + tr( "The EFI system partition is too small." )
+                            + tr( "The EFI system partition is too small (recommended %1 MiB), please use manual partition." ).arg( requiredMiB )
                             + QStringLiteral( "</font>" );
                 }
                 m_efiLabel->setText( text );
@@ -1597,7 +1599,8 @@ ChoicePage::calculateNextEnabled() const
 
         if ( efiPartition && !PartUtils::isEfiFilesystemRecommendedSize( efiPartition ) )
         {
-            cDebug() << "Selected EFI partition is too small";
+            qint64 requiredMiB = Calamares::BytesToMiB( PartUtils::efiFilesystemRecommendedSize() );
+            cDebug() << "Selected EFI partition is too small (recommended" << requiredMiB << "MiB)";
             return false;
         }
     }

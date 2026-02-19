@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 # Detect the CPU vendor and install the appropriate microcode package
 case "$(grep -w "^vendor_id" /proc/cpuinfo | head -n 1 | awk '{print $3}')" in
@@ -13,7 +14,7 @@ case "$(grep -w "^vendor_id" /proc/cpuinfo | head -n 1 | awk '{print $3}')" in
 esac
 
 # Remove wrong microcode if present
-[[ $(pacman -Q "${wrongpkg}" 2>/dev/null) ]] && pacman -R --noconfirm "${wrongpkg}"
+[[ $(pacman -Q "${wrongpkg}" 2>/dev/null) ]] && pacman -R --noconfirm "${wrongpkg}" || true
 
 # Install the correct microcode
 pacman -Sy --noconfirm --needed "${pkgname}"

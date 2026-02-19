@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# Detect the CPU vendor and install the appropriate microcode package
+case "$(grep -w "^vendor_id" /proc/cpuinfo | head -n 1 | awk '{print $3}')" in
+    GenuineIntel)
+        pkgname=intel-ucode
+        wrongpkg=amd-ucode
+        ;;
+    AuthenticAMD | *)
+        pkgname=amd-ucode
+        wrongpkg=intel-ucode
+        ;;
+esac
+
+# Remove wrong microcode if present
+[[ $(pacman -Q "${wrongpkg}" 2>/dev/null) ]] && pacman -R --noconfirm "${wrongpkg}"
+
+# Install the correct microcode
+pacman -Sy --noconfirm --needed "${pkgname}"
+
+exit 0

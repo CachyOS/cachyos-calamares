@@ -338,6 +338,8 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     # Store created list in global storage so it can be used in the fstab module
     libcalamares.globalstorage.insert("btrfsSubvolumes", btrfs_subvolumes)
     # Insert the root subvolume into global storage
+    # The fstab module uses this key to inject 'subvol=/@'
+    # into the generic '/' entry created earlier.
     libcalamares.globalstorage.insert("btrfsRootSubvolume", root_sub['subvolume'])
 
     # Mount raw partition to create subvolumes

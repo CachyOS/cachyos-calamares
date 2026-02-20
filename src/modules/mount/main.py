@@ -336,11 +336,6 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     if not root_sub:
         err("Btrfs config error: root subvolume not found", am)
 
-    # Store created list in global storage so it can be used in the fstab module
-    libcalamares.globalstorage.insert("btrfsSubvolumes", btrfs_subvolumes)
-    # Fstab uses btrfsRootSubvolume to inject subvol=/@ into generic / entry
-    libcalamares.globalstorage.insert("btrfsRootSubvolume", root_sub['subvolume'])
-
     # Mount raw partition to create subvolumes
     with tempfile.TemporaryDirectory(prefix="calam-btrfs-") as setup_dir:
         am.append(setup_dir)
@@ -386,6 +381,11 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             mount_options_list.append({"mountpoint": s["mountPoint"], "option_string": mount_options_string})
         else:
             err(f"Failed to mount subvolume {s['subvolume']}", am)
+
+    # Store created list in global storage so it can be used in the fstab module
+    libcalamares.globalstorage.insert("btrfsSubvolumes", btrfs_subvolumes)
+    # Fstab uses btrfsRootSubvolume to inject subvol=/@ into generic / entry
+    libcalamares.globalstorage.insert("btrfsRootSubvolume", root_sub['subvolume'])
 
 
 def enable_swap_partition(devices):

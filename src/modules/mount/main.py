@@ -292,8 +292,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     if "luksMapperName" in partition:
         device = os.path.join("/dev/mapper", partition["luksMapperName"])
 
-    if fstype == "zfs":
-        # If mountpoint is not / pacstrap missing mkinitcpio hooks 
+    if fstype == "zfs": 
         mount_zfs(root_mount_point, partition)
         return
 

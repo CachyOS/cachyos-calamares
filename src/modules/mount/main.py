@@ -298,7 +298,6 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
 
 
     mount_options_string = get_mount_options(fstype, mount_options, partition, efi_location)
-    mount_options_list.append({"mountpoint": raw_mount_point, "option_string": mount_options_string})
 
     # Standard mount for everything EXCEPT Btrfs root (this catches other btrfs partitions)
     if not (fstype == "btrfs" and raw_mount_point == '/'):
@@ -319,6 +318,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
                     f"Device {device} at {raw_mount_point} not empty. "
                     "Only /home or /srv allowed."), am)
 
+        mount_options_list.append({"mountpoint": raw_mount_point, "option_string": mount_options_string})
         return
 
 
@@ -380,11 +380,11 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
             mount_options_list.append({"mountpoint": s["mountPoint"], "option_string": mount_options_string})
         else:
             err(f"Failed to mount subvolume {s['subvolume']}", am)
-
-    # Store created list in global storage so it can be used in the fstab module
-    libcalamares.globalstorage.insert("btrfsSubvolumes", btrfs_subvolumes)
-    # Fstab uses btrfsRootSubvolume to inject subvol=/@ into generic / entry
+    
+    # Fstab module uses btrfsRootSubvolume to inject subvol=/@ into generic / entry
+    mount_options_list.append({"mountpoint": raw_mount_point, "option_string": mount_options_string})
     libcalamares.globalstorage.insert("btrfsRootSubvolume", root_sub['subvolume'])
+    libcalamares.globalstorage.insert("btrfsSubvolumes", btrfs_subvolumes)
 
 
 def enable_swap_partition(devices):

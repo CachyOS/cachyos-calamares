@@ -122,7 +122,7 @@ doAutopartition( PartitionCoreModule* core, Device* dev, Choices::AutoPartitionO
 
     // Partition sizes are expressed in MiB, should be multiples of
     // the logical sector size (usually 512B).
-    // But should be multiplies of 4KB to ensure proper alignment to physical sector size.
+    // But should be multiples of 4KB to ensure proper alignment to physical sector size.
     // EFI starts with 2MiB
     // empty and a EFI boot partition, while BIOS starts at
     // the 1MiB boundary (usually sector 2048).

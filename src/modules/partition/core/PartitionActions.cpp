@@ -311,7 +311,6 @@ doReplacePartition( PartitionCoreModule* core, Device* dev, Partition* partition
     lastSector = endSectorTo4KAlign(dev->logicalSize(), lastSector);
     firstSector = startSectorTo4KAlign(dev->logicalSize(), firstSector);
 
-
     if ( !partition->roles().has( PartitionRole::Unallocated ) )
     {
         core->deletePartition( dev, partition );

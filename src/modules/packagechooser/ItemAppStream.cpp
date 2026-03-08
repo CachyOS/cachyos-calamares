@@ -152,7 +152,7 @@ fromAppStream( AppStream::Pool& pool, const QVariantMap& item_map )
         }
         if ( !screenshotPath.isEmpty() )
         {
-            r.screenshot = screenshotPath;
+            r.screenshotPath = screenshotPath;
         }
     }
     return r;

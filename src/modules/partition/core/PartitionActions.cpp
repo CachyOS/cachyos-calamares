@@ -30,6 +30,31 @@
 
 using namespace Calamares::Units;
 
+
+// Align start sector number to 4K boundaries
+static quint64 startSectorTo4KAlign(const qint64 logicalSize, const quint64 start_sector) {
+    // if logicalSize == 512 we round sectors number to value that align to 4K
+    if (logicalSize == 512) {
+        // for 512 sector size, sectors number must be divisible by 8
+        quint64 const rem = (start_sector - 1) % 8;
+        return (start_sector - rem + 7);
+    }
+    // Otherwise it is RAID or non standard setup or already align.
+    return start_sector;
+}
+
+// Align end/last sector number to 4K boundaries
+static quint64 endSectorTo4KAlign(const qint64 logicalSize, const quint64 end_sector) {
+    // if logicalSize == 512 we round sectors number to value that align to 4K
+    if (logicalSize == 512) {
+        // for 512 sector size, sectors number must be divisible by 8
+        quint64 const rem = (end_sector + 1) % 8;
+        return (end_sector - rem);
+    }
+    // Otherwise it is RAID or non standard setup or already align.
+    return end_sector;
+}
+
 static quint64
 swapSuggestion( const quint64 availableSpaceB, Config::SwapChoice swap )
 {
@@ -96,7 +121,9 @@ doAutopartition( PartitionCoreModule* core, Device* dev, Choices::AutoPartitionO
     }
 
     // Partition sizes are expressed in MiB, should be multiples of
-    // the logical sector size (usually 512B). EFI starts with 2MiB
+    // the logical sector size (usually 512B).
+    // But should be multiples of 4KB to ensure proper alignment to physical sector size.
+    // EFI starts with 2MiB
     // empty and a EFI boot partition, while BIOS starts at
     // the 1MiB boundary (usually sector 2048).
     // ARM empty sectors are 16 MiB in size.
@@ -113,7 +140,10 @@ doAutopartition( PartitionCoreModule* core, Device* dev, Choices::AutoPartitionO
         partType = ( isEfi || createHybridBootloaderLayout ) ? PartitionTable::gpt : PartitionTable::msdos;
     }
     // last usable sector possibly allowing for secondary GPT using 66 sectors (256 entries)
-    const qint64 lastUsableSector = dev->totalLogical() - ( partType == PartitionTable::gpt ? 67 : 1 );
+    // We must ensure here that size will remain multiple of 4K for proper alignment
+    const qint64 lastUsableSector_unalign = dev->totalLogical() - ( partType == PartitionTable::gpt ? 67 : 1 );
+    const qint64 lastUsableSector = endSectorTo4KAlign(dev->logicalSize(), lastUsableSector_unalign);
+
 
     // Looking up the defaultFsType (which should name a filesystem type)
     // will log an error and set the type to Unknown if there's something wrong.
@@ -194,7 +224,11 @@ doAutopartition( PartitionCoreModule* core, Device* dev, Choices::AutoPartitionO
     qint64 lastSectorForRoot = lastUsableSector;
     if ( shouldCreateSwap )
     {
+        // Since we counting sectors from 0 and last sector for root part is included
+        // we add 1 here
         lastSectorForRoot -= suggestedSwapSizeB / sectorSize + 1;
+        // Ensure 4k align
+        lastSectorForRoot = endSectorTo4KAlign(sectorSize, lastSectorForRoot);
     }
 
     core->layoutApply( dev, firstFreeSector, lastSectorForRoot, o.luksFsType, o.luksPassphrase );
@@ -273,6 +307,10 @@ doReplacePartition( PartitionCoreModule* core, Device* dev, Partition* partition
     // Save the first and last sector values as the partition will be deleted
     firstSector = partition->firstSector();
     lastSector = partition->lastSector();
+    // Align partition to 4K (it should be already)
+    lastSector = endSectorTo4KAlign(dev->logicalSize(), lastSector);
+    firstSector = startSectorTo4KAlign(dev->logicalSize(), firstSector);
+
     if ( !partition->roles().has( PartitionRole::Unallocated ) )
     {
         core->deletePartition( dev, partition );

@@ -34,7 +34,7 @@ Presentation
 
         Image {
             id: background1
-            source: "slide1.png"
+            source: "slide1.jxl"
             width: parent.width; height: parent.height
             horizontalAlignment: Image.AlignCenter
             verticalAlignment: Image.AlignTop
@@ -49,7 +49,7 @@ Presentation
 
         Image {
             id: background2
-            source: "slide2.png"
+            source: "slide2.jxl"
             width: parent.width; height: parent.height
             horizontalAlignment: Image.AlignCenter
             verticalAlignment: Image.AlignTop
@@ -65,7 +65,7 @@ Presentation
 
         Image {
             id: background3
-            source: "slide3.png"
+            source: "slide3.jxl"
             width: parent.width; height: parent.height
             horizontalAlignment: Image.AlignCenter
             verticalAlignment: Image.AlignTop
@@ -80,7 +80,7 @@ Presentation
 
         Image {
             id: background4
-            source: "slide4.png"
+            source: "slide4.jxl"
             width: parent.width; height: parent.height
             horizontalAlignment: Image.AlignCenter
             verticalAlignment: Image.AlignTop
@@ -95,7 +95,7 @@ Presentation
 
         Image {
             id: background5
-            source: "slide5.png"
+            source: "slide5.jxl"
             width: parent.width; height: parent.height
             horizontalAlignment: Image.AlignCenter
             verticalAlignment: Image.AlignTop
@@ -110,7 +110,7 @@ Presentation
 
         Image {
             id: background6
-            source: "slide6.png"
+            source: "slide6.jxl"
             width: parent.width; height: parent.height
             horizontalAlignment: Image.AlignCenter
             verticalAlignment: Image.AlignTop

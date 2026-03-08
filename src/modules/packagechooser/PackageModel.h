@@ -15,7 +15,6 @@
 
 #include <QAbstractListModel>
 #include <QObject>
-#include <QPixmap>
 #include <QVector>
 
 
@@ -24,7 +23,7 @@ struct PackageItem
     QString id;
     Calamares::Locale::TranslatedString name;
     Calamares::Locale::TranslatedString description;
-    QPixmap screenshot;
+    QString screenshotPath;
     QStringList packageNames;
     QVariantMap netinstallData;
 
@@ -39,9 +38,9 @@ struct PackageItem
 
     /** @brief Creates a PackageItem from given strings.
      *
-     * Set all the text members and load the screenshot from the given
+     * Set all the text members and resolve the screenshot path from the given
      * @p screenshotPath, which may be a QRC path (:/path/in/qrc) or
-     * a filesystem path, whatever QPixmap understands.
+     * a filesystem path (absolute or relative to branding directory).
      */
     PackageItem( const QString& id, const QString& name, const QString& description, const QString& screenshotPath );
 
@@ -124,8 +123,8 @@ public:
     {
         NameRole = Qt::DisplayRole,
         DescriptionRole = Qt::UserRole,
-        ScreenshotRole,
-        IdRole
+        IdRole,
+        ScreenshotPathRole
     };
 
 private:

@@ -423,7 +423,12 @@ Config::setConfigurationMap( const QVariantMap& configurationMap )
     setDonateUrl( jobOrBrandingSetting( Branding::DonateUrl, configurationMap, "showDonateUrl" ) );
 
     ::setLanguageIcon( this, configurationMap );
-    ::setGeoIP( this, configurationMap );
+
+    QString skipGeoip = qgetenv( "CALAMARES_SKIP_GEOIP" );
+    if ( skipGeoip.isEmpty() )
+    {
+        ::setGeoIP( this, configurationMap );
+    }
 
     if ( configurationMap.contains( "requirements" )
          && Calamares::typeOf( configurationMap.value( "requirements" ) ) == Calamares::MapVariantType )

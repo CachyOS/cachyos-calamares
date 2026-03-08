@@ -70,7 +70,7 @@ PackageChooserTests::testAppData()
     QCOMPARE( p1.description.get( QLocale( "en_GB" ) ), QStringLiteral( "Calamares Linux Installer" ) );
     QCOMPARE( p1.description.get( QLocale( "nl" ) ),
               QStringLiteral( "Calamares is een installatieprogramma voor Linux distributies." ) );
-    QVERIFY( p1.screenshot.isNull() );
+    QVERIFY( p1.screenshotPath.isEmpty() );
 
     m.insert( "id", "calamares" );
     m.insert( "screenshot", ":/images/calamares.png" );
@@ -79,6 +79,6 @@ PackageChooserTests::testAppData()
     QCOMPARE( p2.id, QStringLiteral( "calamares" ) );
     QCOMPARE( p2.description.get( QLocale( "nl" ) ),
               QStringLiteral( "Calamares is een installatieprogramma voor Linux distributies." ) );
-    QVERIFY( !p2.screenshot.isNull() );
+    QVERIFY( !p2.screenshotPath.isEmpty() );
 #endif
 }

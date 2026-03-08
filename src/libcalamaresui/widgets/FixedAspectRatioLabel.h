@@ -16,6 +16,8 @@
 #include <QLabel>
 #include <QPixmap>
 
+class QMovie;
+
 class UIDLLEXPORT FixedAspectRatioLabel : public QLabel
 {
     Q_OBJECT
@@ -25,10 +27,19 @@ public:
 
 public slots:
     void setPixmap( const QPixmap& pixmap );
+    void setAnimatedImage( const QString& path );
     void resizeEvent( QResizeEvent* event ) override;
+    void hideEvent( QHideEvent* event ) override;
+    void showEvent( QShowEvent* event ) override;
+
+private slots:
+    void updateAnimatedFrame();
 
 private:
+    void stopAnimation();
+
     QPixmap m_pixmap;
+    QMovie* m_movie = nullptr;
 };
 
 #endif  // FIXEDASPECTRATIOLABEL_H

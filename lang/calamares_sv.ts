@@ -1706,7 +1706,7 @@ Alla ändringar kommer att gå förlorade.</translation>
     <message>
       <location filename="../src/modules/unpackfsc/FSArchiverRunner.cpp" line="56"/>
       <source>The source archive &lt;i&gt;%1&lt;/i&gt; does not exist.</source>
-      <translation>Källarkivet &lt;i&gt;%1&lt;/i&gt; existerar inte.</translation>
+      <translation>Källfilen &lt;i&gt;%1&lt;/i&gt; existerar inte.</translation>
     </message>
     <message>
       <location filename="../src/modules/unpackfsc/FSArchiverRunner.cpp" line="70"/>
@@ -2028,7 +2028,7 @@ Alla ändringar kommer att gå förlorade.</translation>
     <message>
       <location filename="../src/modules/oemid/IDJob.cpp" line="40"/>
       <source>Could not create directories &lt;code&gt;%1&lt;/code&gt;.</source>
-      <translation>Kunde inte skapa mappar &lt;code&gt;%1&lt;/code&gt;.</translation>
+      <translation>Kunde inte skapa kataloger &lt;code&gt;%1&lt;/code&gt;.</translation>
     </message>
     <message>
       <location filename="../src/modules/oemid/IDJob.cpp" line="53"/>
@@ -4249,7 +4249,7 @@ Installationen kan inte fortsätta.&lt;/p&gt;</translation>
     <message>
       <location filename="../src/modules/unpackfsc/TarballRunner.cpp" line="27"/>
       <source>The source archive &lt;i&gt;%1&lt;/i&gt; does not exist.</source>
-      <translation>Källarkivet &lt;i&gt;%1&lt;/i&gt; existerar inte.</translation>
+      <translation>Källfilen &lt;i&gt;%1&lt;/i&gt; existerar inte.</translation>
     </message>
     <message>
       <location filename="../src/modules/unpackfsc/TarballRunner.cpp" line="36"/>
@@ -4441,7 +4441,7 @@ Installationen kan inte fortsätta.&lt;/p&gt;</translation>
     <message>
       <location filename="../src/modules/unpackfsc/UnsquashRunner.cpp" line="27"/>
       <source>The source archive &lt;i&gt;%1&lt;/i&gt; does not exist.</source>
-      <translation>Källarkivet &lt;i&gt;%1&lt;/i&gt; existerar inte.</translation>
+      <translation>Källfilen &lt;i&gt;%1&lt;/i&gt; existerar inte.</translation>
     </message>
     <message>
       <location filename="../src/modules/unpackfsc/UnsquashRunner.cpp" line="36"/>

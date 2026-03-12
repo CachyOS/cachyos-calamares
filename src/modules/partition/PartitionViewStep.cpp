@@ -387,7 +387,7 @@ PartitionViewStep::next()
                 m_manualPartitionPage->onRevertClicked();
             }
         }
-        cDebug() << "Choice applied: " << m_config->installChoice();
+        cDebug() << "Partition method selected:" << Config::installChoiceNames().find( m_config->installChoice() );
     }
 }
 

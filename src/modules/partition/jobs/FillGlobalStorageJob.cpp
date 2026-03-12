@@ -341,6 +341,10 @@ FillGlobalStorageJob::exec()
 {
     Calamares::GlobalStorage* storage = Calamares::JobQueue::instance()->globalStorage();
     const auto partitions = createPartitionList();
+    const auto partitionChoices = storage->value( "partitionChoices" ).toMap();
+    const auto installChoice = partitionChoices.value( "install" ).toString();
+    cDebug() << Logger::SubEntry << "Partition method:" << installChoice;
+
     cDebug() << "Saving partition information map to GlobalStorage[\"partitions\"]";
     storage->insert( "partitions", partitions );
     storeFSUse( storage, partitions );

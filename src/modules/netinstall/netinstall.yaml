@@ -144,6 +144,7 @@
           - hdparm
           - hwdetect
           - linux-firmware
+          - linux-firmware-marvell
           - lsscsi
           - mesa-utils
           - mtools

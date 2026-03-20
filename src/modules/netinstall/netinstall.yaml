@@ -80,7 +80,7 @@
           - rebuild-detector
           - reflector
           - paru
-          - octopi
+          - shelly
       - name: "desktop integration"
         description: "Useful helper tools and libs for desktop usage"
         selected: true

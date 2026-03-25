@@ -238,9 +238,9 @@
     - cachy-update
     - fwupd
     - gdm
-    - gedit
+    - gnome-text-editor
     - gnome-backgrounds
-    - gnome-console
+    - ptyxis
     - gnome-control-center
     - gnome-keyring
     - gnome-shell
@@ -259,10 +259,12 @@
           - gnome-disk-utility
           - gnome-power-manager
           - gnome-calculator
-          - gnome-nettool
-          - gnome-usage
+          - gnome-system-monitor
+          - baobab
           - malcontent
           - showtime
+          - decibels
+          - snapshot
           - gvfs-afc
           - gvfs-nfs
           - gvfs-smb

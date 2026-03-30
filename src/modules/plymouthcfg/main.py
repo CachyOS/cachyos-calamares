@@ -15,9 +15,10 @@
 import subprocess
 import os
 
+import fileinput
 import libcalamares
 
-from libcalamares.utils import debug, target_env_call
+from libcalamares.utils import debug, warning, target_env_call
 
 import gettext
 _ = gettext.translation("calamares-python",
@@ -81,11 +82,28 @@ class PlymouthController:
         else:
             debug("Failed to set plymouth theme since it was not installed")
 
+    def setUseSimpledrm(self):
+        conf_path = os.path.join(self.__root, "etc", "plymouth", "plymouthd.conf")
+
+        try:
+            with fileinput.input(conf_path, inplace=True) as config:
+                for line in config:
+                    if line.startswith("#[Daemon]") or line.startswith("[Daemon]"):
+                        line = line.lstrip("#")
+                        line = line + "UseSimpledrm=1\n"
+
+                    print(line, end='')
+        except Exception as e:
+            warning("Failed to set UseSimpledrm=1: {!s}".format(e))
+
     def run(self):
         if detect_plymouth():
             if (("plymouth_theme" in libcalamares.job.configuration) and
                (libcalamares.job.configuration["plymouth_theme"] is not None)):
                 self.setTheme()
+
+            if libcalamares.job.configuration.get("plymouth_simpledrm", False):
+                self.setUseSimpledrm()
         return None
 
 

@@ -299,6 +299,8 @@
     - notification-daemon
     - cosmic-greeter
     - xdg-desktop-portal-cosmic
+    - xdg-desktop-portal-gtk
+    - gnome-keyring
     - xorg-xwayland
 - name: "Niri"
   description: "A scrollable-tiling Wayland compositor."

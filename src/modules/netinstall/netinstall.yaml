@@ -235,7 +235,7 @@
   packages:
     - fwupd
     - gdm
-    - gedit
+    - gnome-text-editor
     - gnome-backgrounds
     - gnome-console
     - gnome-control-center

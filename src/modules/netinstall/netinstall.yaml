@@ -234,6 +234,7 @@
   selected: false
   critical: true
   packages:
+    - cachyos-gnome-settings
     - cachy-update
     - fwupd
     - gdm

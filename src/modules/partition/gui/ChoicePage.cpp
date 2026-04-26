@@ -1253,7 +1253,7 @@ ChoicePage::setupEfiSystemPartitionSelector()
         if ( !PartUtils::isEfiFilesystemRecommendedSize( efiPartition ) )
         {
             text += QStringLiteral( "<br/><font color=\"red\">" )
-                    + tr( "The EFI system partition is too small, please use manual partition ",
+                    + tr( "The EFI system partition is too small, please use manual partitioning ",
                           "and increase its size to %1 MB or greater")
                         .arg(PartUtils::efiFilesystemRecommendedSize() / 1024 / 1024)
                     + QStringLiteral( "</font>" );

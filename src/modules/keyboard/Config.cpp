@@ -22,7 +22,9 @@
 #include "utils/Variant.h"
 
 #include <QApplication>
+#include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QGuiApplication>
 #include <QProcess>
 #include <QRegularExpression>
@@ -117,6 +119,30 @@ xkbmap_query_grp_option()
     int lastIndex = outputLine.indexOf( QRegularExpression( "[\\s,]" ), index );
 
     return outputLine.mid( index, lastIndex - index );
+}
+
+static void
+prepareGroupSwitcher( const BasicLayoutInfo& settings, AdditionalLayoutInfo& extra )
+{
+    if ( extra.additionalLayout.isEmpty() )
+    {
+        extra.groupSwitcher.clear();
+        return;
+    }
+
+    if ( !settings.selectedGroup.isEmpty() )
+    {
+        extra.groupSwitcher = "grp:" + settings.selectedGroup;
+    }
+
+    if ( extra.groupSwitcher.isEmpty() )
+    {
+        extra.groupSwitcher = xkbmap_query_grp_option();
+    }
+    if ( extra.groupSwitcher.isEmpty() )
+    {
+        extra.groupSwitcher = "grp:alt_shift_toggle";
+    }
 }
 
 AdditionalLayoutInfo
@@ -230,20 +256,7 @@ applyXkb( const BasicLayoutInfo& settings, AdditionalLayoutInfo& extra )
     QStringList basicArguments = xkbmap_model_args( settings.selectedModel );
     if ( !extra.additionalLayout.isEmpty() )
     {
-        if ( !settings.selectedGroup.isEmpty() )
-        {
-            extra.groupSwitcher = "grp:" + settings.selectedGroup;
-        }
-
-        if ( extra.groupSwitcher.isEmpty() )
-        {
-            extra.groupSwitcher = xkbmap_query_grp_option();
-        }
-        if ( extra.groupSwitcher.isEmpty() )
-        {
-            extra.groupSwitcher = "grp:alt_shift_toggle";
-        }
-
+        prepareGroupSwitcher( settings, extra );
         basicArguments.append(
             xkbmap_layout_args_with_group_switch( { extra.additionalLayout, settings.selectedLayout },
                                                   { extra.additionalVariant, settings.selectedVariant },
@@ -271,6 +284,7 @@ applyLocale1( const BasicLayoutInfo& settings, AdditionalLayoutInfo& extra )
 
     if ( !extra.additionalLayout.isEmpty() )
     {
+        prepareGroupSwitcher( settings, extra );
         layout = extra.additionalLayout + "," + layout;
         variant = extra.additionalVariant + "," + variant;
         option = extra.groupSwitcher;
@@ -297,47 +311,90 @@ applyLocale1( const BasicLayoutInfo& settings, AdditionalLayoutInfo& extra )
     }
 }
 
-// In a config-file's list of lines, replace lines <key>=<something> by <key>=<value>
+// In kxkbrc content, set a key inside the [Layout] group and create the group if needed.
 static void
-replaceKey( QStringList& content, const QString& key, const QString& value )
+setLayoutKey( QStringList& content, const QString& key, const QString& value )
 {
+    int groupStart = -1;
+    int groupEnd = content.length();
     for ( int i = 0; i < content.length(); ++i )
+    {
+        const QString line = content.at( i ).trimmed();
+        if ( line == QStringLiteral( "[Layout]" ) )
+        {
+            groupStart = i;
+            continue;
+        }
+        if ( groupStart >= 0 && i > groupStart && line.startsWith( '[' ) )
+        {
+            groupEnd = i;
+            break;
+        }
+    }
+
+    if ( groupStart < 0 )
+    {
+        if ( !content.isEmpty() && !content.constLast().isEmpty() )
+        {
+            content.append( QString() );
+        }
+        content.append( QStringLiteral( "[Layout]" ) );
+        groupStart = content.length() - 1;
+        groupEnd = content.length();
+    }
+
+    for ( int i = groupStart + 1; i < groupEnd; ++i )
     {
         if ( content.at( i ).startsWith( key ) )
         {
             content[ i ] = key + value;
+            return;
         }
     }
+
+    content.insert( groupEnd, key + value );
 }
 
 static bool
-rewriteKWin( const QString& path, const QString& model, const QString& layouts, const QString& variants )
+rewriteKWin( const QString& path,
+             const QString& model,
+             const QString& layouts,
+             const QString& variants,
+             const QString& options )
 {
-    if ( !QFile::exists( path ) )
-    {
-        return false;
-    }
-
     QFile config( path );
-    if ( !config.open( QIODevice::ReadOnly ) )
+    QStringList content;
+    if ( config.exists() )
     {
-        return false;
+        if ( !config.open( QIODevice::ReadOnly ) )
+        {
+            return false;
+        }
+        content = []( QFile& f )
+        {
+            QTextStream s( &f );
+            return s.readAll().split( '\n' );
+        }( config );
+        config.close();
     }
-    QStringList content = []( QFile& f )
+    else
     {
-        QTextStream s( &f );
-        return s.readAll().split( '\n' );
-    }( config );
-    config.close();
+        QDir().mkpath( QFileInfo( path ).path() );
+    }
 
     if ( !config.open( QIODevice::WriteOnly ) )
     {
         return false;
     }
 
-    replaceKey( content, QStringLiteral( "Model=" ), model );
-    replaceKey( content, QStringLiteral( "LayoutList=" ), layouts );
-    replaceKey( content, QStringLiteral( "VariantList=" ), variants );
+    setLayoutKey( content, QStringLiteral( "Model=" ), model );
+    setLayoutKey( content, QStringLiteral( "LayoutList=" ), layouts );
+    setLayoutKey( content, QStringLiteral( "VariantList=" ), variants );
+    if ( !options.isEmpty() )
+    {
+        setLayoutKey( content, QStringLiteral( "Options=" ), options );
+    }
+    setLayoutKey( content, QStringLiteral( "Use=" ), QStringLiteral( "true" ) );
 
     config.write( content.join( '\n' ).toUtf8() );
     config.close();
@@ -349,18 +406,20 @@ void
 applyKWin( const BasicLayoutInfo& settings, AdditionalLayoutInfo& extra )
 {
     const auto paths = QStandardPaths::standardLocations( QStandardPaths::ConfigLocation );
+    prepareGroupSwitcher( settings, extra );
 
     auto join = [ &additional = extra.additionalLayout ]( const QString& s1, const QString& s2 )
     { return additional.isEmpty() ? s1 : QStringLiteral( "%1,%2" ).arg( s1, s2 ); };
 
     const QString layouts = join( settings.selectedLayout, extra.additionalLayout );
     const QString variants = join( settings.selectedVariant, extra.additionalVariant );
+    const QString options = extra.groupSwitcher;
 
     bool updated = false;
     for ( const auto& path : paths )
     {
         const QString candidate = path + QStringLiteral( "/kxkbrc" );
-        if ( rewriteKWin( candidate, settings.selectedModel, layouts, variants ) )
+        if ( rewriteKWin( candidate, settings.selectedModel, layouts, variants, options ) )
         {
             updated = true;
             break;
@@ -415,19 +474,7 @@ applyGnome( const BasicLayoutInfo& settings, AdditionalLayoutInfo& extra )
     // gsettings set org.gnome.desktop.input-sources xkb-options "['grp:lalt_lshift_toggle']"
     if ( !extra.additionalLayout.isEmpty() )
     {
-        // Get a reasonable value for the group switcher, defaulting to alt_shift_toggle if nothing else is set
-        if ( !settings.selectedGroup.isEmpty() )
-        {
-            extra.groupSwitcher = "grp:" + settings.selectedGroup;
-        }
-        if ( extra.groupSwitcher.isEmpty() )
-        {
-            extra.groupSwitcher = xkbmap_query_grp_option();
-        }
-        if ( extra.groupSwitcher.isEmpty() )
-        {
-            extra.groupSwitcher = "grp:alt_shift_toggle";
-        }
+        prepareGroupSwitcher( settings, extra );
 
         const QString xkbOptionsValue = QStringLiteral( "['%1']" ).arg( extra.groupSwitcher );
         const QStringList xkbOptionsCommand = QStringList( sudoArguments ) << "xkb-options" << xkbOptionsValue;
@@ -651,22 +698,22 @@ Config::detectCurrentKeyboardLayout()
 void
 Config::cancel()
 {
-    const auto extra = getAdditionalLayoutInfo( m_original.selectedLayout );
+    auto extra = getAdditionalLayoutInfo( m_original.selectedLayout );
     if ( m_configureXkb )
     {
-        applyXkb( m_original, m_additionalLayoutInfo );
+        applyXkb( m_original, extra );
     }
     if ( m_configureLocale1 )
     {
-        applyLocale1( m_original, m_additionalLayoutInfo );
+        applyLocale1( m_original, extra );
     }
     if ( m_configureKWin )
     {
-        applyKWin( m_original, m_additionalLayoutInfo );
+        applyKWin( m_original, extra );
     }
     if ( m_configureGnome )
     {
-        applyGnome( m_original, m_additionalLayoutInfo );
+        applyGnome( m_original, extra );
     }
 }
 
@@ -892,6 +939,7 @@ Config::setConfigurationMap( const QVariantMap& configurationMap )
     m_convertedKeymapPath = getString( configurationMap, "convertedKeymapPath" );
     m_configureEtcDefaultKeyboard = getBool( configurationMap, "writeEtcDefaultKeyboard", true );
     m_configureLocale1 = getBool( configurationMap, "useLocale1", !isX11 );
+    m_configureXkb = isX11 && !m_configureLocale1;
 
     bool bogus = false;
     const auto configureItems = getSubMap( configurationMap, "configure", bogus );

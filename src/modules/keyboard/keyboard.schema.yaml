@@ -16,4 +16,5 @@ properties:
         type: object
         properties:
             kwin: { type: boolean, default: false }
+            gnome: { type: boolean, default: false }
 required: [ xOrgConfFileName, convertedKeymapPath ]

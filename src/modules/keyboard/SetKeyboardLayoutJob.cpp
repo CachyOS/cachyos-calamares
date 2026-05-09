@@ -37,6 +37,22 @@ removeEmpty( QStringList&& list )
     list.removeAll( QString() );
     return list;
 }
+
+QStringList
+variantList( const AdditionalLayoutInfo& additionalLayoutInfo, const QString& variant )
+{
+    if ( additionalLayoutInfo.additionalLayout.isEmpty() )
+    {
+        return removeEmpty( { variant } );
+    }
+
+    QStringList variants { additionalLayoutInfo.additionalVariant, variant };
+    if ( variants.join( QString() ).isEmpty() )
+    {
+        variants.clear();
+    }
+    return variants;
+}
 }  // namespace
 
 SetKeyboardLayoutJob::SetKeyboardLayoutJob( const QString& model,
@@ -280,7 +296,7 @@ SetKeyboardLayoutJob::writeX11Data( const QString& keyboardConfPath ) const
 
 
     const QStringList layouts = removeEmpty( { m_additionalLayoutInfo.additionalLayout, m_layout } );
-    const QStringList variants = removeEmpty( { m_additionalLayoutInfo.additionalVariant, m_variant } );
+    const QStringList variants = variantList( m_additionalLayoutInfo, m_variant );
     stream << "        Option \"XkbLayout\" \"" << layouts.join( "," ) << "\"\n";
     stream << "        Option \"XkbVariant\" \"" << variants.join( "," ) << "\"\n";
     if ( !m_additionalLayoutInfo.additionalLayout.isEmpty() )
@@ -314,7 +330,7 @@ SetKeyboardLayoutJob::writeDefaultKeyboardData( const QString& defaultKeyboardPa
     QTextStream stream( &file );
 
     const QStringList layouts = removeEmpty( { m_additionalLayoutInfo.additionalLayout, m_layout } );
-    const QStringList variants = removeEmpty( { m_additionalLayoutInfo.additionalVariant, m_variant } );
+    const QStringList variants = variantList( m_additionalLayoutInfo, m_variant );
     stream << "# KEYBOARD CONFIGURATION FILE\n\n"
               "# Consult the keyboard(5) manual page.\n\n";
 

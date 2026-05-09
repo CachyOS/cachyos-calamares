@@ -29,6 +29,7 @@
 #include <QProcess>
 #include <QRegularExpression>
 #include <QStandardPaths>
+#include <QTextStream>
 #include <QTimer>
 
 #include <QDBusConnection>
@@ -275,7 +276,7 @@ applyXkb( const BasicLayoutInfo& settings, AdditionalLayoutInfo& extra )
     }
 }
 
-static void
+static bool
 applyLocale1( const BasicLayoutInfo& settings, AdditionalLayoutInfo& extra )
 {
     QString layout = settings.selectedLayout;
@@ -297,7 +298,7 @@ applyLocale1( const BasicLayoutInfo& settings, AdditionalLayoutInfo& extra )
     if ( !locale1.isValid() )
     {
         cWarning() << "Interface" << locale1.interface() << "is not valid.";
-        return;
+        return false;
     }
 
     // Using convert=true, this also updates the VConsole config
@@ -307,8 +308,11 @@ applyLocale1( const BasicLayoutInfo& settings, AdditionalLayoutInfo& extra )
         if ( !r.isValid() )
         {
             cWarning() << "Could not set keyboard config through org.freedesktop.locale1.X11Keyboard." << r.error();
+            return false;
         }
     }
+
+    return true;
 }
 
 // In kxkbrc content, set a key inside the [Layout] group and create the group if needed.
@@ -495,13 +499,14 @@ void
 Config::apply()
 {
     m_additionalLayoutInfo = getAdditionalLayoutInfo( m_current.selectedLayout );
-    if ( m_configureXkb )
-    {
-        applyXkb( m_current, m_additionalLayoutInfo );
-    }
+    bool locale1Applied = false;
     if ( m_configureLocale1 )
     {
-        applyLocale1( m_current, m_additionalLayoutInfo );
+        locale1Applied = applyLocale1( m_current, m_additionalLayoutInfo );
+    }
+    if ( m_configureXkb && !locale1Applied )
+    {
+        applyXkb( m_current, m_additionalLayoutInfo );
     }
     if ( m_configureKWin )
     {
@@ -699,13 +704,14 @@ void
 Config::cancel()
 {
     auto extra = getAdditionalLayoutInfo( m_original.selectedLayout );
-    if ( m_configureXkb )
-    {
-        applyXkb( m_original, extra );
-    }
+    bool locale1Applied = false;
     if ( m_configureLocale1 )
     {
-        applyLocale1( m_original, extra );
+        locale1Applied = applyLocale1( m_original, extra );
+    }
+    if ( m_configureXkb && !locale1Applied )
+    {
+        applyXkb( m_original, extra );
     }
     if ( m_configureKWin )
     {
@@ -939,7 +945,7 @@ Config::setConfigurationMap( const QVariantMap& configurationMap )
     m_convertedKeymapPath = getString( configurationMap, "convertedKeymapPath" );
     m_configureEtcDefaultKeyboard = getBool( configurationMap, "writeEtcDefaultKeyboard", true );
     m_configureLocale1 = getBool( configurationMap, "useLocale1", !isX11 );
-    m_configureXkb = isX11 && !m_configureLocale1;
+    m_configureXkb = isX11;
 
     bool bogus = false;
     const auto configureItems = getSubMap( configurationMap, "configure", bogus );

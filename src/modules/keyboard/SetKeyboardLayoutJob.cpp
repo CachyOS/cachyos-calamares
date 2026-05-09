@@ -38,7 +38,9 @@ removeEmpty( QStringList&& list )
     return list;
 }
 
-QStringList
+}  // namespace
+
+STATICTEST QStringList
 variantList( const AdditionalLayoutInfo& additionalLayoutInfo, const QString& variant )
 {
     if ( additionalLayoutInfo.additionalLayout.isEmpty() )
@@ -53,7 +55,6 @@ variantList( const AdditionalLayoutInfo& additionalLayoutInfo, const QString& va
     }
     return variants;
 }
-}  // namespace
 
 SetKeyboardLayoutJob::SetKeyboardLayoutJob( const QString& model,
                                             const QString& layout,

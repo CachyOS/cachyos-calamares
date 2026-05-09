@@ -408,11 +408,11 @@ applyKWin( const BasicLayoutInfo& settings, AdditionalLayoutInfo& extra )
     const auto paths = QStandardPaths::standardLocations( QStandardPaths::ConfigLocation );
     prepareGroupSwitcher( settings, extra );
 
-    auto join = [ &additional = extra.additionalLayout ]( const QString& s1, const QString& s2 )
-    { return additional.isEmpty() ? s1 : QStringLiteral( "%1,%2" ).arg( s1, s2 ); };
+    auto join = [ &additional = extra.additionalLayout ]( const QString& additionalValue, const QString& selectedValue )
+    { return additional.isEmpty() ? selectedValue : QStringLiteral( "%1,%2" ).arg( additionalValue, selectedValue ); };
 
-    const QString layouts = join( settings.selectedLayout, extra.additionalLayout );
-    const QString variants = join( settings.selectedVariant, extra.additionalVariant );
+    const QString layouts = join( extra.additionalLayout, settings.selectedLayout );
+    const QString variants = join( extra.additionalVariant, settings.selectedVariant );
     const QString options = extra.groupSwitcher;
 
     bool updated = false;

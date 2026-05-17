@@ -275,7 +275,7 @@
           - gnome-disk-utility
           - gnome-power-manager
           - gnome-calculator
-          - gnome-system-monitor
+          - resources
           - baobab
           - malcontent
           - showtime

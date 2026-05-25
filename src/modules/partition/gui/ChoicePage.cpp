@@ -1253,10 +1253,11 @@ ChoicePage::setupEfiSystemPartitionSelector()
         if ( !PartUtils::isEfiFilesystemRecommendedSize( efiPartition ) )
         {
             text += QStringLiteral( "<br/><font color=\"red\">" )
-                    + tr( "The EFI system partition is too small, please select manual partitioning ",
-                          "and increase its size to %1 MiB or greater" )
-                        .arg( Calamares::BytesToMiB( PartUtils::efiFilesystemRecommendedSize() ) )
-                    + QStringLiteral( "</font>" );
+                    + tr( "The EFI system partition is too small, please select manual partitioning "
+                           "and increase its size to %1 MB or greater.",
+                           "@info, %1 is the recommended EFI system partition size in MB" )
+                         .arg( PartUtils::efiFilesystemRecommendedSize() / 1024 / 1024 )
+                + QStringLiteral( "</font>" );
         }
         m_efiLabel->setText( text );
     }

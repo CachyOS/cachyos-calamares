@@ -1257,7 +1257,7 @@ ChoicePage::setupEfiSystemPartitionSelector()
                            "and increase its size to %1 MB or greater.",
                            "@info, %1 is the recommended EFI system partition size in MB" )
                          .arg( PartUtils::efiFilesystemRecommendedSize() / 1024 / 1024 )
-                + QStringLiteral( "</font>" );
+                    + QStringLiteral( "</font>" );
         }
         m_efiLabel->setText( text );
     }

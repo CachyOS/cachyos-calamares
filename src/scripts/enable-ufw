@@ -4,4 +4,9 @@ if pacman -Qs ufw > /dev/null ; then
   ufw default deny incoming
   ufw default allow outgoing
   ufw enable
+
+  if pacman -Qq kdeconnect > /dev/null ; then
+    ufw allow "KDE Connect"
+  fi
+
 fi

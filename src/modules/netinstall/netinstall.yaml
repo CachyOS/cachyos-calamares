@@ -577,16 +577,7 @@
   critical: true
   packages:
     - hyprland
-    - sddm
-    - xdg-desktop-portal-hyprland
-    - playerctl
-    - wofi
-    - dolphin
-    - kitty
-    - uwsm
-    - wl-clipboard
-    - polkit-kde-agent
-    - xorg-xwayland
+    - cachyos-hypr-noctalia
 - name: "MangoWM"
   description: "MangoWM is a Wayland compositor using Dank Material Shell through Quickshell, with CachyOS-provided dotfiles."
   description[de]: "MangoWM ist ein Wayland-Kompositor, der Dank Material Shell über Quickshell verwendet, mit von CachyOS bereitgestellten Dotfiles."

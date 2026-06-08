@@ -367,7 +367,7 @@
     - gnome-terminal
     - metacity
     - lightdm
-    - lightdm-gtk-greeter
+    - lightdm-slick-greeter
 - name: "Budgie-Desktop"
   description: "Budgie - an independent, familiar, and modern desktop."
   description[de]: "Budgie Desktop ist ein funktionsreicher, moderner Desktop. Das Design von Budgie setzt auf Einfachheit, Minimalismus und Eleganz."

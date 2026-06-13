@@ -577,6 +577,8 @@
   critical: true
   packages:
     - hyprland
+    - dolphin
+    - kitty
     - cachyos-hypr-noctalia
 - name: "MangoWM"
   description: "MangoWM is a Wayland compositor using Dank Material Shell through Quickshell, with CachyOS-provided dotfiles."

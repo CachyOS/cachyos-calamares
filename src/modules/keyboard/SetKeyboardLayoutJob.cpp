@@ -29,6 +29,8 @@
 #include <QSettings>
 #include <QTextStream>
 
+#include <algorithm>
+
 namespace
 {
 QStringList
@@ -36,6 +38,12 @@ removeEmpty( QStringList&& list )
 {
     list.removeAll( QString() );
     return list;
+}
+
+QString
+envAssignment( const QString& key, const QString& value )
+{
+    return key + '=' + value;
 }
 
 }  // namespace
@@ -54,6 +62,32 @@ variantList( const AdditionalLayoutInfo& additionalLayoutInfo, const QString& va
         variants.clear();
     }
     return variants;
+}
+
+STATICTEST QStringList
+vconsoleXkbLines( const QString& model,
+                  const QStringList& layouts,
+                  const QStringList& variants,
+                  const QString& options )
+{
+    QStringList lines;
+    if ( !layouts.isEmpty() )
+    {
+        lines << envAssignment( QStringLiteral( "XKBLAYOUT" ), layouts.join( "," ) );
+    }
+    if ( !model.isEmpty() )
+    {
+        lines << envAssignment( QStringLiteral( "XKBMODEL" ), model );
+    }
+    if ( !variants.isEmpty() )
+    {
+        lines << envAssignment( QStringLiteral( "XKBVARIANT" ), variants.join( "," ) );
+    }
+    if ( !options.isEmpty() )
+    {
+        lines << envAssignment( QStringLiteral( "XKBOPTIONS" ), options );
+    }
+    return lines;
 }
 
 SetKeyboardLayoutJob::SetKeyboardLayoutJob( const QString& model,
@@ -221,6 +255,9 @@ SetKeyboardLayoutJob::writeVConsoleData( const QString& vconsoleConfPath, const 
         cDebug() << "Trying to use X11 layout" << m_layout << "as the virtual console layout";
         keymap = m_layout;
     }
+    const QStringList layouts = removeEmpty( { m_additionalLayoutInfo.additionalLayout, m_layout } );
+    const QStringList variants = variantList( m_additionalLayoutInfo, m_variant );
+    const QStringList xkbLines = vconsoleXkbLines( m_model, layouts, variants, m_additionalLayoutInfo.groupSwitcher );
 
     QStringList existingLines;
 
@@ -228,7 +265,11 @@ SetKeyboardLayoutJob::writeVConsoleData( const QString& vconsoleConfPath, const 
     QFile file( vconsoleConfPath );
     if ( file.exists() )
     {
-        file.open( QIODevice::ReadOnly | QIODevice::Text );
+        if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+        {
+            cError() << "Could not open" << file.fileName() << "for reading.";
+            return false;
+        }
         QTextStream stream( &file );
         while ( !stream.atEnd() )
         {
@@ -250,12 +291,24 @@ SetKeyboardLayoutJob::writeVConsoleData( const QString& vconsoleConfPath, const 
     }
     QTextStream stream( &file );
     bool found = false;
+    const QStringList replacedKeys = { QStringLiteral( "KEYMAP=" ),
+                                       QStringLiteral( "XKBLAYOUT=" ),
+                                       QStringLiteral( "XKBMODEL=" ),
+                                       QStringLiteral( "XKBVARIANT=" ),
+                                       QStringLiteral( "XKBOPTIONS=" ) };
     for ( const QString& existingLine : std::as_const( existingLines ) )
     {
         if ( existingLine.trimmed().startsWith( "KEYMAP=" ) )
         {
-            stream << "KEYMAP=" << keymap << '\n';
+            stream << envAssignment( QStringLiteral( "KEYMAP" ), keymap ) << '\n';
             found = true;
+        }
+        else if ( std::any_of( replacedKeys.cbegin(),
+                               replacedKeys.cend(),
+                               [ &existingLine ]( const QString& key )
+                               { return existingLine.trimmed().startsWith( key ); } ) )
+        {
+            continue;
         }
         else
         {
@@ -265,12 +318,17 @@ SetKeyboardLayoutJob::writeVConsoleData( const QString& vconsoleConfPath, const 
     // Add a KEYMAP= line if there wasn't any
     if ( !found )
     {
-        stream << "KEYMAP=" << keymap << '\n';
+        stream << envAssignment( QStringLiteral( "KEYMAP" ), keymap ) << '\n';
+    }
+    for ( const QString& xkbLine : xkbLines )
+    {
+        stream << xkbLine << '\n';
     }
     stream.flush();
     file.close();
 
-    cDebug() << Logger::SubEntry << "Written KEYMAP=" << keymap << "to vconsole.conf" << stream.status();
+    cDebug() << Logger::SubEntry << "Written KEYMAP=" << keymap << "and XKB settings to vconsole.conf"
+             << stream.status();
 
     return ( stream.status() == QTextStream::Ok );
 }

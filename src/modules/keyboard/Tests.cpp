@@ -14,6 +14,8 @@
 // Internals of SetKeyboardLayoutJob.cpp
 extern QString findLegacyKeymap( const QString& layout, const QString& model, const QString& variant );
 extern QStringList variantList( const AdditionalLayoutInfo& additionalLayoutInfo, const QString& variant );
+extern QStringList
+vconsoleXkbLines( const QString& model, const QStringList& layouts, const QStringList& variants, const QString& options );
 
 class KeyboardLayoutTests : public QObject
 {
@@ -29,6 +31,8 @@ private Q_SLOTS:
     void testSimpleLayoutLookup();
     void testVariantList_data();
     void testVariantList();
+    void testVConsoleXkbLines_data();
+    void testVConsoleXkbLines();
 };
 
 void
@@ -101,6 +105,40 @@ KeyboardLayoutTests::testVariantList()
     additionalLayoutInfo.additionalVariant = additionalVariant;
 
     QCOMPARE( variantList( additionalLayoutInfo, variant ), expected );
+}
+
+void
+KeyboardLayoutTests::testVConsoleXkbLines_data()
+{
+    QTest::addColumn< QString >( "model" );
+    QTest::addColumn< QStringList >( "layouts" );
+    QTest::addColumn< QStringList >( "variants" );
+    QTest::addColumn< QString >( "options" );
+    QTest::addColumn< QStringList >( "expected" );
+
+    QTest::newRow( "simple layout" ) << QStringLiteral( "pc105" ) << QStringList { QStringLiteral( "de" ) }
+                                     << QStringList {} << QString()
+                                     << QStringList { QStringLiteral( "XKBLAYOUT=de" ),
+                                                      QStringLiteral( "XKBMODEL=pc105" ) };
+    QTest::newRow( "additional layout" )
+        << QStringLiteral( "pc105" ) << QStringList { QStringLiteral( "us" ), QStringLiteral( "ua" ) }
+        << QStringList { QString(), QStringLiteral( "phonetic" ) } << QStringLiteral( "grp:alt_shift_toggle" )
+        << QStringList { QStringLiteral( "XKBLAYOUT=us,ua" ),
+                         QStringLiteral( "XKBMODEL=pc105" ),
+                         QStringLiteral( "XKBVARIANT=,phonetic" ),
+                         QStringLiteral( "XKBOPTIONS=grp:alt_shift_toggle" ) };
+}
+
+void
+KeyboardLayoutTests::testVConsoleXkbLines()
+{
+    QFETCH( QString, model );
+    QFETCH( QStringList, layouts );
+    QFETCH( QStringList, variants );
+    QFETCH( QString, options );
+    QFETCH( QStringList, expected );
+
+    QCOMPARE( vconsoleXkbLines( model, layouts, variants, options ), expected );
 }
 
 

@@ -133,6 +133,7 @@
           - alsa-utils
           - pavucontrol
           - pipewire-pulse
+          - pipewire-jack
           - wireplumber
           - pipewire-alsa
           - realtime-privileges

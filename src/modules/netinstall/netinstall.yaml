@@ -257,7 +257,8 @@
     - gdm
     - gnome-text-editor
     - gnome-backgrounds
-    - ptyxis
+    - ghostty
+    - ghostty-nautilus
     - gnome-control-center
     - gnome-keyring
     - gnome-shell

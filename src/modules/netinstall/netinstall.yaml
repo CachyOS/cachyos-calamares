@@ -271,7 +271,6 @@
         packages:
           - papers
           - loupe
-          - file-roller
           - simple-scan
           - gnome-disk-utility
           - gnome-power-manager

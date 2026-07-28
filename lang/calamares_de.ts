@@ -1634,7 +1634,7 @@ Dies wird das Installationsprogramm beenden und alle Änderungen gehen verloren.
     <message>
       <location filename="../src/modules/partition/gui/EditExistingPartitionDialog.cpp" line="281"/>
       <source>Partition %1 could not be decrypted with the given passphrase.&lt;br/&gt;&lt;br/&gt;Edit the partition again and give the correct passphrase or delete and create a new encrypted partition.</source>
-      <translation>Partition %1 konnte mit diesem Passwort nicht entschlüsselt werden.&lt;br/&gt;&lt;br/&gt;Editieren Sie die Partition erneut und geben Sie das korrekte Passwort an oder löschen Sie diese und erstellen Sie eine neue verschlüsselte Partition.</translation>
+      <translation>Partition %1 konnte mit diesem Passwort nicht entschlüsselt werden.&lt;br/&gt;&lt;br/&gt;Bearbeiten Sie die Partition erneut und geben Sie das korrekte Passwort an oder löschen Sie diese und erstellen Sie eine neue verschlüsselte Partition.</translation>
     </message>
   </context>
   <context>
@@ -1795,7 +1795,7 @@ Dies wird das Installationsprogramm beenden und alle Änderungen gehen verloren.
       <location filename="../src/modules/finished/FinishedPage.cpp" line="75"/>
       <source>&lt;h1&gt;All done.&lt;/h1&gt;&lt;br/&gt;%1 has been set up on your computer.&lt;br/&gt;You may now start using your new system.</source>
       <comment>@info</comment>
-      <translation>&lt;h1&gt;Alles erledigt.&lt;/h1&gt;&lt;br/&gt;%1 wurde auf Ihrem Computer eingerichtet.&lt;br/&gt;Sie können nun mit Ihrem neuen System arbeiten.</translation>
+      <translation>&lt;h1&gt;Alles erledigt.&lt;/h1&gt;&lt;br/&gt;%1 wurde auf Ihrem Computer eingerichtet.&lt;br/&gt;Sie können nun Ihr neues System benutzen.</translation>
     </message>
     <message>
       <location filename="../src/modules/finished/FinishedPage.cpp" line="80"/>
@@ -2535,7 +2535,7 @@ Dies wird das Installationsprogramm beenden und alle Änderungen gehen verloren.
       <location filename="../src/modules/netinstall/NetInstallViewStep.cpp" line="67"/>
       <source>Gaming</source>
       <comment>label for netinstall module</comment>
-      <translation>Spielen</translation>
+      <translation>Gaming</translation>
     </message>
     <message>
       <location filename="../src/modules/netinstall/NetInstallViewStep.cpp" line="68"/>
@@ -2683,7 +2683,7 @@ Dies wird das Installationsprogramm beenden und alle Änderungen gehen verloren.
     <message>
       <location filename="../src/modules/users/CheckPWQuality.cpp" line="202"/>
       <source>The password is the same as the old one</source>
-      <translation>Das Passwort ist dasselbe wie das alte</translation>
+      <translation>Das Passwort ist identisch zum alten</translation>
     </message>
     <message>
       <location filename="../src/modules/users/CheckPWQuality.cpp" line="204"/>
@@ -2998,7 +2998,7 @@ Dies wird das Installationsprogramm beenden und alle Änderungen gehen verloren.
     <message>
       <location filename="../src/modules/users/page_usersetup.ui" line="40"/>
       <source>What is your name?</source>
-      <translation>Wie ist Ihr Vor- und Nachname?</translation>
+      <translation>Wie lautet Ihr Vor- und Nachname?</translation>
     </message>
     <message>
       <location filename="../src/modules/users/page_usersetup.ui" line="55"/>
@@ -3018,7 +3018,7 @@ Dies wird das Installationsprogramm beenden und alle Änderungen gehen verloren.
     <message>
       <location filename="../src/modules/users/page_usersetup.ui" line="223"/>
       <source>What is the name of this computer?</source>
-      <translation>Wie ist der Name dieses Computers?</translation>
+      <translation>Wie lautet der Name dieses Computers?</translation>
     </message>
     <message>
       <location filename="../src/modules/users/page_usersetup.ui" line="247"/>
@@ -4460,7 +4460,7 @@ Ausgabe:
     <message>
       <location filename="../src/modules/unpackfsc/UnsquashRunner.cpp" line="37"/>
       <source>The &lt;i&gt;%1&lt;/i&gt; tool is not installed on the system.</source>
-      <translation>Das &lt;i&gt;%1&lt;/i&gt; Tool ist nicht installiert auf diesem System.</translation>
+      <translation>Das &lt;i&gt;%1&lt;/i&gt; Tool ist nicht auf diesem System installiert.</translation>
     </message>
     <message>
       <location filename="../src/modules/unpackfsc/UnsquashRunner.cpp" line="46"/>
@@ -4969,7 +4969,7 @@ Ausgabe:
       <location filename="../src/modules/packagechooserq/packagechooserq.qml" line="45"/>
       <source>LibreOffice is a powerful and free office suite, used by millions of people around the world. It includes several applications that make it the most versatile Free and Open Source office suite on the market.&lt;br/&gt;
                     Default option.</source>
-      <translation>LibreOffice ist eine mächtige und freie Office-Lösung, verwendet von Millionen von Menschen rund um den Globus. Sie enthäIt verschiedene Anwendungen, die LibreOffice zur vielseitigsten Open-Source-Lösung für Office-Anwendungen auf dem Markt machen.&lt;br/&gt;
+      <translation>LibreOffice ist eine leistungsstarke und kostenlose Office-Lösung, verwendet von Millionen von Menschen rund um den Globus. Sie enthäIt verschiedene Anwendungen, die LibreOffice zur vielseitigsten Open-Source-Lösung für Office-Anwendungen auf dem Markt machen.&lt;br/&gt;
                     Standard-Option.</translation>
     </message>
     <message>
@@ -5009,7 +5009,7 @@ Ausgabe:
       <location filename="../src/modules/packagechooserq/packagechooserq-qt6.qml" line="45"/>
       <source>LibreOffice is a powerful and free office suite, used by millions of people around the world. It includes several applications that make it the most versatile Free and Open Source office suite on the market.&lt;br/&gt;
                     Default option.</source>
-      <translation>LibreOffice ist eine mächtige und freie Office-Suite, verwendet von Millionen von Menschen rund um den Globus. Sie enthäIt verschiedene Anwendungen, die LibreOffice zur vielseitigsten Open-Source-Lösung für Office-Anwendungen auf dem Markt machen.&lt;br/&gt;
+      <translation>LibreOffice ist eine leistungsstarke und kostenlose Office-Suite, verwendet von Millionen von Menschen rund um den Globus. Sie enthäIt verschiedene Anwendungen, die LibreOffice zur vielseitigsten Open-Source-Lösung für Office-Anwendungen auf dem Markt machen.&lt;br/&gt;
                     Standard-Option.</translation>
     </message>
     <message>
@@ -5114,7 +5114,7 @@ Die vertikale Bildlaufleiste ist anpassbar, liegt derzeit bei einer Breite von 1
     <message>
       <location filename="../src/modules/usersq/usersq.qml" line="56"/>
       <source>What is your name?</source>
-      <translation>Wie ist Ihr Vor- und Nachname?</translation>
+      <translation>Wie lautet Ihr Vor- und Nachname?</translation>
     </message>
     <message>
       <location filename="../src/modules/usersq/usersq.qml" line="63"/>
@@ -5149,7 +5149,7 @@ Die vertikale Bildlaufleiste ist anpassbar, liegt derzeit bei einer Breite von 1
     <message>
       <location filename="../src/modules/usersq/usersq.qml" line="147"/>
       <source>What is the name of this computer?</source>
-      <translation>Wie ist der Name dieses Computers?</translation>
+      <translation>Wie lautet der Name dieses Computers?</translation>
     </message>
     <message>
       <location filename="../src/modules/usersq/usersq.qml" line="153"/>
@@ -5164,7 +5164,7 @@ Die vertikale Bildlaufleiste ist anpassbar, liegt derzeit bei einer Breite von 1
     <message>
       <location filename="../src/modules/usersq/usersq.qml" line="193"/>
       <source>Only letters, numbers, underscore and hyphen are allowed, minimal of two characters.</source>
-      <translation>Es sind nur Buchstaben, Zahlen, Unterstrich und Bindestrich erlaubt, minimal zwei Zeichen.</translation>
+      <translation>Es sind nur Buchstaben, Zahlen, Unterstrich und Bindestrich erlaubt, mindestens zwei Zeichen.</translation>
     </message>
     <message>
       <location filename="../src/modules/usersq/usersq.qml" line="202"/>
@@ -5247,7 +5247,7 @@ Die vertikale Bildlaufleiste ist anpassbar, liegt derzeit bei einer Breite von 1
     <message>
       <location filename="../src/modules/usersq/usersq-qt6.qml" line="55"/>
       <source>What is your name?</source>
-      <translation>Wie ist Ihr Vor- und Nachname?</translation>
+      <translation>Wie lautet Ihr Vor- und Nachname?</translation>
     </message>
     <message>
       <location filename="../src/modules/usersq/usersq-qt6.qml" line="62"/>
@@ -5282,7 +5282,7 @@ Die vertikale Bildlaufleiste ist anpassbar, liegt derzeit bei einer Breite von 1
     <message>
       <location filename="../src/modules/usersq/usersq-qt6.qml" line="146"/>
       <source>What is the name of this computer?</source>
-      <translation>Wie ist der Name dieses Computers?</translation>
+      <translation>Wie lautet der Name dieses Computers?</translation>
     </message>
     <message>
       <location filename="../src/modules/usersq/usersq-qt6.qml" line="152"/>
@@ -5297,7 +5297,7 @@ Die vertikale Bildlaufleiste ist anpassbar, liegt derzeit bei einer Breite von 1
     <message>
       <location filename="../src/modules/usersq/usersq-qt6.qml" line="192"/>
       <source>Only letters, numbers, underscore and hyphen are allowed, minimal of two characters.</source>
-      <translation>Es sind nur Buchstaben, Zahlen, Unterstrich und Bindestrich erlaubt, minimal zwei Zeichen.</translation>
+      <translation>Es sind nur Buchstaben, Zahlen, Unterstrich und Bindestrich erlaubt, mindestens zwei Zeichen.</translation>
     </message>
     <message>
       <location filename="../src/modules/usersq/usersq-qt6.qml" line="201"/>

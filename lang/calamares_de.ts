@@ -2364,8 +2364,8 @@ Dies wird das Installationsprogramm beenden und alle Änderungen gehen verloren.
     <name>MachineIdJob</name>
     <message>
       <location filename="../src/modules/machineid/MachineIdJob.cpp" line="55"/>
-      <source>Generate machine-id.</source>
-      <translation>Generiere Computer-ID.</translation>
+      <source>Generate machineid.</source>
+      <translation>Generiere machineid.</translation>
     </message>
     <message>
       <location filename="../src/modules/machineid/MachineIdJob.cpp" line="71"/>
@@ -2375,7 +2375,7 @@ Dies wird das Installationsprogramm beenden und alle Änderungen gehen verloren.
     <message>
       <location filename="../src/modules/machineid/MachineIdJob.cpp" line="72"/>
       <source>No root mount point is set for MachineId.</source>
-      <translation>Für die Computer-ID wurde kein Einhängepunkt für die Root-Partition festgelegt.</translation>
+      <translation>Für die machineid wurde kein Einhängepunkt in der Root-Partition festgelegt.</translation>
     </message>
     <message>
       <location filename="../src/modules/machineid/Workers.cpp" line="63"/>

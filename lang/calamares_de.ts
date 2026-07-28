@@ -1825,7 +1825,7 @@ Dies wird das Installationsprogramm beenden und alle Änderungen gehen verloren.
       <location filename="../src/modules/finished/FinishedPage.cpp" line="118"/>
       <source>&lt;h1&gt;Installation Failed&lt;/h1&gt;&lt;br/&gt;%1 has not been installed on your computer.&lt;br/&gt;The error message was: %2.</source>
       <comment>@info, %1 is product name with version</comment>
-      <translation>&lt;h1&gt;Installation fehlgeschlagen&lt;/h1&gt;&lt;br/&gt;%1 wurde nicht auf deinem Computer installiert.&lt;br/&gt;Die Fehlermeldung lautet: %2.</translation>
+      <translation>&lt;h1&gt;Installation fehlgeschlagen&lt;/h1&gt;&lt;br/&gt;%1 wurde nicht auf Ihrem Computer installiert.&lt;br/&gt;Die Fehlermeldung lautet: %2.</translation>
     </message>
   </context>
   <context>
@@ -2066,7 +2066,7 @@ Dies wird das Installationsprogramm beenden und alle Änderungen gehen verloren.
       <location filename="../src/modules/interactiveterminal/InteractiveTerminalPage.cpp" line="51"/>
       <source>Konsole not installed.</source>
       <comment>@error</comment>
-      <translation>Konsole ist  leider nicht installiert.</translation>
+      <translation>Konsole ist leider nicht installiert.</translation>
     </message>
     <message>
       <location filename="../src/modules/interactiveterminal/InteractiveTerminalPage.cpp" line="52"/>
@@ -2267,7 +2267,7 @@ Dies wird das Installationsprogramm beenden und alle Änderungen gehen verloren.
       <location filename="../src/modules/license/LicenseWidget.cpp" line="192"/>
       <source>Hide the license text</source>
       <comment>@tooltip</comment>
-      <translation>Lizenztext ausblenden</translation>
+      <translation>Lizenzvereinbarung ausblenden</translation>
     </message>
     <message>
       <location filename="../src/modules/license/LicenseWidget.cpp" line="193"/>
@@ -2802,8 +2802,8 @@ Dies wird das Installationsprogramm beenden und alle Änderungen gehen verloren.
       <location filename="../src/modules/users/CheckPWQuality.cpp" line="263"/>
       <source>The password contains more than %n same characters consecutively</source>
       <translation>
-        <numerusform>Dieses Passwort enthält mehr als %n geiche Zeichen hintereinander</numerusform>
-        <numerusform>Dieses Passwort enthält mehr als %n geiche Zeichen hintereinander</numerusform>
+        <numerusform>Dieses Passwort enthält mehr als %n gleiche Zeichen hintereinander</numerusform>
+        <numerusform>Dieses Passwort enthält mehr als %n gleiche Zeichen hintereinander</numerusform>
       </translation>
     </message>
     <message>
@@ -3039,7 +3039,7 @@ Dies wird das Installationsprogramm beenden und alle Änderungen gehen verloren.
       <location filename="../src/modules/users/page_usersetup.ui" line="349"/>
       <location filename="../src/modules/users/page_usersetup.ui" line="374"/>
       <source>&lt;small&gt;Enter the same password twice, so that it can be checked for typing errors. A good password will contain a mixture of letters, numbers and punctuation, should be at least eight characters long, and should be changed at regular intervals.&lt;/small&gt;</source>
-      <translation>&lt;small&gt;Bitte geben Sie Ihr Passwort zweimal ein, um Tippfehler auszuschliessen. Ein gutes Passwort enthält Buchstaben, Zahlen und Sonderzeichen. Ferner sollte es mindestens acht Zeichen umfassen und regelmässig geändert werden.&lt;/small&gt;</translation>
+      <translation>&lt;small&gt;Bitte geben Sie Ihr Passwort zweimal ein, um Tippfehler auszuschließen. Ein gutes Passwort enthält Buchstaben, Zahlen und Sonderzeichen. Ferner sollte es mindestens acht Zeichen umfassen und regelmäßig geändert werden.&lt;/small&gt;</translation>
     </message>
     <message>
       <location filename="../src/modules/users/page_usersetup.ui" line="355"/>
@@ -3449,7 +3449,7 @@ Dies wird das Installationsprogramm beenden und alle Änderungen gehen verloren.
     <message>
       <location filename="../src/modules/partition/PartitionViewStep.cpp" line="647"/>
       <source>A GPT partition table is the best option for all systems. This installer supports such a setup for BIOS systems too.&lt;br/&gt;&lt;br/&gt;To configure a GPT partition table on BIOS, (if not done so already) go back and set the partition table to GPT, next create a 8 MB unformatted partition with the &lt;strong&gt;%2&lt;/strong&gt; flag enabled.&lt;br/&gt;&lt;br/&gt;An unformatted 8 MB partition is necessary to start %1 on a BIOS system with GPT.</source>
-      <translation>Eine Partitionstabelle vom Typ GPT ist die beste Option für alle Systeme. Dieses Installationsprogramm unterstützt solch ein Setup auch für BIOS-Systeme.&lt;br/&gt;&lt;br/&gt;Um eine GPT-Partition für BIOS-Systeme zu konfigurieren, (wenn nicht bereits geschehen) gehen Sie zurück und setzen Sie die Partitionstabelle auf GPT, als nächstes erstellen Sie eine 8 MB große unformattierte Partition mit der &lt;strong&gt;%2&lt;/strong&gt; Markierung aktiviert.&lt;br/&gt;&lt;br/&gt;Eine unformattierte 8 MB Partition ist nötig, um %1 auf einem BIOS-System mit GPT zu starten.</translation>
+      <translation>Eine Partitionstabelle vom Typ GPT ist die beste Option für alle Systeme. Dieses Installationsprogramm unterstützt solch ein Setup auch für BIOS-Systeme.&lt;br/&gt;&lt;br/&gt;Um eine GPT-Partition für BIOS-Systeme zu konfigurieren, (wenn nicht bereits geschehen) gehen Sie zurück und setzen Sie die Partitionstabelle auf GPT, als nächstes erstellen Sie eine 8 MB große unformattierte Partition mit der &lt;strong&gt;%2&lt;/strong&gt; Markierung aktiviert.&lt;br/&gt;&lt;br/&gt;Eine unformatierte 8 MB Partition ist nötig, um %1 auf einem BIOS-System mit GPT zu starten.</translation>
     </message>
     <message>
       <location filename="../src/modules/partition/PartitionViewStep.cpp" line="669"/>
@@ -3478,7 +3478,7 @@ Dies wird das Installationsprogramm beenden und alle Änderungen gehen verloren.
       <location filename="../src/modules/plasmalnf/PlasmaLnfJob.cpp" line="33"/>
       <source>Applying Plasma Look-and-Feel…</source>
       <comment>@status</comment>
-      <translation>Anwenden des Plasma-Erscheinungsildes…</translation>
+      <translation>Anwenden des Plasma-Erscheinungsbildes…</translation>
     </message>
     <message>
       <location filename="../src/modules/plasmalnf/PlasmaLnfJob.cpp" line="57"/>
@@ -3727,7 +3727,7 @@ Ausgabe:
       <source>&lt;p&gt;This computer does not satisfy the minimum requirements for installing %1.&lt;br/&gt;
         Installation cannot continue.&lt;/p&gt;</source>
       <translation>&lt;p&gt;Dieser Computer erfüllt die minimalen Bedingungen nicht für die Installation von %1.&lt;br/&gt;
-        Die Installation kan nicht fortgesetzt werden.&lt;/p&gt;</translation>
+        Die Installation kann nicht fortgesetzt werden.&lt;/p&gt;</translation>
     </message>
     <message>
       <location filename="../src/modules/welcomeq/Requirements.qml" line="39"/>
@@ -3779,7 +3779,7 @@ Ausgabe:
       <location filename="../src/modules/fsresizer/ResizeFSJob.cpp" line="182"/>
       <source>The filesystem %1 could not be found in this system, and cannot be resized.</source>
       <comment>@info</comment>
-      <translation>Das Dateisystem %1 konnte auf diesem System weder gefunden noch in der Größe verändert werden. </translation>
+      <translation>Das Dateisystem %1 konnte auf diesem System weder gefunden, noch in der Größe verändert werden. </translation>
     </message>
     <message>
       <location filename="../src/modules/fsresizer/ResizeFSJob.cpp" line="184"/>
@@ -3846,7 +3846,7 @@ Ausgabe:
     <message>
       <location filename="../src/modules/partition/jobs/ResizePartitionJob.cpp" line="70"/>
       <source>The installer failed to resize partition %1 on disk '%2'.</source>
-      <translation>Das Installationsprogramm konnte die Grösse von Partition %1 auf Datenträger '%2' nicht ändern.</translation>
+      <translation>Das Installationsprogramm konnte die Größe von Partition %1 auf Datenträger '%2' nicht ändern.</translation>
     </message>
   </context>
   <context>
@@ -4346,7 +4346,7 @@ Ausgabe:
       <location filename="../src/modules/tracking/TrackingJobs.cpp" line="141"/>
       <source>Configuring machine feedback…</source>
       <comment>@status</comment>
-      <translation>Feedback zum System wird konfiguriert…</translation>
+      <translation>Feedback zum Computer wird konfiguriert…</translation>
     </message>
     <message>
       <location filename="../src/modules/tracking/TrackingJobs.cpp" line="164"/>
@@ -4380,7 +4380,7 @@ Ausgabe:
     <message>
       <location filename="../src/modules/tracking/page_trackingstep.ui" line="275"/>
       <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href="placeholder"&gt;&lt;span style=" text-decoration: underline; color:#2980b9;"&gt;Click here for more information about user feedback&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href="placeholder"&gt;&lt;span style=" text-decoration: underline; color:#2980b9;"&gt;Klicken sie hier für weitere Informationen über Benutzer-Rückmeldungen&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href="placeholder"&gt;&lt;span style=" text-decoration: underline; color:#2980b9;"&gt;Klicken Sie hier für weitere Informationen über Benutzer-Rückmeldungen&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
       <location filename="../src/modules/tracking/TrackingPage.cpp" line="95"/>
@@ -4865,7 +4865,7 @@ Ausgabe:
       <location filename="../src/modules/keyboardq/keyboardq.qml" line="311"/>
       <source>Type here to test your keyboard…</source>
       <comment>@label</comment>
-      <translation>Schreibe Sie hier, um Ihre Tastatur zu testen...</translation>
+      <translation>Schreiben Sie hier, um Ihre Tastatur zu testen...</translation>
     </message>
   </context>
   <context>
@@ -4969,7 +4969,7 @@ Ausgabe:
       <location filename="../src/modules/packagechooserq/packagechooserq.qml" line="45"/>
       <source>LibreOffice is a powerful and free office suite, used by millions of people around the world. It includes several applications that make it the most versatile Free and Open Source office suite on the market.&lt;br/&gt;
                     Default option.</source>
-      <translation>LibreOffice ist eine mächtige und freie Office-Lösung, verwendet von Millionen von Menschen rund um den Globus. Sie enthäIt verschiedene Anwendungen, die LibreOffice zur vielseitigsten Open-Source-Lösung für Office-Anwendungen auf dem Markt machen.&lt;br/&gt;
+      <translation>LibreOffice ist eine mächtige und freie Office-Lösung, verwendet von Millionen von Menschen rund um den Globus. Sie enthält verschiedene Anwendungen, die LibreOffice zur vielseitigsten Open-Source-Lösung für Office-Anwendungen auf dem Markt machen.&lt;br/&gt;
                     Standard-Option.</translation>
     </message>
     <message>
@@ -4980,7 +4980,7 @@ Ausgabe:
     <message>
       <location filename="../src/modules/packagechooserq/packagechooserq.qml" line="108"/>
       <source>If you don't want to install an office suite, just select No Office Suite. You can always add one (or more) later on your installed system as the need arrives.</source>
-      <translation>Wenn Sie keine Office-Suite installieren wollen, wählen Sie einfach Keine Office Suite. Sie können jederzeit eine oder mehrere zu Ihrem installierten System hinzufügen wenn nötig.</translation>
+      <translation>Wenn Sie keine Office-Suite installieren wollen, wählen Sie einfach keine Office Suite. Sie können jederzeit eine oder mehrere zu Ihrem installierten System hinzufügen, wenn nötig.</translation>
     </message>
     <message>
       <location filename="../src/modules/packagechooserq/packagechooserq.qml" line="121"/>
@@ -5009,7 +5009,7 @@ Ausgabe:
       <location filename="../src/modules/packagechooserq/packagechooserq-qt6.qml" line="45"/>
       <source>LibreOffice is a powerful and free office suite, used by millions of people around the world. It includes several applications that make it the most versatile Free and Open Source office suite on the market.&lt;br/&gt;
                     Default option.</source>
-      <translation>LibreOffice ist eine mächtige und freie Office-Suite, verwendet von Millionen von Menschen rund um den Globus. Sie enthäIt verschiedene Anwendungen, die LibreOffice zur vielseitigsten Open-Source-Lösung für Office-Anwendungen auf dem Markt machen.&lt;br/&gt;
+      <translation>LibreOffice ist eine mächtige und freie Office-Suite, verwendet von Millionen von Menschen rund um den Globus. Sie enthält verschiedene Anwendungen, die LibreOffice zur vielseitigsten Open-Source-Lösung für Office-Anwendungen auf dem Markt machen.&lt;br/&gt;
                     Standard-Option.</translation>
     </message>
     <message>
@@ -5077,15 +5077,15 @@ Dies ist das Beispiel einer QML-Datei, das Optionen in Markdown mit aufklappbare
 
 QML mit RichText kann HTML-Tags benutzen, bei Markdown wird die simple Markdown-Syntax verwendet, aufklappbarer Inhalt ist nützlich für Touchscreens.
 
-**Dies ist Fetter Text**
+**Dies ist fetter Text**
 
-*Dies ist Kursiver Text*
+*Dies ist kursiver Text*
 
-_Dies ist Unterstrichener Text_
+_Dies ist unterstrichener Text_
 
 &gt; Zitat
 
-~~Dies ist Durchgestrichener Text~~
+~~Dies ist durchgestrichener Text~~
 
 Code-Beispiel:
 ```

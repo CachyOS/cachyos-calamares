@@ -287,6 +287,7 @@
           - gvfs-smb
           - gvfs-gphoto2
           - gvfs-mtp
+          - gvfs-dnssd
 - name: "Cosmic"
   description: "Linux desktop, which provides an environment that features advanced functionality and a responsive design."
   description[de]: "Insgesamt ist COSMIC eine umfassende Betriebssystem-GUI (grafische Benutzeroberfläche), die erweiterte Funktionalitäten und ein reaktionsschnelles Design bietet. Seine modulare Architektur ist speziell darauf ausgelegt, die Erstellung einzigartiger, markenspezifischer Benutzererfahrungen zu erleichtern."

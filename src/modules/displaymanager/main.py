@@ -947,6 +947,13 @@ class DMgreetd(DisplayManager):
         pass
 
     def set_autologin(self, username, do_autologin, default_desktop_environment):
+        if default_desktop_environment is None:
+            # no desktop environment detected. skipping autologin
+            libcalamares.utils.warning(
+                "No default desktop environment found. skipping greetd autologin configuration."
+                )
+            return
+
         self.config_load()
 
         de_command = default_desktop_environment.executable

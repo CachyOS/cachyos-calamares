@@ -629,18 +629,18 @@
     - noctalia-greeter
     - cachyos-hypr-noctalia
 - name: "MangoWM"
-  description: "MangoWM is a Wayland compositor using Dank Material Shell through Quickshell, with CachyOS-provided dotfiles."
-  description[de]: "MangoWM ist ein Wayland-Kompositor, der Dank Material Shell über Quickshell verwendet, mit von CachyOS bereitgestellten Dotfiles."
-  description[fi]: "MangoWM on Wayland-kompositori, joka käyttää Dank Material Shelliä Quickshellin kautta, CachyOSin tarjoamilla dotfile-asetuksilla."
-  description[fr]: "MangoWM est un compositeur Wayland utilisant Dank Material Shell via Quickshell, avec des dotfiles fournis par CachyOS."
-  description[it]: "MangoWM è un compositor Wayland che utilizza Dank Material Shell tramite Quickshell, con dotfile forniti da CachyOS."
-  description[es]: "MangoWM es un compositor Wayland que usa Dank Material Shell a través de Quickshell, con dotfiles proporcionados por CachyOS."
-  description[nl]: "MangoWM is een Wayland-compositor die Dank Material Shell via Quickshell gebruikt, met door CachyOS geleverde dotfiles."
-  description[pt_BR]: "MangoWM é um compositor Wayland que usa o Dank Material Shell por meio do Quickshell, com dotfiles fornecidos pelo CachyOS."
-  description[ru]: "MangoWM - это композитор Wayland, использующий Dank Material Shell через Quickshell, с dotfiles, предоставленными CachyOS."
-  description[zh_CN]: "MangoWM 是一个 Wayland 合成器，通过 Quickshell 使用 Dank Material Shell，并提供由 CachyOS 维护的 dotfiles。"
-  description[ja]: "MangoWM は Quickshell 経由で Dank Material Shell を使用する Wayland コンポジタで、CachyOS が提供する dotfiles が含まれています。"
-  description[sv]: "MangoWM är en Wayland-kompositor som använder Dank Material Shell via Quickshell, med dotfiles från CachyOS."
+  description: "MangoWM is a Wayland compositor using the Noctalia shell, with CachyOS-provided dotfiles."
+  description[de]: "MangoWM ist ein Wayland-Kompositor, der die Noctalia-Shell verwendet, mit von CachyOS bereitgestellten Dotfiles."
+  description[fi]: "MangoWM on Wayland-kompositori, joka käyttää Noctalia-kuorta, CachyOSin tarjoamilla dotfile-asetuksilla."
+  description[fr]: "MangoWM est un compositeur Wayland utilisant le shell Noctalia, avec des dotfiles fournis par CachyOS."
+  description[it]: "MangoWM è un compositor Wayland che utilizza la shell Noctalia, con dotfile forniti da CachyOS."
+  description[es]: "MangoWM es un compositor Wayland que usa la shell Noctalia, con dotfiles proporcionados por CachyOS."
+  description[nl]: "MangoWM is een Wayland-compositor die de Noctalia-shell gebruikt, met door CachyOS geleverde dotfiles."
+  description[pt_BR]: "MangoWM é um compositor Wayland que usa o shell Noctalia, com dotfiles fornecidos pelo CachyOS."
+  description[ru]: "MangoWM - это композитор Wayland, использующий оболочку Noctalia, с dotfiles, предоставленными CachyOS."
+  description[zh_CN]: "MangoWM 是一个使用 Noctalia shell 的 Wayland 合成器，并提供由 CachyOS 维护的 dotfiles。"
+  description[ja]: "MangoWM は Noctalia シェルを使用する Wayland コンポジタで、CachyOS が提供する dotfiles が含まれています。"
+  description[sv]: "MangoWM är en Wayland-kompositor som använder Noctalia-skalet, med dotfiles från CachyOS."
   platform: "desktop"
   hidden: false
   selected: false
@@ -648,7 +648,7 @@
   critical: true
   packages:
     - sddm
-    - cachyos-mangowc-dms
+    - cachyos-mango-noctalia
 - name: "Sway"
   description: "Sway is a tiling Wayland compositor and a drop-in replacement for the i3 window manager for X11. It works with your existing i3 configuration and supports most of i3's features, plus a few extras."
   description[de]: "Sway ist ein kachelnder Wayland-Compositor und ein Drop-in-Ersatz für den i3-Fenstermanager für X11. Er arbeitet mit Ihrer bestehenden i3-Konfiguration und unterstützt die meisten Funktionen von i3, plus ein paar Extras."

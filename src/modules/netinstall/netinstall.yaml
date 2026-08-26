@@ -96,7 +96,6 @@
           - libopenraw
           - plocate
           - poppler-glib
-          - vlc-plugins-all
           - xdg-user-dirs
           - xdg-utils
       - name: "filesystem"
@@ -167,7 +166,6 @@
           - git
           - glances
           - hwinfo
-          - meld
           - nano-syntax-highlighting
           - fastfetch
           - pv
@@ -198,11 +196,6 @@
     - bluedevil
     - breeze-gtk
     - cachy-update
-    - cachyos-emerald-kde-theme-git
-    - cachyos-iridescent-kde
-    - cachyos-kde-settings
-    - cachyos-nord-kde-theme-git
-    - char-white
     - dolphin
     - ffmpegthumbs
     - filelight
@@ -223,7 +216,6 @@
     - kwallet-pam
     - kwalletmanager
     - partitionmanager
-    - phonon-qt6-vlc
     - plasma-browser-integration
     - plasma-desktop
     - plasma-firewall

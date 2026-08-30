@@ -351,6 +351,7 @@
     - cosmic-settings
     - cosmic-settings-daemon
     - cosmic-terminal
+    - cosmic-initial-setup
     - cosmic-text-editor
     - cosmic-wallpapers
     - cosmic-workspaces

@@ -231,7 +231,6 @@
     - plasma-pa
     - plasma-systemmonitor
     - plasma-thunderbolt
-    - plymouth-kcm
     - powerdevil
     - plasma-login-manager
     - spectacle
@@ -832,3 +831,12 @@
     - espeak-ng
     - mousetweaks
     - orca
+- name: "Plymouth"
+  description: "Splash screen on boot"
+  hidden: false
+  selected: true
+  critical: true
+  packages:
+    - plymouth
+    - cachyos-plymouth-bootanimation
+    - cachyos-plymouth-theme

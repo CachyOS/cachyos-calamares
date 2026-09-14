@@ -8,3 +8,4 @@ type: object
 properties:
     plymouth_theme: { type: string }
     plymouth_theme_amdgpu: { type: string }
+    plymouth_simpledrm: { type: boolean }

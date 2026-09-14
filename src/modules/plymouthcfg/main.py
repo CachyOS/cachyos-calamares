@@ -13,6 +13,7 @@
 #
 
 import subprocess
+import os
 
 import libcalamares
 
@@ -75,7 +76,10 @@ class PlymouthController:
             plymouth_theme = config["plymouth_theme_amdgpu"]
             debug("Using AMD GPU plymouth theme: {}".format(plymouth_theme))
 
-        target_env_call(["plymouth-set-default-theme", plymouth_theme])
+        if os.path.exists(f"{self.root}/usr/share/plymouth/themes/{plymouth_theme}"):
+            target_env_call(["plymouth-set-default-theme", plymouth_theme])
+        else:
+            debug("Failed to set plymouth theme since it was not installed")
 
     def run(self):
         if detect_plymouth():

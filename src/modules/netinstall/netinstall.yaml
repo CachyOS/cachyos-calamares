@@ -331,6 +331,7 @@
     - xdg-desktop-portal-gtk
     - gnome-keyring
     - xorg-xwayland
+    - gvfs-mtp
 - name: "Niri"
   description: "A scrollable-tiling Wayland compositor."
   description[de]: "Ein Wayland-Kompositor mit scrollbarem Tiling."

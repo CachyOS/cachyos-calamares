@@ -356,6 +356,7 @@
     - cosmic-text-editor
     - cosmic-wallpapers
     - cosmic-workspaces
+    - cosmic-viewer
     - notification-daemon
     - cosmic-greeter
     - xdg-desktop-portal-cosmic

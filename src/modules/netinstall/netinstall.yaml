@@ -324,7 +324,6 @@
     - cosmic-wallpapers
     - cosmic-workspaces
     - notification-daemon
-    - cosmic-greeter
     - xdg-desktop-portal-cosmic
     - xdg-desktop-portal-gtk
     - gnome-keyring

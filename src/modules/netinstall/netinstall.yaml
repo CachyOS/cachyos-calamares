@@ -88,6 +88,7 @@
           - bash-completion
           - ffmpegthumbnailer
           - gst-libav
+          - gst-plugin-dav1d
           - gst-plugin-pipewire
           - gst-plugins-bad
           - gst-plugins-ugly

@@ -41,25 +41,6 @@ def detect_plymouth():
     return target_env_call(["sh", "-c", "which plymouth"]) == 0
 
 
-def detect_amdgpu():
-    """
-    Checks if an AMD GPU is present using chwd.
-
-    @return True if an AMD GPU is detected, False otherwise
-    """
-    try:
-        result = subprocess.run(
-            ["chwd", "--check", "amd"],
-            capture_output=True, text=True
-        )
-        if result.returncode == 0:
-            debug("Detected AMD GPU via chwd")
-            return True
-    except OSError:
-        debug("Could not run chwd for AMD GPU detection")
-    return False
-
-
 class PlymouthController:
 
     def __init__(self):
@@ -72,10 +53,6 @@ class PlymouthController:
     def setTheme(self):
         config = libcalamares.job.configuration
         plymouth_theme = config["plymouth_theme"]
-
-        if config.get("plymouth_theme_amdgpu") and detect_amdgpu():
-            plymouth_theme = config["plymouth_theme_amdgpu"]
-            debug("Using AMD GPU plymouth theme: {}".format(plymouth_theme))
 
         if os.path.exists(f"{self.root}/usr/share/plymouth/themes/{plymouth_theme}"):
             target_env_call(["plymouth-set-default-theme", plymouth_theme])

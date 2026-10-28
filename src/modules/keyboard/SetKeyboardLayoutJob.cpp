@@ -56,7 +56,7 @@ variantList( const AdditionalLayoutInfo& additionalLayoutInfo, const QString& va
         return removeEmpty( { variant } );
     }
 
-    QStringList variants { additionalLayoutInfo.additionalVariant, variant };
+    QStringList variants { variant, additionalLayoutInfo.additionalVariant };
     if ( variants.join( QString() ).isEmpty() )
     {
         variants.clear();
@@ -97,6 +97,7 @@ SetKeyboardLayoutJob::SetKeyboardLayoutJob( const QString& model,
                                             const QString& xOrgConfFileName,
                                             const QString& convertedKeymapPath,
                                             bool writeEtcDefaultKeyboard,
+                                            bool writeKdeKeyboardConfig,
                                             bool skipIfNoRoot )
     : Calamares::Job()
     , m_model( model )
@@ -106,6 +107,7 @@ SetKeyboardLayoutJob::SetKeyboardLayoutJob( const QString& model,
     , m_xOrgConfFileName( xOrgConfFileName )
     , m_convertedKeymapPath( convertedKeymapPath )
     , m_writeEtcDefaultKeyboard( writeEtcDefaultKeyboard )
+    , m_writeKdeKeyboardConfig( writeKdeKeyboardConfig )
     , m_skipIfNoRoot( skipIfNoRoot )
 {
 }
@@ -354,7 +356,7 @@ SetKeyboardLayoutJob::writeX11Data( const QString& keyboardConfPath ) const
               "        MatchIsKeyboard \"on\"\n";
 
 
-    const QStringList layouts = removeEmpty( { m_additionalLayoutInfo.additionalLayout, m_layout } );
+    const QStringList layouts = removeEmpty( { m_layout, m_additionalLayoutInfo.additionalLayout } );
     const QStringList variants = variantList( m_additionalLayoutInfo, m_variant );
     stream << "        Option \"XkbLayout\" \"" << layouts.join( "," ) << "\"\n";
     stream << "        Option \"XkbVariant\" \"" << variants.join( "," ) << "\"\n";
@@ -388,7 +390,7 @@ SetKeyboardLayoutJob::writeDefaultKeyboardData( const QString& defaultKeyboardPa
     }
     QTextStream stream( &file );
 
-    const QStringList layouts = removeEmpty( { m_additionalLayoutInfo.additionalLayout, m_layout } );
+    const QStringList layouts = removeEmpty( { m_layout, m_additionalLayoutInfo.additionalLayout } );
     const QStringList variants = variantList( m_additionalLayoutInfo, m_variant );
     stream << "# KEYBOARD CONFIGURATION FILE\n\n"
               "# Consult the keyboard(5) manual page.\n\n";
@@ -410,6 +412,35 @@ SetKeyboardLayoutJob::writeDefaultKeyboardData( const QString& defaultKeyboardPa
              << stream.status();
 
     return ( stream.status() == QTextStream::Ok );
+}
+
+static bool
+writeKdeKeyboardData( const QString& kxkbPath,
+                      const QString& model,
+                      const QString& layout,
+                      const QString& variant,
+                      const AdditionalLayoutInfo& additionalLayoutInfo )
+{
+    QDir().mkpath( QFileInfo( kxkbPath ).absolutePath() );
+
+    QSettings config( kxkbPath, QSettings::IniFormat );
+    const QStringList layouts = removeEmpty( { layout, additionalLayoutInfo.additionalLayout } );
+    const QStringList variants = variantList( additionalLayoutInfo, variant );
+
+    config.beginGroup( QStringLiteral( "Layout" ) );
+    config.setValue( QStringLiteral( "Use" ), true );
+    config.setValue( QStringLiteral( "Model" ), model );
+    config.setValue( QStringLiteral( "LayoutList" ), layouts.join( "," ) );
+    config.setValue( QStringLiteral( "VariantList" ), variants.join( "," ) );
+    if ( !additionalLayoutInfo.additionalLayout.isEmpty() )
+    {
+        config.setValue( QStringLiteral( "ResetOldOptions" ), true );
+        config.setValue( QStringLiteral( "Options" ), additionalLayoutInfo.groupSwitcher );
+    }
+    config.endGroup();
+    config.sync();
+
+    return config.status() == QSettings::NoError;
 }
 
 
@@ -490,6 +521,21 @@ SetKeyboardLayoutJob::exec()
                 return Calamares::JobResult::error(
                     tr( "Failed to write keyboard configuration to existing /etc/default directory.", "@error" ),
                     tr( "Failed to write to %1", "@error, %1 is default keyboard path" ).arg( defaultKeyboardPath ) );
+            }
+        }
+    }
+
+    if ( m_writeKdeKeyboardConfig && !( m_skipIfNoRoot && ( destDir.isEmpty() || destDir.isRoot() ) ) )
+    {
+        QDir skelDir( destDir.absoluteFilePath( "etc/skel" ) );
+        if ( skelDir.exists() )
+        {
+            QString kdeKeyboardPath = skelDir.absoluteFilePath( ".config/kxkbrc" );
+            if ( !writeKdeKeyboardData( kdeKeyboardPath, m_model, m_layout, m_variant, m_additionalLayoutInfo ) )
+            {
+                return Calamares::JobResult::error(
+                    tr( "Failed to write keyboard configuration for KDE Plasma.", "@error" ),
+                    tr( "Failed to write to %1", "@error, %1 is KDE keyboard configuration path" ).arg( kdeKeyboardPath ) );
             }
         }
     }

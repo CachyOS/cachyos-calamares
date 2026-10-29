@@ -146,10 +146,18 @@ def get_btrfs_subvolumes(partitions):
     if not btrfs_subvolumes:
         btrfs_subvolumes = [dict(mountPoint="/", subvolume="/@"), dict(mountPoint="/home", subvolume="/@home")]
 
-    # Filter out the subvolumes which have a dedicated partition
+    # Identify dedicated partitions (excluding root)
     non_root_partition_mounts = [m for m in [p.get("mountPoint", None) for p in partitions] if
                                  m is not None and m != '/']
-    btrfs_subvolumes = list(filter(lambda s: s["mountPoint"] not in non_root_partition_mounts, btrfs_subvolumes))
+
+    # Filter: Skip subvolume if it IS a partition OR is INSIDE a partition
+    btrfs_subvolumes = [
+        s for s in btrfs_subvolumes
+        if s["mountPoint"] == "/" or not any(
+            m and (s["mountPoint"] == m or s["mountPoint"].startswith(m + "/"))
+            for m in non_root_partition_mounts
+        )
+    ]
 
     # If we have a swap **file**, give it a separate subvolume.
     swap_choice = libcalamares.globalstorage.value("partitionChoices")
@@ -224,8 +232,14 @@ def mount_zfs(root_mount_point, partition):
         except subprocess.CalledProcessError:
             raise ZfsException(_("Failed to set zfs mountpoint"))
 
+def err(error_message, active_mounts):
+    for tmp_dir in sorted(active_mounts, reverse=True):
+        if os.path.ismount(tmp_dir):
+            if subprocess.call(["umount", "-v", tmp_dir]) != 0:
+                subprocess.call(["umount", "-v", "-l", tmp_dir])
+    raise Exception(error_message)
 
-def mount_partition(root_mount_point, partition, partitions, mount_options, mount_options_list, efi_location):
+def mount_partition(root_mount_point, partition, partitions, mount_options, mount_options_list, efi_location, active_mounts):
     """
     Do a single mount of @p partition inside @p root_mount_point.
 
@@ -235,6 +249,7 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     :param mount_options: The mount options from the config file
     :param mount_options_list: A list of options for each mountpoint to be placed in global storage for future modules
     :param efi_location: A string holding the location of the EFI partition or None
+    :param active_mounts A list of strings
     :return:
     """
     # Create mount point with `+` rather than `os.path.join()` because
@@ -262,73 +277,117 @@ def mount_partition(root_mount_point, partition, partitions, mount_options, moun
     if fstype == "unformatted":
         return
 
-    if fstype == "fat16" or fstype == "fat32":
-        fstype = "vfat"
 
+    am = active_mounts
+    am.append(mount_point)
     device = partition["device"]
+
+    # Only allow fat32 on boot path and block incompatible
+    if fstype in ["fat16", "fat32", "ntfs", "ext2", "ext3", "exfat"]:
+        is_boot = raw_mount_point in ["/boot", "/boot/efi"]
+        if not (is_boot and fstype == "fat32"):
+            err(f"Unsupported {fstype} partition on {raw_mount_point}", am)
+        fstype = "vfat"
 
     if "luksMapperName" in partition:
         device = os.path.join("/dev/mapper", partition["luksMapperName"])
 
     if fstype == "zfs":
         mount_zfs(root_mount_point, partition)
-    else:  # fstype == "zfs"
-        mount_options_string = get_mount_options(fstype, mount_options, partition, efi_location)
-        if libcalamares.utils.mount(device,
-                                    mount_point,
-                                    fstype,
-                                    mount_options_string) != 0:
-            libcalamares.utils.warning("Cannot mount {}".format(device))
+        return
+
+
+    mount_options_string = get_mount_options(fstype, mount_options, partition, efi_location)
+
+    # Standard mount for everything EXCEPT Btrfs root (this catches other btrfs partitions)
+    if not (fstype == "btrfs" and raw_mount_point == '/'):
+        if libcalamares.utils.mount(device, mount_point, fstype, mount_options_string) != 0:
+            err(f"Cannot mount {device}", am)
+
+        # Verify that the install target is empty
+        is_virtual = any(raw_mount_point.startswith(v) for v in ["/sys", "/proc", "/dev", "/run"])
+        if not is_virtual and raw_mount_point not in ["/home", "/srv", "/boot", "/boot/efi"]:
+            ignored_metadata = [
+                "lost+found", ".Trash-1000", "$RECYCLE.BIN",
+                "System Volume Information", ".fseventsd",
+                ".Spotlight-V100"
+                ]
+            contents = [f for f in os.listdir(mount_point) if f not in ignored_metadata]
+            if contents:
+                err((
+                    f"Device {device} at {raw_mount_point} not empty. "
+                    "Only /home or /srv allowed."), am)
+
         mount_options_list.append({"mountpoint": raw_mount_point, "option_string": mount_options_string})
+        return
 
-    # Special handling for btrfs subvolumes. Create the subvolumes listed in mount.conf
-    if fstype == "btrfs" and partition["mountPoint"] == '/':
-        # Root has been mounted to btrfs volume -> create subvolumes from configuration
-        btrfs_subvolumes = get_btrfs_subvolumes(partitions)
 
-        # Store created list in global storage so it can be used in the fstab module
-        libcalamares.globalstorage.insert("btrfsSubvolumes", btrfs_subvolumes)
-        # Create the subvolumes that are in the completed list
-        for s in btrfs_subvolumes:
-            if not s["subvolume"]:
-                continue
-            os.makedirs(root_mount_point + os.path.dirname(s["subvolume"]), exist_ok=True)
-            subprocess.check_call(["btrfs", "subvolume", "create",
-                                   root_mount_point + s["subvolume"]])
-            # Set secure permissions for /root subvolume (750 instead of default 755)
-            if s["mountPoint"] == "/root":
-                os.chmod(root_mount_point + s["subvolume"], 0o750)
+    # Btrfs Setup
+    btrfs_subvolumes = get_btrfs_subvolumes(partitions)
 
-            if s["mountPoint"] == "/":
-                # insert the root subvolume into global storage
-                libcalamares.globalstorage.insert("btrfsRootSubvolume", s["subvolume"])
-        subprocess.check_call(["umount", "-v", root_mount_point])
+    # Ensure every entry has a subvolume name
+    for s in btrfs_subvolumes:
+        if not s.get("mountPoint") or not s.get("subvolume"):
+            err(f"Btrfs config error: entry missing mountPoint or subvolume name", am)
 
-        device = partition["device"]
+    # Ensure root subvolume with mountpoint / exists
+    root_sub = next((s for s in btrfs_subvolumes if s["mountPoint"] == "/"), None)
+    if not root_sub:
+        err("Btrfs config error: root subvolume not found", am)
 
-        if "luksMapperName" in partition:
-            device = os.path.join("/dev/mapper", partition["luksMapperName"])
+    # Mount raw partition to create subvolumes
+    with tempfile.TemporaryDirectory(prefix="calam-btrfs-") as setup_dir:
+        am.append(setup_dir)
+        if libcalamares.utils.mount(device, setup_dir, fstype, "defaults") != 0:
+            err(f"Cannot mount btrfs for subvolume creation {device}", am)
+        try:
+            for s in btrfs_subvolumes:
+                sub_path = setup_dir + s["subvolume"]
+                if os.path.exists(sub_path):
+                    err((
+                        f"Subvolume {s['subvolume']} already exists on {device}. "
+                        "Only /home or /srv allowed."), am)
+            for s in btrfs_subvolumes:
+                sub_path = setup_dir + s["subvolume"]
+                os.makedirs(os.path.dirname(sub_path), exist_ok=True)
+                subprocess.check_call(["btrfs", "subvolume", "create", sub_path])
+                # Set secure permissions for /root subvolume (750 instead of default 755)
+                if s["mountPoint"] == "/root":
+                    os.chmod(sub_path, 0o750)
+        finally:
+            if os.path.ismount(setup_dir):
+                subprocess.call(["umount", "-v", setup_dir])
+            if setup_dir in am:
+                am.remove(setup_dir)
 
-        # Mount the subvolumes
-        swap_subvol = libcalamares.job.configuration.get("btrfsSwapSubvol", "/@swap")
-        for s in btrfs_subvolumes:
-            if s['subvolume'] == swap_subvol:
-                mount_option_no_subvol = get_mount_options("btrfs_swap", mount_options, partition)
-            else:
-                mount_option_no_subvol = get_mount_options(fstype, mount_options, partition)
+    # Mount the specific @ root subvolume
+    root_opts = f"subvol={root_sub['subvolume']},{mount_options_string}"
 
-            # Only add subvol= argument if we are not mounting the entire filesystem
-            if s['subvolume']:
-                mount_option = f"subvol={s['subvolume']},{mount_option_no_subvol}"
-            else:
-                mount_option = mount_option_no_subvol
-            subvolume_mountpoint = mount_point[:-1] + s['mountPoint']
-            mount_options_list.append({"mountpoint": s['mountPoint'], "option_string": mount_option_no_subvol})
-            if libcalamares.utils.mount(device,
-                                        subvolume_mountpoint,
-                                        fstype,
-                                        mount_option) != 0:
-                libcalamares.utils.warning("Cannot mount {}".format(device))
+    if libcalamares.utils.mount(device, root_mount_point, fstype, root_opts) != 0:
+        err(f"Failed to mount root subvolume {device}", am)
+
+    # Mount remaining subvolumes
+    for s in btrfs_subvolumes:
+        if s["mountPoint"] == "/":
+            continue
+
+        # Prepare subvolume mount options and target mount point
+        sub_opts = f"subvol={s['subvolume']},{mount_options_string}"
+        sub_path = root_mount_point + s["mountPoint"]
+        os.makedirs(sub_path, exist_ok=True)
+
+        if libcalamares.utils.mount(device, sub_path, fstype, sub_opts) == 0:
+            mount_options_list.append({"mountpoint": s["mountPoint"], "option_string": mount_options_string})
+        else:
+            err(f"Failed to mount subvolume {s['subvolume']}", am)
+
+    # Pass data to subsequent Calamares modules:
+    # 1. mount_options_list: Provides base options (e.g., defaults) for fstab (excludes subvol=).
+    # 2. btrfsSubvolumes: fstab module intercepts the '/' partition and iterates over this list to generate fstab entries (injecting 'subvol=' dynamically).
+    # 3. btrfsRootSubvolume: Required by the bootloader and luksopenswaphook modules to configure kernel rootflags.
+    mount_options_list.append({"mountpoint": raw_mount_point, "option_string": mount_options_string})
+    libcalamares.globalstorage.insert("btrfsRootSubvolume", root_sub['subvolume'])
+    libcalamares.globalstorage.insert("btrfsSubvolumes", btrfs_subvolumes)
 
 
 def enable_swap_partition(devices):
@@ -374,24 +433,34 @@ def run():
     if libcalamares.globalstorage.value("firmwareType") == "efi":
         efi_location = libcalamares.globalstorage.value("efiSystemPartition")
     else:
-        for mount in extra_mounts:
-            if mount.get("efi", None) is True:
-                extra_mounts.remove(mount)
+        extra_mounts = [m for m in extra_mounts if not m.get("efi")]
 
     # Add extra mounts to the partitions list and sort by mount points.
     # This way, we ensure / is mounted before the rest, and every mount point
     # is created on the right partition (e.g. if a partition is to be mounted
     # under /tmp, we make sure /tmp is mounted before the partition)
-    mountable_partitions = [p for p in partitions + extra_mounts if "mountPoint" in p and p["mountPoint"]]
-    mountable_partitions.sort(key=lambda x: x["mountPoint"])
 
     # mount_options_list will be inserted into global storage for use in fstab later
     mount_options_list = []
+    active_mounts = []
+
+    # Lexical Sort: mount / before sub-paths
+    physical = [p for p in partitions if "mountPoint" in p and p["mountPoint"]]
+    physical.sort(key=lambda x: x["mountPoint"])
+
     try:
-        for partition in mountable_partitions:
-            mount_partition(root_mount_point, partition, partitions, mount_options, mount_options_list, efi_location)
-    except ZfsException as ze:
-        return _("zfs mounting error"), ze.message
+        for p in physical:
+            mount_partition(root_mount_point, p, partitions, mount_options, mount_options_list, efi_location, active_mounts)
+
+        # Bind/Virtual: After creating Btrfs subvolumes
+        extra = [p for p in extra_mounts if "mountPoint" in p and p["mountPoint"]]
+        extra.sort(key=lambda x: x["mountPoint"])
+
+        for p in extra:
+            mount_partition(root_mount_point, p, partitions, mount_options, mount_options_list, efi_location, active_mounts)
+
+    except Exception as e:
+        err(str(e), active_mounts)
 
     if not mount_options_list:
         libcalamares.utils.warning("No mount options defined, {!s} partitions, {!s} mountable".format(len(partitions), len(mountable_partitions)))

@@ -357,6 +357,14 @@ PartitionLayout::createPartitions( Device* dev,
         {
             part->setType( entry.partType );
         }
+        else
+        {
+            if (!entry.partMountPoint.isEmpty() && entry.partMountPoint == "/")
+            {
+                // SD_GPT_ROOT_X86_64
+                part->setType( "4f68bce3-e8cd-4db1-96e7-fbcaf984b709" );
+            }
+        }
         if ( entry.partAttributes )
         {
             part->setAttributes( entry.partAttributes );

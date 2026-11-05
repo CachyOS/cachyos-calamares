@@ -1,7 +1,8 @@
 #!/bin/bash
+set -euo pipefail
 
 # Only proceed if cachyos-snapper-support is installed (present on all btrfs installs)
-if ! pacman -Qs cachyos-snapper-support > /dev/null 2>&1; then
+if ! pacman -Q cachyos-snapper-support > /dev/null 2>&1; then
     exit 0
 fi
 
@@ -12,6 +13,11 @@ fi
 SNAP_ID=$(snapper --no-dbus -c root create --print-number \
     --description "Fresh CachyOS Installation" \
     --userdata "important=yes")
+
+if [[ ! "$SNAP_ID" =~ ^[1-9][0-9]*$ ]]; then
+    echo "Invalid installation snapshot ID: $SNAP_ID" >&2
+    exit 1
+fi
 
 mkdir -p /etc/cachyos
 echo "$SNAP_ID" > /etc/cachyos/installation-snapshot

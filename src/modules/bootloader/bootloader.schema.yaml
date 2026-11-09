@@ -14,6 +14,7 @@ properties:
     kernelPattern: { type: string }
     loaderEntries: { type: array, items: { type: string } }
     refindKernelList: { type: array, items: { type: string } }
+    refindTheme: { type: string }
 
     # Programs
     grubInstall:  { type: string }

@@ -110,7 +110,7 @@ def run():
         base_packages += ["grub", "grub-hook", "cachyos-grub-theme", "os-prober"]
     elif bootloader == "limine":
         base_packages += ["limine", "limine-entry-tool"]
-    elif bootloader == "refind" or bootloader == "refind-ai":
+    elif bootloader == "refind":
         base_packages += ["refind"]
     elif bootloader == "systemd-boot":
         base_packages += ["systemd-boot-manager"]
@@ -136,7 +136,7 @@ def run():
             base_packages += ["snapper", "btrfs-assistant", "limine-snapper-sync" ]
         elif bootloader == "grub":
             base_packages += ["snapper", "btrfs-assistant", "grub-btrfs-support"]
-        elif bootloader == "refind" or bootloader == "refind-ai":
+        elif bootloader == "refind":
             base_packages += ["snapper", "btrfs-assistant", "refind-btrfs" ]
 
     elif is_root_on_bcachefs:

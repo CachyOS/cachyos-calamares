@@ -111,7 +111,7 @@ def run():
     elif bootloader == "limine":
         base_packages += ["limine", "limine-entry-tool"]
     elif bootloader == "refind" or bootloader == "refind-ai":
-        base_packages += ["refind"]
+        base_packages += ["refind", "refind-theme-nord"]
     elif bootloader == "systemd-boot":
         base_packages += ["systemd-boot-manager"]
 

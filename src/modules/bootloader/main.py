@@ -21,7 +21,6 @@
 #   Calamares is Free Software: see the License-Identifier above.
 #
 
-import fileinput
 import os
 import re
 import shutil
@@ -1000,26 +999,190 @@ def efi_partitions(efi_boot_path):
     return [p for p in libcalamares.globalstorage.value("partitions") if p["mountPoint"] == efi_boot_path]
 
 
+def get_refind_kernel_list(installation_root_path, existing=()):
+    """
+    Collect the kernel names rEFInd should treat as version strings.
+
+    Combines @p existing (the strings already in refind.conf), the configured
+    refindKernelList and the kernels actually installed in the target
+    (detected via /usr/lib/modules/*/pkgbase).
+    rEFInd matches these strings on a first-found basis, so they are sorted
+    longest first; otherwise e.g. "linux-cachyos" would also match
+    vmlinuz-linux-cachyos-lts and rEFInd would pick the wrong initramfs.
+
+    :param installation_root_path: The path to the root of the installation
+    """
+    kernels = set(existing)
+    kernels.update(libcalamares.job.configuration.get("refindKernelList", []))
+
+    modules_dir = os.path.join(installation_root_path, "usr/lib/modules")
+    try:
+        for entry in os.listdir(modules_dir):
+            pkgbase_path = os.path.join(modules_dir, entry, "pkgbase")
+            if os.path.isfile(pkgbase_path):
+                with open(pkgbase_path, "r") as pkgbase_file:
+                    pkgbase = pkgbase_file.read().strip()
+                if pkgbase:
+                    kernels.add(pkgbase)
+    except OSError as e:
+        libcalamares.utils.warning(f"Could not scan {modules_dir} for kernels: {e}")
+
+    return sorted(kernels, key=lambda k: (-len(k), k))
+
+
+def install_refind_theme(refind_dir, installation_root_path):
+    """
+    Copy the configured rEFInd theme onto the ESP and return the include
+    line for refind.conf, or None if no theme is installed.
+
+    The theme packages' own setup scripts are interactive and run before
+    refind-install has created refind.conf, so the installer does the copy.
+
+    :param refind_dir: The EFI/refind directory on the ESP (host path)
+    :param installation_root_path: The path to the root of the installation
+    """
+    theme = libcalamares.job.configuration.get("refindTheme", "")
+    if not theme:
+        return None
+
+    theme_source = os.path.join(installation_root_path, "usr/share/refind/themes", theme)
+    if not os.path.isfile(os.path.join(theme_source, "theme.conf")):
+        libcalamares.utils.warning(f"rEFInd theme '{theme}' not found in {theme_source}. Skipping theming.")
+        return None
+
+    theme_target = os.path.join(refind_dir, "themes", theme)
+    if os.path.isdir(theme_target):
+        shutil.rmtree(theme_target)
+    # Only copy what rEFInd can use; skip setup scripts and docs
+    shutil.copytree(theme_source, theme_target,
+                    ignore=shutil.ignore_patterns("*.sh", "*.md", "*.txt"))
+
+    return f"include themes/{theme}/theme.conf"
+
+
+REFIND_MANAGED_BEGIN = "# BEGIN settings managed by the CachyOS installer"
+REFIND_MANAGED_END = "# END settings managed by the CachyOS installer"
+
+
+def tokenize_refind_line(line):
+    """
+    Split a refind.conf line the way rEFInd's parser does: tokens are
+    separated by whitespace, '=' or ',' outside of double quotes, and an
+    unquoted '#' starts a comment. The keyword (first token) is lowercased,
+    since rEFInd matches keywords case-insensitively.
+
+    :return: list of tokens, empty for blank or comment-only lines
+    """
+    tokens = []
+    current = ""
+    have_token = False
+    in_quotes = False
+    for char in line:
+        if char == '"':
+            in_quotes = not in_quotes
+            have_token = True
+        elif not in_quotes and char == "#":
+            break
+        elif not in_quotes and char in " \t=,":
+            if have_token:
+                tokens.append(current)
+            current = ""
+            have_token = False
+        else:
+            current += char
+            have_token = True
+    if have_token:
+        tokens.append(current)
+    if tokens:
+        tokens[0] = tokens[0].lower()
+    return tokens
+
+
+def is_refind_theme_include(tokens):
+    """
+    True if @p tokens are an include of a theme configuration
+    (e.g. "include themes/nord/theme.conf"; FAT paths are case-insensitive).
+    """
+    if len(tokens) < 2 or tokens[0] != "include":
+        return False
+    path = tokens[1].replace("\\", "/").lower()
+    return path.startswith("themes/") or "/themes/" in path
+
+
 def update_refind_config(efi_directory, installation_root_path):
     """
+    Adjust refind.conf: list every installed kernel as its own menu entry,
+    register kernel version strings and apply the configured theme.
+
+    rEFInd applies settings in file order and the last value wins, also for
+    settings coming from include files. So every active occurrence of the
+    settings handled here is commented out and the installer's values are
+    written in a marked block at the very end of the file. A block from a
+    previous run is replaced, which keeps reruns idempotent.
+
     :param efi_directory: The path to the efi directory relative to the root
     :param installation_root_path: The path to the root of the installation
     """
-    try:
-        kernel_list = libcalamares.job.configuration["refindKernelList"]
-    except KeyError:
-        libcalamares.utils.warning('refindKernelList not set.  Skipping updating refind.conf')
+    refind_dir = os.path.join(installation_root_path + efi_directory, "EFI/refind")
+    conf_path = os.path.join(refind_dir, "refind.conf")
+
+    if not os.path.isfile(conf_path):
+        libcalamares.utils.warning(f"{conf_path} not found. Skipping updating refind.conf")
         return
 
-    # Update the config in the file
-    for line in fileinput.input(installation_root_path + efi_directory + "/EFI/refind/refind.conf", inplace=True):
-        line = line.strip()
-        if line.startswith("#extra_kernel_version_strings") or line.startswith("extra_kernel_version_strings"):
-            line = line.lstrip("#")
-            for kernel in kernel_list:
-                if kernel not in line:
-                    line += "," + kernel
-        print(line)
+    with open(conf_path, "r") as conf_file:
+        lines = [line.rstrip("\n") for line in conf_file]
+
+    # Merge the version strings already configured, including those in the
+    # block written by a previous run, which is dropped next
+    existing_versions = []
+    for line in lines:
+        tokens = tokenize_refind_line(line)
+        if tokens and tokens[0] == "extra_kernel_version_strings":
+            # The value may be one quoted, comma-separated token or several
+            for token in tokens[1:]:
+                existing_versions += [k.strip() for k in token.split(",") if k.strip()]
+
+    # Drop the block written by a previous run
+    if REFIND_MANAGED_BEGIN in lines and REFIND_MANAGED_END in lines:
+        begin = lines.index(REFIND_MANAGED_BEGIN)
+        finish = lines.index(REFIND_MANAGED_END, begin)
+        lines = lines[:begin] + lines[finish + 1:]
+        while lines and not lines[-1].strip():
+            lines.pop()
+
+    include_line = install_refind_theme(refind_dir, installation_root_path)
+    managed_keys = {"fold_linux_kernels", "extra_kernel_version_strings"}
+
+    output = []
+    for line in lines:
+        tokens = tokenize_refind_line(line)
+        key = tokens[0] if tokens else ""
+
+        if key in managed_keys or (include_line and is_refind_theme_include(tokens)):
+            # Only one theme should be active, and our settings must win
+            output.append("#" + line.lstrip())
+            continue
+
+        output.append(line)
+
+    kernel_list = get_refind_kernel_list(installation_root_path, existing_versions)
+
+    # Show every kernel as its own menu entry instead of folding them into a
+    # single entry (alternatives only reachable via F2/Insert)
+    managed = [REFIND_MANAGED_BEGIN, "fold_linux_kernels false"]
+    if kernel_list:
+        managed.append('extra_kernel_version_strings "' + ",".join(kernel_list) + '"')
+    if include_line:
+        managed.append(include_line)
+    managed.append(REFIND_MANAGED_END)
+
+    output += [""] + managed
+
+    with open(conf_path, "w") as conf_file:
+        conf_file.write("\n".join(output) + "\n")
+
+    libcalamares.utils.debug(f"rEFInd kernel version strings: {kernel_list}")
 
 
 def install_refind(efi_directory):

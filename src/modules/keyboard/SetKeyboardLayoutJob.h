@@ -26,6 +26,7 @@ public:
                           const QString& xOrgConfFileName,
                           const QString& convertedKeymapPath,
                           bool writeEtcDefaultKeyboard,
+                          bool writeKdeKeyboardConfig,
                           bool skipIfNoRoot );
 
     QString prettyName() const override;
@@ -45,6 +46,7 @@ private:
     QString m_xOrgConfFileName;
     QString m_convertedKeymapPath;
     const bool m_writeEtcDefaultKeyboard;
+    const bool m_writeKdeKeyboardConfig;
     const bool m_skipIfNoRoot;
 };
 

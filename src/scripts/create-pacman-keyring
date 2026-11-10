@@ -9,6 +9,11 @@ pacman-key --init
 # repo. Also try to make multiple attempts in case of failures due to unsynced
 # mirrors.
 for ((i=0; i<5; i++)); do pacman -Sy --noconfirm --needed cachyos-keyring && break; done
-for ((i=0; i<5; i++)); do pacman -Sy --noconfirm --needed archlinux-keyring && break; done
+# The databases were just synced above, so only re-sync when retrying.
+for ((i=0; i<5; i++)); do
+    sync_flag=-S
+    (( i > 0 )) && sync_flag=-Sy
+    pacman "$sync_flag" --noconfirm --needed archlinux-keyring && break
+done
 
 pacman-key --populate

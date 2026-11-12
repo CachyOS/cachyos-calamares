@@ -35,6 +35,56 @@
 #include <QScreen>
 #include <QTimer>
 
+#ifdef WITH_CACHYOS_INSTALLER
+#include <cachyos/logging.hpp>
+#include <gucc/process.hpp>
+
+#include <string_view>
+
+namespace
+{
+QString
+toQString( std::string_view text )
+{
+    return QString::fromUtf8( text.data(), qsizetype( text.size() ) );
+}
+
+// commands the cachyos libraries run
+class CommandLog final : public gucc::utils::ExecutionObserver
+{
+public:
+    void on_start( const gucc::utils::CommandInfo& cmd ) noexcept override
+    {
+        cDebug() << ( cmd.skipped ? "Skipping (dry-run)" : "Running" ) << toQString( cmd.display );
+    }
+    void on_line( [[maybe_unused]] const gucc::utils::CommandInfo& cmd, std::string_view line ) noexcept override
+    {
+        cDebug() << Logger::SubEntry << toQString( line );
+    }
+    void on_finish( const gucc::utils::CommandInfo& cmd, const gucc::utils::ProcessResult& result ) noexcept override
+    {
+        if ( !cmd.skipped && !result.ok() )
+        {
+            cWarning() << "Command" << toQString( cmd.display ) << "failed, exit code" << result.exit_code
+                       << "timed out" << result.timed_out << "cancelled" << result.cancelled;
+        }
+    }
+};
+
+// before any module uses the libraries, we must initialize logger and command handler
+void
+initInstallerBackend()
+{
+    cachyos::installer::logging::init();
+    cachyos::installer::logging::attach_callback_sink( []( std::string_view line ) { cDebug() << toQString( line ); } );
+
+    // destroyed before the runner, which lives in libgucc
+    static CommandLog commandLog;
+    static const auto commandLogHandle = gucc::utils::default_runner().add_observer( commandLog );
+}
+}  // namespace
+#endif
+
 /// @brief Convenience for "are the settings in debug mode"
 static bool
 isDebug()
@@ -65,6 +115,9 @@ void
 CalamaresApplication::init()
 {
     Logger::setupLogfile();
+#ifdef WITH_CACHYOS_INSTALLER
+    initInstallerBackend();
+#endif
     cDebug() << "Calamares version:" << CALAMARES_VERSION;
     cDebug() << Logger::SubEntry << "Using Qt version:" << qVersion();
     cDebug() << Logger::SubEntry << "Build type:" << CMAKE_BUILD_TYPE;
@@ -73,6 +126,9 @@ CalamaresApplication::init()
 #endif
 #ifdef WITH_BOOST_PYTHON
     cDebug() << Logger::SubEntry << "Using Boost Python";
+#endif
+#ifdef WITH_CACHYOS_INSTALLER
+    cDebug() << Logger::SubEntry << "Using CachyOS installer libraries";
 #endif
     cDebug() << Logger::SubEntry << "Using settings:" << Calamares::Settings::instance()->path();
     cDebug() << Logger::SubEntry << "Using log file:" << Logger::logFile();

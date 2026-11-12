@@ -30,5 +30,6 @@
 #cmakedefine WITH_BOOST_PYTHON
 #cmakedefine WITH_QML
 #cmakedefine WITH_QT6
+#cmakedefine WITH_CACHYOS_INSTALLER
 
 #endif  // CALAMARESCONFIG_H

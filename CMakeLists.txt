@@ -520,6 +520,20 @@ add_feature_info(python WITH_PYTHON "Enable Python-modules")
 add_feature_info(python-pybind11 WITH_PYBIND11 "Python-modules through pybind11")
 add_feature_info(python-boost WITH_BOOST_PYTHON "Python-modules through Boost::Python")
 
+# modules may use the CachyOS installer libraries
+option(WITH_CACHYOS_INSTALLER "Let modules use the CachyOS installer libraries" ON)
+if(WITH_CACHYOS_INSTALLER)
+    find_package(cachyos-installer CONFIG COMPONENTS gucc installer)
+    set_package_properties(cachyos-installer PROPERTIES
+        PURPOSE "Install backend (gucc, installer-lib) for modules that support it"
+        TYPE OPTIONAL
+    )
+    if(NOT cachyos-installer_FOUND)
+        set(WITH_CACHYOS_INSTALLER OFF)
+    endif()
+endif()
+add_feature_info(cachyos-installer WITH_CACHYOS_INSTALLER "Modules can use the CachyOS installer libraries")
+
 # Now we know the state of the ABI-options, copy them into "Calamares_"
 # prefixed variables, to match how the variables would-be-named
 # when building out-of-tree.

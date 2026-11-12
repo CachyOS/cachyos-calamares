@@ -41,6 +41,9 @@ target_link_libraries(
     PRIVATE calamares calamaresui calamares-i18n kdsingleapplication ${qtname}::Core ${qtname}::Widgets
 )
 target_link_libraries(calamares_bin PRIVATE ${kfname}::CoreAddons)
+if(WITH_CACHYOS_INSTALLER)
+    target_link_libraries(calamares_bin PRIVATE cachyos::installer)
+endif()
 if(BUILD_CRASH_REPORTING)
     target_link_libraries(calamares_bin PRIVATE ${kfname}::Crash)
     target_compile_definitions(calamares_bin PRIVATE BUILD_CRASH_REPORTING)

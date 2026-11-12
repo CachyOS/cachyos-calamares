@@ -11,6 +11,8 @@
  */
 
 #include "MachineIdJob.h"
+
+#include "CalamaresConfig.h"
 #include "Workers.h"
 
 #include "utils/Logger.h"
@@ -22,6 +24,11 @@
 #include "JobQueue.h"
 
 #include <QFile>
+
+#ifdef WITH_CACHYOS_INSTALLER
+#include <gucc/error.hpp>
+#include <gucc/machine_id.hpp>
+#endif
 
 const NamedEnumTable< SystemdMachineIdStyle >&
 styleNames()
@@ -108,6 +115,17 @@ MachineIdJob::exec()
             return r;
         }
     }
+#ifdef WITH_CACHYOS_INSTALLER
+    if ( m_gucc )
+    {
+        if ( const auto res = gucc::machine_id::reset( root.toStdString() ); !res )
+        {
+            return Calamares::JobResult::error( tr( "Could not create machine-id" ),
+                                                QString::fromStdString( gucc::to_string( res.error() ) ) );
+        }
+        return Calamares::JobResult::ok();
+    }
+#endif
     if ( m_systemd )
     {
         if ( !system->createTargetParentDirs( target_systemd_machineid_file ) )
@@ -181,6 +199,21 @@ MachineIdJob::setConfigurationMap( const QVariantMap& map )
         m_entropy_files.append( QStringLiteral( "/var/lib/urandom/random-seed" ) );
     }
     m_entropy_files.removeDuplicates();
+
+    m_gucc = Calamares::getBool( map, "gucc", false );
+#ifdef WITH_CACHYOS_INSTALLER
+    if ( m_gucc && !( m_systemd && m_systemd_style == SystemdMachineIdStyle::Uuid && m_dbus_symlink ) )
+    {
+        cWarning() << "MachineId: gucc needs systemd and dbus-symlink, using the built-in code.";
+        m_gucc = false;
+    }
+#else
+    if ( m_gucc )
+    {
+        cWarning() << "MachineId: built without the CachyOS installer libraries.";
+        m_gucc = false;
+    }
+#endif
 }
 
 CALAMARES_PLUGIN_FACTORY_DEFINITION( MachineIdJobFactory, registerPlugin< MachineIdJob >(); )

@@ -12,4 +12,10 @@ calamares_add_plugin(machineid
     SHARED_LIB
 )
 
-calamares_add_test(machineidtest SOURCES Tests.cpp MachineIdJob.cpp Workers.cpp)
+# gucc lib
+if(WITH_CACHYOS_INSTALLER)
+    target_link_libraries(calamares_job_machineid PRIVATE cachyos::gucc)
+    set(_gucc cachyos::gucc)
+endif()
+
+calamares_add_test(machineidtest SOURCES Tests.cpp MachineIdJob.cpp Workers.cpp LIBRARIES ${_gucc})

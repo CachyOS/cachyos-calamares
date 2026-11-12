@@ -55,6 +55,8 @@ private:
 
     bool m_entropy_copy = false;  ///< copy from host system
     QStringList m_entropy_files;  ///< names of files to write
+
+    bool m_gucc = false;  ///< systemd + dbus symlink through the CachyOS installer libraries
 };
 
 CALAMARES_PLUGIN_FACTORY_DECLARATION( MachineIdJobFactory )

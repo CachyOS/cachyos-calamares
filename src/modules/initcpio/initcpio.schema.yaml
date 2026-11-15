@@ -8,4 +8,5 @@ type: object
 properties:
     kernel: { type: string }
     be_unsafe: { type: boolean, default: false }
+    gucc: { type: boolean, default: false }
 required: [ kernel ]

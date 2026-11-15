@@ -11,6 +11,11 @@ calamares_add_plugin(initcpio
     SHARED_LIB
 )
 
+# gucc lib
+if(WITH_CACHYOS_INSTALLER)
+    target_link_libraries(calamares_job_initcpio PRIVATE cachyos::gucc)
+endif()
+
 calamares_add_test(
     initcpiotest
     SOURCES Tests.cpp

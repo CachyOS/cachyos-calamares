@@ -55,7 +55,7 @@ class CommandLog final : public gucc::utils::ExecutionObserver
 public:
     void on_start( const gucc::utils::CommandInfo& cmd ) noexcept override
     {
-        cDebug() << ( cmd.skipped ? "Skipping (dry-run)" : "Running" ) << toQString( cmd.display );
+        cDebug() << Logger::SubEntry << ( cmd.skipped ? "Skipping (dry-run)" : "Running" ) << toQString( cmd.display );
     }
     void on_line( [[maybe_unused]] const gucc::utils::CommandInfo& cmd, std::string_view line ) noexcept override
     {
@@ -76,7 +76,8 @@ void
 initInstallerBackend()
 {
     cachyos::installer::logging::init();
-    cachyos::installer::logging::attach_callback_sink( []( std::string_view line ) { cDebug() << toQString( line ); } );
+    cachyos::installer::logging::attach_callback_sink( []( std::string_view line )
+                                                       { cDebug() << Logger::SubEntry << toQString( line ); } );
 
     // destroyed before the runner, which lives in libgucc
     static CommandLog commandLog;

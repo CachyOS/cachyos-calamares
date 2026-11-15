@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: 2026 Vladislav Nepogodin <vnepogodin@cachyos.org>
+# SPDX-License-Identifier: GPL-3.0-or-later
+---
+$schema: https://json-schema.org/schema#
+$id: https://calamares.io/schemas/gucc
+additionalProperties: false
+type: object
+properties:
+    action: { type: string, enum: [ install-mk-hook, remove-mk-hook, btrfs-snapshot, enable-ufw, hwclock, zfs-hostid ] }
+    i18n:
+        type: object
+        additionalProperties: true
+        properties:
+            name: { type: string }
+        required: [ name ]
+required: [ action, i18n ]

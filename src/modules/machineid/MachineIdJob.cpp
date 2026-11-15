@@ -211,7 +211,6 @@ MachineIdJob::setConfigurationMap( const QVariantMap& map )
     if ( m_gucc )
     {
         cWarning() << "MachineId: built without the CachyOS installer libraries.";
-        m_gucc = false;
     }
 #endif
 }

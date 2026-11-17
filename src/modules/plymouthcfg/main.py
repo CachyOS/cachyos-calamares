@@ -88,8 +88,7 @@ class PlymouthController:
         try:
             with fileinput.input(conf_path, inplace=True) as config:
                 for line in config:
-                    if line.startswith("#[Daemon]") or line.startswith("[Daemon]"):
-                        line = line.lstrip("#")
+                    if line.startswith("[Daemon]"):
                         line = line + "UseSimpledrm=1\n"
 
                     print(line, end='')

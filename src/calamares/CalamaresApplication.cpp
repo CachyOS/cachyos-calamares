@@ -82,6 +82,9 @@ initInstallerBackend()
     // destroyed before the runner, which lives in libgucc
     static CommandLog commandLog;
     static const auto commandLogHandle = gucc::utils::default_runner().add_observer( commandLog );
+
+    // the mounts are already pre-setup in calamares, use native mode
+    gucc::utils::default_runner().set_chroot_mode( gucc::utils::ChrootMode::Native );
 }
 }  // namespace
 #endif

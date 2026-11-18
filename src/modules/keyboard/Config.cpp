@@ -259,8 +259,8 @@ applyXkb( const BasicLayoutInfo& settings, AdditionalLayoutInfo& extra )
     {
         prepareGroupSwitcher( settings, extra );
         basicArguments.append(
-            xkbmap_layout_args_with_group_switch( { extra.additionalLayout, settings.selectedLayout },
-                                                  { extra.additionalVariant, settings.selectedVariant },
+            xkbmap_layout_args_with_group_switch( { settings.selectedLayout, extra.additionalLayout },
+                                                  { settings.selectedVariant, extra.additionalVariant },
                                                   extra.groupSwitcher ) );
         QProcess::execute( "setxkbmap", basicArguments );
 
@@ -286,8 +286,8 @@ applyLocale1( const BasicLayoutInfo& settings, AdditionalLayoutInfo& extra )
     if ( !extra.additionalLayout.isEmpty() )
     {
         prepareGroupSwitcher( settings, extra );
-        layout = extra.additionalLayout + "," + layout;
-        variant = extra.additionalVariant + "," + variant;
+        layout = layout + "," + extra.additionalLayout;
+        variant = variant + "," + extra.additionalVariant;
         option = extra.groupSwitcher;
     }
 
@@ -412,11 +412,11 @@ applyKWin( const BasicLayoutInfo& settings, AdditionalLayoutInfo& extra )
     const auto paths = QStandardPaths::standardLocations( QStandardPaths::ConfigLocation );
     prepareGroupSwitcher( settings, extra );
 
-    auto join = [ &additional = extra.additionalLayout ]( const QString& additionalValue, const QString& selectedValue )
-    { return additional.isEmpty() ? selectedValue : QStringLiteral( "%1,%2" ).arg( additionalValue, selectedValue ); };
+    auto join = [ &additional = extra.additionalLayout ]( const QString& selectedValue, const QString& additionalValue )
+    { return additional.isEmpty() ? selectedValue : QStringLiteral( "%1,%2" ).arg( selectedValue, additionalValue ); };
 
-    const QString layouts = join( extra.additionalLayout, settings.selectedLayout );
-    const QString variants = join( extra.additionalVariant, settings.selectedVariant );
+    const QString layouts = join( settings.selectedLayout, extra.additionalLayout );
+    const QString variants = join( settings.selectedVariant, extra.additionalVariant );
     const QString options = extra.groupSwitcher;
 
     bool updated = false;
@@ -745,6 +745,8 @@ Calamares::JobList
 Config::createJobs()
 {
     QList< Calamares::job_ptr > list;
+    m_additionalLayoutInfo = getAdditionalLayoutInfo( m_current.selectedLayout );
+    prepareGroupSwitcher( m_current, m_additionalLayoutInfo );
 
     Calamares::Job* j = new SetKeyboardLayoutJob( m_current.selectedModel,
                                                   m_current.selectedLayout,
@@ -753,6 +755,7 @@ Config::createJobs()
                                                   m_xOrgConfFileName,
                                                   m_convertedKeymapPath,
                                                   m_configureEtcDefaultKeyboard,
+                                                  m_configureKWin,
                                                   m_configureLocale1 );
     list.append( Calamares::job_ptr( j ) );
 

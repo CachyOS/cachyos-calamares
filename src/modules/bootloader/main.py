@@ -1035,16 +1035,23 @@ def install_refind(efi_directory):
 
     check_target_env_call(["refind-install"])
 
-    with open(conf_path, "r") as refind_file:
-        filedata = [x.strip() for x in refind_file.readlines()]
+    if os.path.exists(conf_path):
+        with open(conf_path, "r") as refind_file:
+            filedata = [x.strip() for x in refind_file.readlines()]
 
-    with open(conf_path, 'w') as refind_file:
-        for line in filedata:
-            if line.startswith('"Boot with standard options"'):
-                line = f'"Boot with standard options"    "{kernel_params}"'
-            elif line.startswith('"Boot to single-user mode"'):
-                line = f'"Boot to single-user mode"    "{kernel_params}" single'
-            refind_file.write(line + "\n")
+        with open(conf_path, 'w') as refind_file:
+            for line in filedata:
+                if line.startswith('"Boot with standard options"'):
+                    line = f'"Boot with standard options"    "{kernel_params}"'
+                elif line.startswith('"Boot to single-user mode"'):
+                    line = f'"Boot to single-user mode"    "{kernel_params}" single'
+                refind_file.write(line + "\n")
+    else:
+        # refind-install didn't create refind_linux.conf (e.g. separate /boot partition),
+        # so generate it manually
+        with open(conf_path, 'w') as refind_file:
+            refind_file.write(f'"Boot with standard options"    "{kernel_params}"\n')
+            refind_file.write(f'"Boot to single-user mode"    "{kernel_params}" single\n')
 
     update_refind_config(efi_directory, installation_root_path)
 

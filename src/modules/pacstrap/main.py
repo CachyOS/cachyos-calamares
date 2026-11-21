@@ -141,7 +141,7 @@ def run():
         if bootloader == "limine":
             base_packages += ["snapper", "btrfs-assistant"]
         elif bootloader == "grub":
-            base_packages += ["snapper", "btrfs-assistant", "grub-btrfs-support"]
+            base_packages += ["snapper", "btrfs-assistant"]
         elif bootloader == "refind":
             base_packages += ["snapper", "btrfs-assistant"]
 

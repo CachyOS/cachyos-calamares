@@ -72,6 +72,7 @@ def run():
 
     """
     root_mount_point = libcalamares.globalstorage.value("rootMountPoint")
+    fw_type = libcalamares.globalstorage.value("firmwareType")
 
     if not root_mount_point:
         return ("No mount point for root partition in globalstorage",
@@ -105,6 +106,11 @@ def run():
     is_root_on_zfs = (curr_filesystem == "zfs\n")
     is_root_on_btrfs = (curr_filesystem == "btrfs\n")
     is_root_on_bcachefs = (curr_filesystem == "bcachefs\n")
+
+    if fw_type == "efi":
+        base_packages += ["cachyos-recovery"]
+    else:
+        base_packages += ["cachyos-recovery-legacy"]
 
     if bootloader == "grub":
         base_packages += ["grub", "grub-hook", "cachyos-grub-theme", "os-prober"]

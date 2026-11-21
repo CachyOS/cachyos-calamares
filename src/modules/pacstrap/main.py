@@ -132,12 +132,7 @@ def run():
         base_packages += ["zfs-utils", "linux-cachyos-zfs", "linux-cachyos-lts-zfs"]
     elif is_root_on_btrfs:
         libcalamares.utils.debug("Root on BTRFS")
-        if bootloader == "limine":
-            base_packages += ["snapper", "btrfs-assistant"]
-        elif bootloader == "grub":
-            base_packages += ["snapper", "btrfs-assistant"]
-        elif bootloader == "refind":
-            base_packages += ["snapper", "btrfs-assistant"]
+        base_packages += ["snapper", "btrfs-assistant"]
 
     elif is_root_on_bcachefs:
         libcalamares.utils.debug("Root on BCACHEFS")

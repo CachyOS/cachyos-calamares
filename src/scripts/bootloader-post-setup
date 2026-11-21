@@ -1,29 +1,14 @@
 #!/usr/bin/env bash
 
+if pacman -Qq snapper 2>/dev/null; then
+    pacman -S --noconfirm --needed cachyos-snapper-support
+fi
+
 if pacman -Qq limine 2>/dev/null; then
-    limine_snapper_config="/etc/limine-snapper-sync.conf"
-
-    if [ -e "$limine_snapper_config" ]; then
-        sed -i 's/TARGET_OS_NAME=".*"/TARGET_OS_NAME="CachyOS"/' "$limine_snapper_config"
-
-        # It's NOT right, but we have no choice because the snapper setup doesn't
-        # work correctly at pacstrap step.
-        pacman -S --noconfirm --needed cachyos-snapper-support
-        systemctl enable limine-snapper-sync.service &>/dev/null
-    fi
-
     # Replace limine-entry-tool with limine-mkinitcpio-hook to automate handling of
     # new kernels
     pacman -R --noconfirm limine-entry-tool
     pacman -S --noconfirm --needed limine-mkinitcpio-hook
-
-    if [ -e "$limine_snapper_config" ]; then
-        cat << 'EOF' > /etc/mkinitcpio.conf.d/10-limine-snapper-sync.conf
-# This hook is necessary for the proper loading of Limine snapshots.
-# Please do not touch unless you know what you are doing.
-HOOKS+=(sd-btrfs-overlayfs)
-EOF
-    fi
 
     limine-update
 elif pacman -Qq systemd-boot-manager 2>/dev/null && bootctl is-installed 2>/dev/null; then

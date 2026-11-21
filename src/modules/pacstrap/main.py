@@ -139,7 +139,7 @@ def run():
     elif is_root_on_btrfs:
         libcalamares.utils.debug("Root on BTRFS")
         if bootloader == "limine":
-            base_packages += ["snapper", "btrfs-assistant", "limine-snapper-sync" ]
+            base_packages += ["snapper", "btrfs-assistant"]
         elif bootloader == "grub":
             base_packages += ["snapper", "btrfs-assistant", "grub-btrfs-support"]
         elif bootloader == "refind":

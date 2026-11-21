@@ -31,3 +31,9 @@ elif pacman -Qq systemd-boot-manager 2>/dev/null && bootctl is-installed 2>/dev/
     rm -rf /boot/loader/entries/*
     sdboot-manage gen
 fi
+
+if [[ -d /sys/firmware/efi/efivars ]]; then
+    pacman -S --noconfirm --needed cachyos-recovery
+else
+    pacman -S --noconfirm --needed cachyos-recovery-legacy
+fi

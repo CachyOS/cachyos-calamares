@@ -143,7 +143,7 @@ def run():
         elif bootloader == "grub":
             base_packages += ["snapper", "btrfs-assistant", "grub-btrfs-support"]
         elif bootloader == "refind":
-            base_packages += ["snapper", "btrfs-assistant", "refind-btrfs" ]
+            base_packages += ["snapper", "btrfs-assistant"]
 
     elif is_root_on_bcachefs:
         libcalamares.utils.debug("Root on BCACHEFS")

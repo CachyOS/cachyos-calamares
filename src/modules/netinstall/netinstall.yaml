@@ -550,7 +550,15 @@
     - gvfs-smb
     - lxappearance
     - obconf-qt
-    - lxde
+    - lxappearance-obconf
+    - lxde-common
+    - lxhotkey
+    - lxinput
+    - lxlauncher
+    - lxpanel
+    - lxrandr
+    - lxsession
+    - lxtask
     - lxde-icon-theme
     - lxterminal
     - lightdm

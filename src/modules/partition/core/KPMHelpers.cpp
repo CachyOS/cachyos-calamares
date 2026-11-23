@@ -96,8 +96,24 @@ createNewEncryptedPartition( PartitionNode* parent,
 
     FileSystem::Type luksType = luksGenerationToFSName( luksFsType );
 
+    // kpmcore formats LUKS with --sector-size 4096, and cryptsetup refuses
+    // a device whose size is not a multiple of that. Trim the length to 4K,
+    // and round the start up so the partition stays 4K-aligned.
+    const qint64 logicalSize = device.logicalSize();
+    if ( logicalSize > 0 && logicalSize < 4096 && 4096 % logicalSize == 0 )
+    {
+        const qint64 sectorsPer4K = 4096 / logicalSize;
+        const qint64 alignedFirst = ( firstSector + sectorsPer4K - 1 ) / sectorsPer4K * sectorsPer4K;
+        const qint64 length = lastSector - alignedFirst + 1;
+        if ( length >= sectorsPer4K )
+        {
+            firstSector = alignedFirst;
+            lastSector = firstSector + length / sectorsPer4K * sectorsPer4K - 1;
+        }
+    }
+
     FS::luks* fs = dynamic_cast< FS::luks* >(
-        FileSystemFactory::create( luksType, firstSector, lastSector, device.logicalSize() ) );
+        FileSystemFactory::create( luksType, firstSector, lastSector, logicalSize ) );
     if ( !fs )
     {
         cError() << "cannot create LUKS filesystem. Giving up.";

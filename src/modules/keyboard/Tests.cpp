@@ -84,10 +84,10 @@ KeyboardLayoutTests::testVariantList_data()
                                                                 << QStringList { QStringLiteral( "dvorak" ) };
     QTest::newRow( "additional layout with selected variant" ) << QStringLiteral( "us" ) << QString()
                                                               << QStringLiteral( "phonetic" )
-                                                              << QStringList { QString(), QStringLiteral( "phonetic" ) };
+                                                              << QStringList { QStringLiteral( "phonetic" ), QString() };
     QTest::newRow( "additional layout with additional variant" ) << QStringLiteral( "us" ) << QStringLiteral( "intl" )
                                                                 << QString()
-                                                                << QStringList { QStringLiteral( "intl" ), QString() };
+                                                                << QStringList { QString(), QStringLiteral( "intl" ) };
     QTest::newRow( "additional layout with no variants" ) << QStringLiteral( "us" ) << QString() << QString()
                                                           << QStringList {};
 }

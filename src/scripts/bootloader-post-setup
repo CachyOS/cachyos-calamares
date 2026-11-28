@@ -26,6 +26,21 @@ EOF
     fi
 
     limine-update
+
+    # The kernels were set up by the stock mkinitcpio hook before
+    # limine-mkinitcpio-hook was installed, which leaves copies in /boot that
+    # Limine never uses. Limine boots the ones in /boot/<machine-id>/, so drop
+    # the stale copies, as limine-mkinitcpio-hook does on the next kernel update.
+    machine_id="$(cat /etc/machine-id 2>/dev/null)"
+    for pkgbase_file in /usr/lib/modules/*/pkgbase; do
+        [ -n "$machine_id" ] && [ -e "$pkgbase_file" ] || continue
+        kernel="$(cat "$pkgbase_file")"
+        if [ -e "/boot/${machine_id}/${kernel}/vmlinuz" ]; then
+            rm -f "/boot/vmlinuz-${kernel}" \
+                  "/boot/initramfs-${kernel}.img" \
+                  "/boot/initramfs-${kernel}-fallback.img"
+        fi
+    done
 elif pacman -Qq systemd-boot-manager 2>/dev/null && bootctl is-installed 2>/dev/null; then
     echo "Enable systemd boot manager for automatic boot entry generation"
     rm -rf /boot/loader/entries/*
